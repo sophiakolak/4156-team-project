@@ -1,2 +1,2 @@
-# 4156-team-project
-Team Project &lt;Name> that does &lt;thing> for Advanced Software Engineering
+# Clinical TriAll
+A web application that matches researchers running clinical trials with prospective trial participants
