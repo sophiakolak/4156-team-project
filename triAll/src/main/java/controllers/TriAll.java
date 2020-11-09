@@ -1,12 +1,15 @@
 package controllers;
 
 import io.javalin.Javalin;
+import models.User;
 
 class TriAll {
 	
 	private static final int PORT_NUMBER = 8080;
 
 	private static Javalin app;
+	
+	private User user;
 	
 	public static void main(String[] args) {
 		app = Javalin.create(config -> {
