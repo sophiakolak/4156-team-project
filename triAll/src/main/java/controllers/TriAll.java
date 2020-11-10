@@ -8,7 +8,7 @@ import units.SqliteDB;
 
 class TriAll {
 	
-	private static final int PORT_NUMBER = 8080;
+	private static final int PORT_NUMBER = 8081;
 
 	private static Javalin app;
 	
@@ -24,12 +24,13 @@ class TriAll {
 		}).start(PORT_NUMBER);
 		
 		app.get("/", ctx -> {
-			//ctx.redirect() homepage
+			ctx.redirect("/login.html") ;
+			//update to homepage later
 			//this is dashboard if already logged in
 		});
 		
 		app.get("/login-form", ctx -> {
-			ctx.redirect("login.html");
+			ctx.redirect("/login.html");
 		});
 		
 		app.post("/login-submit", ctx -> {
@@ -41,11 +42,11 @@ class TriAll {
 		});
 		
 		app.get("/new-part-form", ctx -> {
-			ctx.redirect("participantsignup.html");
+			ctx.redirect("/participantsignup.html");
 		});
 		
 		app.get("/new-res-form", ctx -> {
-			ctx.redirect("researchersignup.html");
+			ctx.redirect("/researchersignup.html");
 		});
 		
 		app.post("/new-part-submit", ctx -> {
@@ -125,11 +126,11 @@ class TriAll {
 		});
         
         app.get("/edit-part-form", ctx -> {
-			//ctx.redirect() form
+			ctx.redirect("/editparticipantinfo.html"); 
 		});
 		
 		app.get("/edit-res-form", ctx -> {
-			//ctx.redirect() form
+			ctx.redirect("/editresearcherinfo.html"); 
 		});
 		
 		app.post("/edit-part-submit", ctx -> {
@@ -141,7 +142,7 @@ class TriAll {
 		});
 		
         app.get("/edit-trial-form", ctx -> {
-			//ctx.redirect() form
+			ctx.redirect("edittrial.html");
 		});
         
         app.post("/edit-trial-submit", ctx -> {

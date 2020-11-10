@@ -3,8 +3,6 @@ package models;
 import java.util.LinkedList;
 
 public class User {
-<<<<<<< HEAD
-=======
 	private int id;
 	private float lat;
 	private float lon;
@@ -40,5 +38,4 @@ public class User {
 		  trials.add(t);
 		}
 	}
->>>>>>> 49cc80d95b71a5b61c9e06bb17a9234d4399ae2a
 }
