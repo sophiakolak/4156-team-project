@@ -22,7 +22,7 @@ class TriAll {
 		});
 		
 		app.get("/login-form", ctx -> {
-			//ctx.redirect() form
+			ctx.redirect("/tictactoe.html");
 		});
 		
 		app.post("/login-submit", ctx -> {
