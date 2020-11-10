@@ -1,5 +1,5 @@
 $(document).ready(function(){
-    $("#saveChanges").submit(function( event ) {
+    $("#createTrial").submit(function( event ) {
     	save_changes($( this ).serializeArray())
         event.preventDefault();
     });
@@ -8,7 +8,7 @@ $(document).ready(function(){
 function save_changes(form_data){    
     $.ajax({
         type: "POST",
-        url: "/edit-res-submit",                
+        url: "/new-trial-submit",                
         dataType : "json",
         contentType: "application/json; charset=utf-8",
         data : JSON.stringify(form_data),

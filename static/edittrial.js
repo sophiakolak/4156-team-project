@@ -6,8 +6,7 @@ $(document).ready(function(){
         window.location.href = "researcherdashboard.html"
     });
     $("#cancel").click(function( event ) {
-        alert( "Cancel. No Changes Saved. (not really but we have the button)" );
-        event.preventDefault();
+        alert( "Cancel. No Changes Saved. )" );
         window.location.href = "researcherdashboard.html"
     });
 })
