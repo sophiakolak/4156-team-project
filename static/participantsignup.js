@@ -8,12 +8,12 @@ $(document).ready(function(){
 function save_changes(form_data){    
     $.ajax({
         type: "POST",
-        url: "/edit-res-submit",                
+        url: "/new-part-submit",                
         dataType : "json",
         contentType: "application/json; charset=utf-8",
         data : JSON.stringify(form_data),
         success: function(result){
-        	alert( "Saved Changes" );
+            alert( "Created New Participant" );
         },
         error: function(request, status, error){
             console.log("Error");

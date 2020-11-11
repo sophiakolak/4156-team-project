@@ -1,7 +1,25 @@
 $(document).ready(function(){
     $("#saveChanges").submit(function( event ) {
-        alert( "Saved Changes (not really but we have the button)" );
+    	save_changes($( this ).serializeArray())
         event.preventDefault();
-        // window.location.href = "participantdashboard.html"
     });
 })
+
+function save_changes(form_data){    
+    $.ajax({
+        type: "POST",
+        url: "/edit-part-submit",                
+        dataType : "json",
+        contentType: "application/json; charset=utf-8",
+        data : JSON.stringify(form_data),
+        success: function(result){
+        	alert( "Saved Changes" );
+        },
+        error: function(request, status, error){
+            console.log("Error");
+            console.log(request)
+            console.log(status)
+            console.log(error)
+        }
+    });    
+}
