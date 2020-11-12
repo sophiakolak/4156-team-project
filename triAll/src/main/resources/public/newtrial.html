@@ -14,14 +14,18 @@
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <!-- Custom JS -->
-    <script type="text/javascript" src="../static/researcherdashboard.js"></script>
-
     <!-- Icons -->
     <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
     <script>
       feather.replace()
     </script>
+
+    <!-- Google Sign In -->
+    <script src="https://apis.google.com/js/platform.js"></script>
+    <meta name="google-signin-client_id" content="46819195782-rhbp0ull70okmgsid0rrd2p8cdub7fpn.apps.googleusercontent.com">
+
+    <!-- Custom JS -->
+    <script type="text/javascript" src="../static/newtrial.js"></script>
 
 
    <style>
@@ -132,7 +136,7 @@
       <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">TriALL</a>
       <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
-          <a class="nav-link" href="login.html">Sign out</a>
+          <a class="nav-link" onclick="signOut();">Sign out</a>
         </li>
       </ul>
     </nav>
@@ -172,58 +176,31 @@
             <div class="btn-toolbar mb-2 mb-md-0">
             </div>
           </div>
-          <div class="panel panel-default">
-            <div class="accordion" id="accordionExample">
-              <div class="card">
-                <div class="card-header" id="headingOne">
-                  <h2 class="mb-0">
-                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                      1. Death Trial - Tuesday, September 58th, 2020 - 2 miles away
-                    </button>
-                  </h2>
+          
+          <form id = "createTrial">
+                <div class="form-group">
+                    <label>Trial Name</label>
+                    <input class="form-control" type="text" name="name" required placeholder="Enter Trial Name"/>
+                    <span class="Error"></span>
                 </div>
-
-                <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-                  <div class="card-body">
-                    University of Something <br>
-                    Trial Description <br>
-                    OTher stuff <br>
-                    text teest <br>
-                    i love code <br>
-
-                    <button type="button" class="btn btn-primary editTrial">Edit</button>
-                    <button type="button" class="btn btn-danger cancelTrial">Cancel Trial</button>
-
-                    
-                  </div>
+                <div class="Trial Date">
+                    <label>Date</label>
+                    <input class="form-control" type="text" name="date"  required placeholder="Enter Date"/>
+                    <span class="Error"></span>
                 </div>
-              </div>
-              <div class="card">
-                <div class="card-header" id="headingTwo">
-                  <h2 class="mb-0">
-                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                      2. Putin Vaccine Trial - Tuesday, October 8th, 2020 - 7 miles away
-                    </button>
-                  </h2>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea class="form-control" type="text" name="description" required placeholder="Enter Description"></textarea>
+                    <span class="Error"></span>
                 </div>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-                  <div class="card-body">
-                    University of Something<br>
-                    Trial Description<br>
-                    OTher stuff<br>
-                    putin putin putin<br>
-                    putin putin<br>
-
-                    2 Participants Matched: <br>
-                    Shirish Participant<br>
-                    Someone Else<br><br>
-
-                    <button type="button" class="btn btn-primary editTrial">Edit</button>
-                    <button type="button" class="btn btn-danger cancelTrial">Cancel Trial</button>
-                  </div>
+                <div class="form-group">
+                    <input id = "cancel" class="btn btn-secondary btn-block" type="button" value="Cancel"/>
                 </div>
-              </div>
-            </div>
+                <div class="form-group">
+                    <input id = "createTrial" class="btn btn-primary btn-block" type="submit" value="Save Changes"/>
+                </div>
+            </form>
+          
         </main>
       </div>
     </div>

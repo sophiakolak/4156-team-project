@@ -14,14 +14,18 @@
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <!-- Custom JS -->
-    <script type="text/javascript" src="../static/editparticipantinfo.js"></script>
-
     <!-- Icons -->
     <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
     <script>
       feather.replace()
     </script>
+
+    <!-- Google Sign In -->
+    <script src="https://apis.google.com/js/platform.js"></script>
+    <meta name="google-signin-client_id" content="46819195782-rhbp0ull70okmgsid0rrd2p8cdub7fpn.apps.googleusercontent.com">
+
+    <!-- Custom JS -->
+    <script type="text/javascript" src="../static/editparticipantinfo.js"></script>
 
 
    <style>
@@ -132,7 +136,7 @@
       <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">TriALL</a>
       <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
-          <a class="nav-link" href="login.html">Sign out</a>
+          <a class="nav-link" onclick="signOut();">Sign out</a>
         </li>
       </ul>
     </nav>

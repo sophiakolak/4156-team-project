@@ -70,53 +70,21 @@
     <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+    <script src="https://apis.google.com/js/platform.js"></script>
     <script type="text/javascript" src="../static/login.js"></script>
-</head>
+    <meta name="google-signin-client_id" content="46819195782-rhbp0ull70okmgsid0rrd2p8cdub7fpn.apps.googleusercontent.com">
 
-<div class="container login-container">
-    <div class = "row">
-        <h1>TriALL ;)</h1>
-    </div>
-    <div class="row">
-        <div class="col-md-6 login-form-1">
-            <h3>Trial Participant Login</h3>
-            <form id = "participantForm">
-                <div class="form-group">
-                    <input type="email" class="form-control" required placeholder="Your Email *" value="" />
-                    <span class="Error"></span>
-                </div>
-                <div class="form-group">
-                    <input type="password" class="form-control" required placeholder="Your Password *" value="" />
-                    <span class="Error"></span>
-                </div>
-                <div class="form-group">
-                    <input type="submit" class="btnSubmit" value="Login" />
-                </div>
-                <div class="form-group">
-                    <!-- change href to route -->
-                    <a href="participantsignup.html" class="SignUp">Not a member yet? Sign up as a trial participant.</a>
-                </div>
-            </form>
+</head>
+<body>
+    
+    <div class="container login-container">
+        <div class = "row">
+            <h1>TriALL</h1>
         </div>
-        <div class="col-md-6 login-form-2">
-            <h3>Researcher Login</h3>
-            <form id = "researcherForm">
-                <div class="form-group">
-                    <input type="email" class="form-control" required placeholder="Your Email *" value="" />
-                    <span class="Error"></span>
-                </div>
-                <div class="form-group">
-                    <input type="password" class="form-control" required placeholder="Your Password *" value="" />
-                    <span class="Error"></span>
-                </div>
-                <div class="form-group">
-                    <input type="submit" class="btnSubmit" value="Login" />
-                </div>
-                <div class="form-group">
-                    <!-- change href to route -->
-                    <a href="researchersignup.html" class="SignUp" value="Login">Not a member yet? Sign up as a researcher.</a>
-                </div>
-            </form>
+        <div class="row">
+    <!--         Sign in Button -->
+            <div class="g-signin2" data-onsuccess="onSignIn"></div>
         </div>
+        <div class = "row"> <a href="#" onclick="signOut();">Sign out</a> </div>
     </div>
-    </div>
+</body>
