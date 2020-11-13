@@ -46,10 +46,7 @@ class TriAll {
 			// redirect to researcher dashboard
 			
 			// if user does not exist
-			ctx.redirect("/signup.html");
-			
-			
-			
+			ctx.redirect("/signup");
 		});
 		
 		app.get("/signup", ctx -> {
@@ -57,9 +54,9 @@ class TriAll {
 		});
 		
 		app.post("/new-part-submit", ctx -> {
-			// lat and lon won't be form params
 			float lat = ctx.formParam("latitude", Float.class).get();
 			float lon = ctx.formParam("longitude", Float.class).get();
+			// location will also be passed in as a form param - can we store that too?
 			String first = ctx.formParam("first");
 			String last = ctx.formParam("last");
 			String email = ctx.formParam("email");

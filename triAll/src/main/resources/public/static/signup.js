@@ -16,7 +16,7 @@ $(document).ready(function(){
     });
 })
 
-var placeSearch, autocomplete;
+var placeSearch, autocomplete, lat, lon;
 
 
 function initAutocomplete() {
@@ -28,7 +28,14 @@ function initAutocomplete() {
 
   // When the user selects an address from the dropdown, populate the address
   // fields in the form.
-  // autocomplete.addListener('place_changed', fillInAddress);
+  autocomplete.addListener('place_changed', setLatLon);
+}
+
+function setLatLon() {
+    lat = autocomplete.getPlace().geometry.location.lat()
+    lon = autocomplete.getPlace().geometry.location.lng()
+    $("#lat").val(lat)
+    $("#lon").val(lon)
 }
 
 // Bias the autocomplete object to the user's geographical location,
@@ -49,7 +56,8 @@ function geolocate() {
   }
 }
 
-function save_changes(form_data){    
+function save_changes(form_data){ 
+    alert(JSON.stringify(form_data))   
     $.ajax({
         type: "POST",
         url: "/new-part-submit",                
