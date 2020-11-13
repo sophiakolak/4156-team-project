@@ -151,6 +151,8 @@ class TriAll {
 		});
         
         app.post("/edit-trial-submit", ctx -> {
+        	//should this be /edit-trial/trial_id or something like that?
+        	//since it's just editing one trial
         	//barring issues, add to database
 		});
         

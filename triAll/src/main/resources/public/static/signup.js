@@ -18,7 +18,6 @@ $(document).ready(function(){
 
 var placeSearch, autocomplete, lat, lon;
 
-
 function initAutocomplete() {
   // Create the autocomplete object, restricting the search to geographical
   // location types.
