@@ -21,6 +21,7 @@ function signOut() {
   var email = profile.getEmail();
   alert(email)
   auth2.signOut().then(function () {
+    alert("making post request")
     $.ajax({
         type: "POST",
         url: "/logout",                
@@ -32,9 +33,9 @@ function signOut() {
         },
         error: function(request, status, error){
             console.log("Error");
-            console.log(request)
-            console.log(status)
-            console.log(error)
+            console.log(request);
+            console.log(status);
+            console.log(error);
         }
     });
   });
@@ -46,15 +47,16 @@ function save_changes(form_data){
         url: "/new-trial-submit",                
         dataType : "json",
         contentType: "application/json; charset=utf-8",
-        data : JSON.stringify(form_data),
+        // data : JSON.stringify(form_data),
+        data : JSON.stringify("TEST TEST HI"),
         success: function(result){
         	alert( "Saved Changes" );
         },
         error: function(request, status, error){
             console.log("Error");
-            console.log(request)
-            console.log(status)
-            console.log(error)
+            console.log(request);
+            console.log(status);
+            console.log(error);
         }
     });    
 }

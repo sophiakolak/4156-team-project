@@ -8,7 +8,8 @@ import units.SqliteDB;
 
 class TriAll {
 	
-	private static final int PORT_NUMBER = 8081;
+//	Sign in with google is currently only authorized to use port 8000 but we can add more
+	private static final int PORT_NUMBER = 8000;
 
 	private static Javalin app;
 	
@@ -29,27 +30,34 @@ class TriAll {
 			//this is dashboard if already logged in
 		});
 		
-		app.get("/login-form", ctx -> {
-			ctx.redirect("/login.html");
-		});
-		
 		app.post("/login-submit", ctx -> {
-			//check username and password - OAuth
-			//if valid, initialize User
-			// and set username
-			//if researcher, get trial ids in array
-			//redirect to dashboard
+			System.out.println("Signing in User");
+			String body = ctx.body();
+			System.out.println(body);
+			// ctx.body() is json dictionary with email and key
+			// authenticate
+			
+			// if user is participant
+			// get trial matches
+			// redirect to participant dashboard
+			
+			// if user is researcher
+			// get trials
+			// redirect to researcher dashboard
+			
+			// if user does not exist
+			ctx.redirect("/signup.html");
+			
+			
+			
 		});
 		
-		app.get("/new-part-form", ctx -> {
-			ctx.redirect("/participantsignup.html");
-		});
-		
-		app.get("/new-res-form", ctx -> {
-			ctx.redirect("/researchersignup.html");
+		app.get("/signup", ctx -> {
+			ctx.redirect("/signup.html");
 		});
 		
 		app.post("/new-part-submit", ctx -> {
+			// lat and lon won't be form params
 			float lat = ctx.formParam("latitude", Float.class).get();
 			float lon = ctx.formParam("longitude", Float.class).get();
 			String first = ctx.formParam("first");
@@ -150,7 +158,9 @@ class TriAll {
 		});
         
         app.post("/logout", ctx -> {
-        	
+//        	ctx.body() contains email of user to be logged out
+        	System.out.println("Logging out user");
+        	ctx.redirect("/");        	
 		});
 	}
 	

@@ -14,16 +14,23 @@ $(document).ready(function(){
 })
 
 function onSignIn(googleUser) {
+    var id_token = googleUser.getAuthResponse().id_token;
     var profile = googleUser.getBasicProfile();
     var email = profile.getEmail(); // This is null if the 'email' scope is not present.
-    alert(email)
+
+    var user_credentials = {
+        "email": email,
+        "id_token": id_token
+    }
+
     $.ajax({
         type: "POST",
-        url: "/login",                
+        url: "/login-submit",                
         dataType : "json",
         contentType: "application/json; charset=utf-8",
-        data : JSON.stringify(email),
+        data : JSON.stringify(user_credentials),
         success: function(result){
+          alert(result)
           alert( "Saved Changes" );
         },
         error: function(request, status, error){
@@ -39,14 +46,18 @@ function signOut() {
   var auth2 = gapi.auth2.getAuthInstance();
   var profile = auth2.currentUser.get().getBasicProfile();
   var email = profile.getEmail();
-  alert(email)
+
+  var user_credentials = {
+    "email": email
+  }
+
   auth2.signOut().then(function () {
     $.ajax({
         type: "POST",
         url: "/logout",                
         dataType : "json",
         contentType: "application/json; charset=utf-8",
-        data : JSON.stringify(email),
+        data : JSON.stringify(user_credentials),
         success: function(result){
           alert( "Logged out!" );
         },
