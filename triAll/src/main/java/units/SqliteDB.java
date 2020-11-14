@@ -84,6 +84,16 @@ public class SqliteDB {
       return rs;
     }
     
+    public ResultSet fetchOne(String table, String ID) {
+        ResultSet rs = null;
+        try {
+          rs = stmt.executeQuery("SELECT * FROM " + table + " WHERE ID = "+ ID +";");
+        } catch (Exception e) {
+          return rs;
+        }
+        return rs;
+      }
+    
     /**
      * Creates table in the database if it isn't already there.
      * @param table Name of the table.

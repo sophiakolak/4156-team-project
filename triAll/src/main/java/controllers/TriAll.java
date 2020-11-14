@@ -5,6 +5,7 @@ import models.Criteria;
 import models.Trial;
 import models.User;
 import units.SqliteDB;
+import java.sql.ResultSet;
 
 class TriAll {
 	
@@ -62,7 +63,7 @@ class TriAll {
 			String email = ctx.formParam("email");
 			int id = db.insertUser("participants", lat, lon, first,  last, email);
 			if(id == 0) {
-				
+				ctx.redirect("not_found.html");
 			} else {
 			  user = new User(id,lat,lon,first,last,email,false);
 			  int age = ctx.formParam("age", Integer.class).get();
@@ -73,7 +74,7 @@ class TriAll {
 	          String nationality = ctx.formParam("nationality");
 	          int crit_id = db.insertCriteria("participant_data", id, age, height, weight, gender, race, nationality);
 	          if(crit_id == 0) {
-	        	  
+	            ctx.redirect("not_found.html");	  
 	          } else {
 	        	user.setData(new Criteria(crit_id, age, height, weight, gender, race, nationality));
 	        	ctx.redirect("participantdashboard.html");  
@@ -89,7 +90,7 @@ class TriAll {
 			String email = ctx.formParam("email");
 			int id = db.insertUser("researchers", lat, lon, first,  last, email);
 			if(id == 0) {
-				
+			    ctx.redirect("not_found.html");
 			}
 			else {
 				user = new User(id,lat,lon,first,last,email,true);
@@ -110,7 +111,7 @@ class TriAll {
         	String nationality = ctx.formParam("nationality");
         	int crit_id = db.insertCriteria("trial_criteria", 0, age, height, weight, gender, race, nationality);
         	if(crit_id==0) {
-        		
+        	    ctx.redirect("not_found.html");
         	} else {
         	  int res_id = user.getID();
         	  String desc = ctx.formParam("description");
@@ -122,7 +123,7 @@ class TriAll {
         	  int confirmed = 0;
         	  int id = db.insertTrial("trials", res_id, desc, lat, lon, time, IRB, crit_id, needed, confirmed);
         	  if(id==0) {
-        		  
+        		  ctx.redirect("not_found.html");
         	  } else {
         		user.addTrial(new Trial(id, user, new Criteria(crit_id, age, height, weight, gender, race, nationality)));
         		ctx.redirect("researcherdashboard.html");
@@ -139,6 +140,7 @@ class TriAll {
 		});
 		
 		app.post("/edit-part-submit", ctx -> {
+			
 			//barring issues, add to database
 		});
 		
@@ -146,14 +148,23 @@ class TriAll {
 			//barring issues, add to database
 		});
 		
-        app.get("/edit-trial-form", ctx -> {
+        app.get("/edit-trial-form/:trialId/", ctx -> {
+        	String IDString = ctx.pathParam("trialId");
+        	ResultSet s = db.fetchOne("trials", IDString);
+        	System.out.println(s);
+        	//lookup all data related to that trial from db 
+        	//make java object 
+        	//convert to json 
+        	//send to front-end
+        	
 			ctx.redirect("edittrial.html");
+			
 		});
         
-        app.post("/edit-trial-submit", ctx -> {
-        	//should this be /edit-trial/trial_id or something like that?
-        	//since it's just editing one trial
-        	//barring issues, add to database
+        app.post("/edit-trial-submit/:trialId/", ctx -> {
+        	
+        	//update db
+        	
 		});
         
         app.post("/logout", ctx -> {
