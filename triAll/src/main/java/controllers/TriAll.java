@@ -13,6 +13,7 @@ class TriAll {
 //	Sign in with google is currently only authorized to use port 8000 but we can add more
 	private static final int PORT_NUMBER = 8000;
 
+	private static Gson gson;
 	private static Javalin app;
 	
 	private static User user;
@@ -21,6 +22,7 @@ class TriAll {
 	public static void main(String[] args) {
 		
 		db = new SqliteDB("triall");
+		gson = new Gson();
 		
 		app = Javalin.create(config -> {
 			config.addStaticFiles("/public");
@@ -38,7 +40,36 @@ class TriAll {
 			System.out.println(body);
 			// ctx.body() is json dictionary with email and key
 			// authenticate
-			
+			String email = "";
+			ResultSet rs = db.fetchString("participants", "email", email);
+			if(!rs.next()) {
+				rs = db.fetchString("researchers", "email", email);
+				if(!rs.next()) {
+					// user does not exist
+					ctx.redirect("/signup");
+				} else {
+					//is researcher
+					user = new User(rs.getInt(1), rs.getDouble(2), rs.getDouble(3), rs.getString(4), rs.getString(5), rs.getString(6), true);
+					ResultSet trial_rs = db.fetchInt("trials", "researcher_ID", user.getID());
+					while(trial_rs.next()) {
+						ResultSet crit = db.fetchInt("trial_criteria", "trial_id", trial_rs.getInt(1));
+						Criteria c = null;
+						if(crit.next()) {
+							c = new Criteria(crit.getInt(1), crit.getInt(2), crit.getInt(3), crit.getDouble(4), crit.getDouble(5), crit.getString(6), crit.getString(7), crit.getString(8));
+						}
+						user.addTrial(trial_rs.getInt(1), new Trial(trial_rs.getInt(1), user, trial_rs.getString(3), trial_rs.getDouble(4), trial_rs.getDouble(5), trial_rs.getString(6), trial_rs.getInt(7), trial_rs.getInt(8), trial_rs.getInt(9), c));
+					}
+				}
+			} else {
+				//is participant
+				user = new User(rs.getInt(1), rs.getDouble(2), rs.getDouble(3), rs.getString(4), rs.getString(5), rs.getString(6), false);
+				ResultSet data = db.fetchInt("participant_data", "participant_ID", user.getID());
+				if(!data.next()) {
+					//there is no data
+				} else {
+					user.setData(new Criteria(data.getInt(1), data.getInt(2), data.getInt(3), data.getDouble(4), data.getDouble(5), data.getString(6), data.getString(7), data.getString(8)));
+				}
+			}
 			// if user is participant
 			// get trial matches
 			// redirect to participant dashboard
@@ -46,9 +77,6 @@ class TriAll {
 			// if user is researcher
 			// get trials
 			// redirect to researcher dashboard
-			
-			// if user does not exist
-			ctx.redirect("/signup");
 		});
 		
 		app.get("/signup", ctx -> {
@@ -56,8 +84,8 @@ class TriAll {
 		});
 		
 		app.post("/new-part-submit", ctx -> {
-			float lat = ctx.formParam("latitude", Float.class).get();
-			float lon = ctx.formParam("longitude", Float.class).get();
+			double lat = ctx.formParam("latitude", Double.class).get();
+			double lon = ctx.formParam("longitude", Double.class).get();
 			// location will also be passed in as a form param - can we store that too?
 			String first = ctx.formParam("first");
 			String last = ctx.formParam("last");
@@ -84,8 +112,8 @@ class TriAll {
 		});
 		
 		app.post("/new-res-submit", ctx -> {
-			float lat = ctx.formParam("latitude", Float.class).get();
-			float lon = ctx.formParam("longitude", Float.class).get();
+			double lat = ctx.formParam("latitude", Double.class).get();
+			double lon = ctx.formParam("longitude", Double.class).get();
 			String first = ctx.formParam("first");
 			String last = ctx.formParam("last");
 			String email = ctx.formParam("email");
@@ -104,11 +132,11 @@ class TriAll {
 		});
         
         app.post("/new-trial-submit", ctx -> {
-        	try {
+          try {
         	int res_id = user.getID();
       	  	String desc = ctx.formParam("description");
-      	  	float lat = ctx.formParam("latitude", Float.class).get();
-      	  	float lon = ctx.formParam("longitude", Float.class).get();
+      	  	double lat = ctx.formParam("latitude", Double.class).get();
+      	  	double lon = ctx.formParam("longitude", Double.class).get();
       	  	String time = ctx.formParam("time");
       	  	int IRB = ctx.formParam("IRB", Integer.class).get();
       	  	int needed = ctx.formParam("participants_needed", Integer.class).get();
@@ -129,7 +157,7 @@ class TriAll {
       	  		    ctx.redirect("not_found.html");
       	  		}
       	  		else {
-      	  			user.addTrial(new Trial(trial_id, user, desc, lat, lon, time, IRB, needed, confirmed,
+      	  			user.addTrial(trial_id, new Trial(trial_id, user, desc, lat, lon, time, IRB, needed, confirmed,
       	  					new Criteria(crit_id, trial_id, age, height, weight, gender, race, nationality)));
       	  			ctx.redirect("researcherdashboard.html");
       	  		}
@@ -142,15 +170,30 @@ class TriAll {
 		});
         
         app.get("/edit-part-form", ctx -> {
-			ctx.redirect("/editparticipantinfo.html"); 
+        	if(!user.isLoggedIn()) {
+				
+			} else if(user.isResearcher()) {
+				
+			} else {
+				String partJson = gson.toJson(user);
+				ctx.result(partJson);
+				ctx.redirect("/editparticipantinfo.html");
+			} 
 		});
 		
 		app.get("/edit-res-form", ctx -> {
-			ctx.redirect("/editresearcherinfo.html"); 
+			if(!user.isLoggedIn()) {
+				
+			} else if(!user.isResearcher()) {
+				
+			} else {
+				String resJson = gson.toJson(user);
+				ctx.result(resJson);
+				ctx.redirect("/editresearcherinfo.html"); 
+			}
 		});
 		
 		app.post("/edit-part-submit", ctx -> {
-			
 			//barring issues, add to database
 		});
 		
@@ -159,8 +202,8 @@ class TriAll {
 		});
 		
         app.get("/edit-trial-form/:trialId/", ctx -> {
-        	String IDString = ctx.pathParam("trialId");
-        	ResultSet trial_rs = db.fetchOne("trials", "ID", IDString);
+        	int trial_ID = ctx.pathParam("trialId", Integer.class).get();
+        	/*ResultSet trial_rs = db.fetchOne("trials", "ID", IDString);
         	int trial_id = trial_rs.getInt(1);
         	int res_id = trial_rs.getInt(2);
         	String desc = trial_rs.getString(3);
@@ -180,12 +223,18 @@ class TriAll {
         	String nationality = crit_rs.getString(8);
         	
         	Trial t = new Trial(trial_id, user, desc, lat, lon, time, IRB, needed, confirmed,
-	  					new Criteria(crit_id, trial_id, age, height, weight, gender, race, nationality));
-        	Gson gson = new Gson(); 
-        	String trialJson = gson.toJson(t);
+	  					new Criteria(crit_id, trial_id, age, height, weight, gender, race, nationality)); */
+        	if(user.isResearcher()) {
+        		Trial t = user.getTrial(trial_ID);
+        		if(t != null) {
+        			String trialJson = gson.toJson(t);
+            	    ctx.result(trialJson);  
+            		ctx.redirect("edittrial.html");
+        		} else {
+        		  //not allowed to access this trial
+        		}
+        	}
         	
-            ctx.result(trialJson);  
-			ctx.redirect("edittrial.html");
 			
 		});
         
@@ -198,6 +247,7 @@ class TriAll {
         
         app.post("/logout", ctx -> {
 //        	ctx.body() contains email of user to be logged out
+        	user.logOut();
         	System.out.println("Logging out user");
         	ctx.redirect("/");        	
 		});
