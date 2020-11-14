@@ -84,10 +84,10 @@ public class SqliteDB {
       return rs;
     }
     
-    public ResultSet fetchOne(String table, String ID) {
+    public ResultSet fetchOne(String table, String field, String ID) {
         ResultSet rs = null;
         try {
-          rs = stmt.executeQuery("SELECT * FROM " + table + " WHERE ID = "+ ID +";");
+          rs = stmt.executeQuery("SELECT * FROM " + table + " WHERE "+ field +" = "+ ID +";");
         } catch (Exception e) {
           return rs;
         }
@@ -105,34 +105,34 @@ public class SqliteDB {
     	String create;
     	switch(type) {
     	  case RESEARCHER:
-    		  create = "CREATE TABLE IF NOT EXISTS " + table + " (ID INT PRIMARY KEY, Lat REAL,"
+    		  create = "CREATE TABLE IF NOT EXISTS " + table + " (ID INT PRIMARY KEY AUTOINCREMENT, Lat REAL,"
     		  				+ " Long REAL, First TEXT, Last TEXT, Email TEXT);";
     		  break;
     	  case PARTICIPANT:
-    		  create = "CREATE TABLE IF NOT EXISTS " + table + " (ID INT PRIMARY KEY, Lat REAL,"
+    		  create = "CREATE TABLE IF NOT EXISTS " + table + " (ID INT PRIMARY KEY AUTOINCREMENT, Lat REAL,"
     		  				+ " Long REAL, First TEXT, Last TEXT, Email TEXT);";
     		  break;
     	  case TRIAL:
-    		  create = "CREATE TABLE IF NOT EXISTS " + table + " (ID INT PRIMARY KEY, researcher_ID INT NOT NULL,"
+    		  create = "CREATE TABLE IF NOT EXISTS " + table + " (ID INT PRIMARY KEY AUTOINCREMENT, researcher_ID INT NOT NULL,"
     		  				+ " description TEXT, lat REAL, long REAL, time TEXT, IRB INT,"
-    		  				+ " participant_criteria_key INT, participants_needed INT, participants_confirmed INT);";
+    		  				+ " participants_needed INT, participants_confirmed INT);";
     		  break;
     	  case TRIAL_CRITERIA:
-    		  create = "CREATE TABLE IF NOT EXISTS " + table + " (ID INT PRIMARY KEY, trial_ID INT NOT NULL,"
+    		  create = "CREATE TABLE IF NOT EXISTS " + table + " (ID INT PRIMARY KEY AUTOINCREMENT, trial_ID INT NOT NULL,"
     		  				+ " Age INT, Height_in_inches REAL, Weight_in_lbs REAL, Gender TEXT, Race TEXT,"
     		  				+ " Nationality TEXT);";
     		  break;
     	  case PARTICIPANT_DATA:
-    		  create = "CREATE TABLE IF NOT EXISTS " + table + " (ID INT PRIMARY KEY, participant_ID INT NOT NULL,"
+    		  create = "CREATE TABLE IF NOT EXISTS " + table + " (ID INT PRIMARY KEY AUTOINCREMENT, participant_ID INT NOT NULL,"
     		  				+ " Age INT, Height_in_inches REAL, Weight_in_lbs REAL, Gender TEXT, Race TEXT,"
     		  				+ " Nationality TEXT);";
     		  break;
     	  case TRIAL_MATCH:
-    		  create = "CREATE TABLE IF NOT EXISTS " + table + " (ID INT PRIMARY KEY, trial_ID INT NOT NULL,"
+    		  create = "CREATE TABLE IF NOT EXISTS " + table + " (ID INT PRIMARY KEY AUTOINCREMENT, trial_ID INT NOT NULL,"
     		  				+ " researcher_ID INT NOT NULL, participant_ID INT NOT NULL, status TEXT);";
     		  break;
     	  case EMAIL:
-    		  create = "CREATE TABLE IF NOT EXISTS " + table + " (ID INT PRIMARY KEY, trial_ID INT,"
+    		  create = "CREATE TABLE IF NOT EXISTS " + table + " (ID INT PRIMARY KEY AUTOINCREMENT, trial_ID INT,"
     		  				+ " researcher_ID INT, participant_ID INT, type TEXT, time_sent TEXT, delivery_success INT);";
     		  break;
     	  default:
@@ -162,11 +162,11 @@ public class SqliteDB {
     	
     }
     
-    public int insertTrial(String table, int res_id, String desc, float lat, float lon, String time, int IRB, int pcKey, int needed, int confirmed) {
+    public int insertTrial(String table, int res_id, String desc, float lat, float lon, String time, int IRB, int needed, int confirmed) {
     	int id = 0;
     	try {
     	  String add = "INSERT INTO " + table + " VALUES (null, " + res_id +", " + lat + ", " + lon
-    			      + ", '" + time + "', " + IRB + ", " + pcKey + ", " + needed + ", " + confirmed + ");";
+    			      + ", '" + time + "', " + IRB + ", " + needed + ", " + confirmed + ");";
     	  stmt.executeUpdate(add);
     	  String check = "SELECT last_insert_rowid() AS num;";
     	  ResultSet rs = stmt.executeQuery(check);

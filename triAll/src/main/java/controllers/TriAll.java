@@ -1,5 +1,6 @@
 package controllers;
 
+import com.google.gson.Gson; 
 import io.javalin.Javalin;
 import models.Criteria;
 import models.Trial;
@@ -61,22 +62,22 @@ class TriAll {
 			String first = ctx.formParam("first");
 			String last = ctx.formParam("last");
 			String email = ctx.formParam("email");
-			int id = db.insertUser("participants", lat, lon, first,  last, email);
-			if(id == 0) {
+			int part_id = db.insertUser("participants", lat, lon, first,  last, email);
+			if(part_id == 0) {
 				ctx.redirect("not_found.html");
 			} else {
-			  user = new User(id,lat,lon,first,last,email,false);
+			  user = new User(part_id,lat,lon,first,last,email,false);
 			  int age = ctx.formParam("age", Integer.class).get();
 	          int height = ctx.formParam("height", Integer.class).get();
 	          int weight = ctx.formParam("weight", Integer.class).get();
 	          String gender = ctx.formParam("gender");
 	          String race = ctx.formParam("race");
 	          String nationality = ctx.formParam("nationality");
-	          int crit_id = db.insertCriteria("participant_data", id, age, height, weight, gender, race, nationality);
+	          int crit_id = db.insertCriteria("participant_data", part_id, age, height, weight, gender, race, nationality);
 	          if(crit_id == 0) {
 	            ctx.redirect("not_found.html");	  
 	          } else {
-	        	user.setData(new Criteria(crit_id, age, height, weight, gender, race, nationality));
+	        	user.setData(new Criteria(crit_id, part_id, age, height, weight, gender, race, nationality));
 	        	ctx.redirect("participantdashboard.html");  
 	          }
 			}
@@ -103,31 +104,40 @@ class TriAll {
 		});
         
         app.post("/new-trial-submit", ctx -> {
-        	int age = ctx.formParam("age", Integer.class).get();
-        	int height = ctx.formParam("height", Integer.class).get();
-        	int weight = ctx.formParam("weight", Integer.class).get();
-        	String gender = ctx.formParam("gender");
-        	String race = ctx.formParam("race");
-        	String nationality = ctx.formParam("nationality");
-        	int crit_id = db.insertCriteria("trial_criteria", 0, age, height, weight, gender, race, nationality);
-        	if(crit_id==0) {
-        	    ctx.redirect("not_found.html");
-        	} else {
-        	  int res_id = user.getID();
-        	  String desc = ctx.formParam("description");
-        	  float lat = ctx.formParam("latitude", Float.class).get();
-        	  float lon = ctx.formParam("longitude", Float.class).get();
-        	  String time = ctx.formParam("time");
-        	  int IRB = ctx.formParam("IRB", Integer.class).get();
-        	  int needed = ctx.formParam("participants_needed", Integer.class).get();
-        	  int confirmed = 0;
-        	  int id = db.insertTrial("trials", res_id, desc, lat, lon, time, IRB, crit_id, needed, confirmed);
-        	  if(id==0) {
-        		  ctx.redirect("not_found.html");
-        	  } else {
-        		user.addTrial(new Trial(id, user, new Criteria(crit_id, age, height, weight, gender, race, nationality)));
-        		ctx.redirect("researcherdashboard.html");
-        	  }
+        	try {
+        	int res_id = user.getID();
+      	  	String desc = ctx.formParam("description");
+      	  	float lat = ctx.formParam("latitude", Float.class).get();
+      	  	float lon = ctx.formParam("longitude", Float.class).get();
+      	  	String time = ctx.formParam("time");
+      	  	int IRB = ctx.formParam("IRB", Integer.class).get();
+      	  	int needed = ctx.formParam("participants_needed", Integer.class).get();
+      	  	int confirmed = 0;
+      	  	int trial_id = db.insertTrial("trials", res_id, desc, lat, lon, time, IRB, needed, confirmed);
+      	  	if(trial_id==0) {
+      	  		ctx.redirect("not_found.html");
+      	  	} 
+      	  	else {
+      	  		int age = ctx.formParam("age", Integer.class).get();
+      	  		int height = ctx.formParam("height", Integer.class).get();
+      	  		int weight = ctx.formParam("weight", Integer.class).get();
+      	  		String gender = ctx.formParam("gender");
+      	  		String race = ctx.formParam("race");
+      	  		String nationality = ctx.formParam("nationality");
+      	  		int crit_id = db.insertCriteria("trial_criteria", trial_id, age, height, weight, gender, race, nationality);
+      	  		if(crit_id==0) {
+      	  		    ctx.redirect("not_found.html");
+      	  		}
+      	  		else {
+      	  			user.addTrial(new Trial(trial_id, user, desc, lat, lon, time, IRB, needed, confirmed,
+      	  					new Criteria(crit_id, trial_id, age, height, weight, gender, race, nationality)));
+      	  			ctx.redirect("researcherdashboard.html");
+      	  		}
+      	  	}
+      	  	
+        	} catch (Exception e) {
+        		System.out.println("user does not exist");
+        		ctx.redirect("not_found.html");
         	}
 		});
         
@@ -150,13 +160,31 @@ class TriAll {
 		
         app.get("/edit-trial-form/:trialId/", ctx -> {
         	String IDString = ctx.pathParam("trialId");
-        	ResultSet s = db.fetchOne("trials", IDString);
-        	System.out.println(s);
-        	//lookup all data related to that trial from db 
-        	//make java object 
-        	//convert to json 
-        	//send to front-end
+        	ResultSet trial_rs = db.fetchOne("trials", "ID", IDString);
+        	int trial_id = trial_rs.getInt(1);
+        	int res_id = trial_rs.getInt(2);
+        	String desc = trial_rs.getString(3);
+        	float lat = trial_rs.getFloat(4);
+        	float lon = trial_rs.getFloat(5);
+        	String time = trial_rs.getString(6);
+        	int IRB = trial_rs.getInt(7);
+        	int needed = trial_rs.getInt(8);
+        	int confirmed = trial_rs.getInt(9);
+        	ResultSet crit_rs = db.fetchOne("trials", "trial_ID", IDString);
+        	int crit_id = crit_rs.getInt(1);
+        	int age = crit_rs.getInt(3);
+        	int height = crit_rs.getInt(4);
+        	int weight = crit_rs.getInt(5);
+        	String gender = crit_rs.getString(6);
+        	String race = crit_rs.getString(7);
+        	String nationality = crit_rs.getString(8);
         	
+        	Trial t = new Trial(trial_id, user, desc, lat, lon, time, IRB, needed, confirmed,
+	  					new Criteria(crit_id, trial_id, age, height, weight, gender, race, nationality));
+        	Gson gson = new Gson(); 
+        	String trialJson = gson.toJson(t);
+        	
+            ctx.result(trialJson);  
 			ctx.redirect("edittrial.html");
 			
 		});
