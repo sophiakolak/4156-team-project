@@ -84,7 +84,7 @@ public class SqliteDB {
       return rs;
     }
     
-    public ResultSet fetchOne(String table, String field, String ID) {
+    public ResultSet fetchInt(String table, String field, int ID) {
         ResultSet rs = null;
         try {
           rs = stmt.executeQuery("SELECT * FROM " + table + " WHERE "+ field +" = "+ ID +";");
@@ -93,6 +93,16 @@ public class SqliteDB {
         }
         return rs;
       }
+    
+    public ResultSet fetchString(String table, String field, String ID) {
+    	ResultSet rs = null;
+        try {
+          rs = stmt.executeQuery("SELECT * FROM " + table + " WHERE "+ field +" = '"+ ID +"';");
+        } catch (Exception e) {
+          return rs;
+        }
+        return rs;
+    }
     
     /**
      * Creates table in the database if it isn't already there.
@@ -145,7 +155,7 @@ public class SqliteDB {
       return true;
     }
     
-    public int insertUser(String table, float lat, float lon, String first, String last, String email) {
+    public int insertUser(String table, double lat, double lon, String first, String last, String email) {
     	int id = 0;
     	try {
     	  String add = "INSERT INTO " + table + " (Lat, Long, First, Last, Email) VALUES ("
@@ -162,7 +172,7 @@ public class SqliteDB {
     	
     }
     
-    public int insertTrial(String table, int res_id, String desc, float lat, float lon, String time, int IRB, int needed, int confirmed) {
+    public int insertTrial(String table, int res_id, String desc, double lat, double lon, String time, int IRB, int needed, int confirmed) {
     	int id = 0;
     	try {
     	  String add = "INSERT INTO " + table + " VALUES (null, " + res_id +", " + lat + ", " + lon
