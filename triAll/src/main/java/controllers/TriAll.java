@@ -193,13 +193,35 @@ class TriAll {
         	
         	//update db
         	
-		});
+		});        
+        
         
         app.post("/logout", ctx -> {
 //        	ctx.body() contains email of user to be logged out
         	System.out.println("Logging out user");
         	ctx.redirect("/");        	
 		});
+        
+        //Routes added by sarah that we might need
+        //If we don't need them please just delete them
+        app.post("/accept-match/:trialId/", ctx -> {
+        	// change trial status to accepted
+		});
+        
+        app.post("/reject-match/:trialId/", ctx -> {
+        	// change trial status to rejected
+		});
+        
+        app.get("/researcher-dashboard", ctx -> {
+        	// send all researcher's trials to front end and redirect to dashboard
+        	// if user is not a researcher redirect to participant dashboard?
+		});
+        
+        app.get("/participant-dashboard", ctx -> {
+        	// send all participant's trials to front end and redirect to dashboard
+        	// if user is not a participant redirect to researcher dashboard?
+		});
+        
 	}
 	
 	public static void stop() {

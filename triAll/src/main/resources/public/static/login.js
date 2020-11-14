@@ -1,17 +1,7 @@
-$(document).ready(function(){
-    $('#participantForm').submit(function( event ) {
-        alert( "Participant login form submitted! Add post request here" );
-        //Also add validation that login and pword are correct
-        event.preventDefault();
-        window.location.href = "participantdashboard.html"
-    });
-    $('#researcherForm').submit(function( event ) {
-        alert( "Researcher login form submitted! Add post request here" );
-        //Also add validation that login and pword are correct
-        event.preventDefault();
-        window.location.href = "researcherdashboard.html"
-    });
-})
+setTimeout(function () {
+        $('#signUpBtn div div span span:last').text("Sign up with Google");
+        $('#signUpBtn div div span span:first').text("Sign up with Google");
+}, 300);
 
 function onSignIn(googleUser) {
     var id_token = googleUser.getAuthResponse().id_token;
@@ -40,34 +30,5 @@ function onSignIn(googleUser) {
             console.log(error)
         }
     });
-}
-
-function signOut() {
-  var auth2 = gapi.auth2.getAuthInstance();
-  var profile = auth2.currentUser.get().getBasicProfile();
-  var email = profile.getEmail();
-
-  var user_credentials = {
-    "email": email
-  }
-
-  auth2.signOut().then(function () {
-    $.ajax({
-        type: "POST",
-        url: "/logout",                
-        dataType : "json",
-        contentType: "application/json; charset=utf-8",
-        data : JSON.stringify(user_credentials),
-        success: function(result){
-          alert( "Logged out!" );
-        },
-        error: function(request, status, error){
-            console.log("Error");
-            console.log(request)
-            console.log(status)
-            console.log(error)
-        }
-    });
-  });
 }
 

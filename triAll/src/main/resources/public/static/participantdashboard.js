@@ -35,12 +35,48 @@ function signOut() {
 }
 
 $(document).ready(function(){
+
+    // Add function to dynamically load in trials
+
+
     $(".acceptMatch").click(function( event ) {
-        alert( "Accepted Match (insert js logic pls)" );
-        // window.location.href = "participantdashboard.html"
+        var trial_id = 2
+        $.ajax({
+          type: "POST",
+          url: "/accept-match/".concat(trial_id.toString()),                
+          dataType : "json",
+          contentType: "application/json; charset=utf-8",
+          data : JSON.stringify(trial_id),
+          success: function(result){
+            location.reload(true);
+          },
+          error: function(request, status, error){
+              console.log("Error");
+              console.log(request)
+              console.log(status)
+              console.log(error)
+          }
+      });
     });
+
     $(".rejectMatch").click(function( event ) {
-        alert( "Rejected Match (insert js logic pls)" );
-        // window.location.href = "participantdashboard.html"
+        var trial_id = 2
+        $.ajax({
+          type: "POST",
+          url: "/reject-match/".concat(trial_id.toString()),                
+          dataType : "json",
+          contentType: "application/json; charset=utf-8",
+          data : JSON.stringify(trial_id),
+          success: function(result){
+            location.reload(true);
+          },
+          error: function(request, status, error){
+              console.log("Error");
+              console.log(request)
+              console.log(status)
+              console.log(error)
+          }
+      });
+        // make post request to reject-match with trial_id
     });
 })

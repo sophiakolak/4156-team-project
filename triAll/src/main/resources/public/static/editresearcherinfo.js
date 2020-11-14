@@ -15,6 +15,9 @@ $(document).ready(function(){
         event.preventDefault();
     });
 })
+
+// Add function to load researcher info
+
 function signOut() {
   var auth2 = gapi.auth2.getAuthInstance();
   var profile = auth2.currentUser.get().getBasicProfile();

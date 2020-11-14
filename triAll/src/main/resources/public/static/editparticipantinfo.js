@@ -16,6 +16,8 @@ $(document).ready(function(){
     });
 })
 
+// Add function to load in participant info
+
 var placeSearch, autocomplete, lat, lon;
 
 function initAutocomplete() {

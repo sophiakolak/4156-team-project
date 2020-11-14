@@ -74,17 +74,22 @@
     <script type="text/javascript" src="./static/login.js"></script>
     <meta name="google-signin-client_id" content="46819195782-rhbp0ull70okmgsid0rrd2p8cdub7fpn.apps.googleusercontent.com">
 
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
+    <script src="https://apis.google.com/js/api:client.js"></script>
+
 </head>
 <body>
-    
     <div class="container login-container">
         <div class = "row">
             <h1>TriALL</h1>
         </div>
         <div class="row">
-    <!--         Sign in Button -->
-            <div class="g-signin2" data-onsuccess="onSignIn"></div>
+            <!-- Sign in Button -->
+            <div id = "signInBtn" class="g-signin2" data-onsuccess="onSignIn" data-longtitle="true"></div>
         </div>
-        <div class = "row"> <a href="#" onclick="signOut();">Sign out</a> </div>
+        <div class = "row"><br></div>
+        <div class = "row">
+            <div id = "signUpBtn" class="g-signin2" data-onsuccess="onSignIn" data-longtitle="true"></div>
+        </div>
     </div>
 </body>

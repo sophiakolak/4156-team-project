@@ -7,14 +7,31 @@ $(document).ready(function(){
         auth2 = gapi.auth2.getAuthInstance();
         var signedIn = auth2.isSignedIn.get()
         if (!signedIn) {window.location.href = "/login.html"}   
+        else {
+          var profile = auth2.currentUser.get().getBasicProfile();
+          var email = profile.getEmail()
+          ("#email").val(email)
+        }
       });
     });
-    
+
+    $('input[type="radio"]').click(function() {
+       if($(this).attr('id') == 'participantButton') {
+            $('.participant').show();     
+       }
+       else if($(this).attr('id') == 'researcherButton') {
+            $('.participant').hide();     
+       }
+   });
     $("#saveChanges").submit(function( event ) {
-    	save_changes($( this ).serializeArray())
-        event.preventDefault();
+      if($('#participantButton').is(':checked')) { submitParticipant($( this ).serializeArray()) }
+      else if($('#researcherButton').is(':checked')) { submitResearcher($( this ).serializeArray()) }
+      event.preventDefault();
     });
 })
+
+
+
 
 var placeSearch, autocomplete, lat, lon;
 
@@ -55,8 +72,7 @@ function geolocate() {
   }
 }
 
-function save_changes(form_data){ 
-    alert(JSON.stringify(form_data))   
+function submitParticipant(form_data){
     $.ajax({
         type: "POST",
         url: "/new-part-submit",                
@@ -65,6 +81,25 @@ function save_changes(form_data){
         data : JSON.stringify(form_data),
         success: function(result){
             alert( "Created New Participant" );
+        },
+        error: function(request, status, error){
+            console.log("Error");
+            console.log(request)
+            console.log(status)
+            console.log(error)
+        }
+    });    
+}
+
+function submitResearcher(form_data){ 
+    $.ajax({
+        type: "POST",
+        url: "/new-res-submit",                
+        dataType : "json",
+        contentType: "application/json; charset=utf-8",
+        data : JSON.stringify(form_data),
+        success: function(result){
+            alert("Created New Researcher");
         },
         error: function(request, status, error){
             console.log("Error");

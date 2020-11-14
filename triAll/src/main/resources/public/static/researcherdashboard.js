@@ -9,37 +9,39 @@ gapi.load('auth2', function() {
   });
 });
 
-function signOut() {
-  var auth2 = gapi.auth2.getAuthInstance();
-  var profile = auth2.currentUser.get().getBasicProfile();
-  var email = profile.getEmail();
-  alert(email)
-  auth2.signOut().then(function () {
-    $.ajax({
-        type: "POST",
-        url: "/logout",                
-        dataType : "json",
-        contentType: "application/json; charset=utf-8",
-        data : JSON.stringify(email),
-        success: function(result){
-          alert( "Logged out!" );
-        },
-        error: function(request, status, error){
-            console.log("Error");
-            console.log(request)
-            console.log(status)
-            console.log(error)
-        }
-    });
-  });
-}
+// Add function to load in trials
+
+
 
 $(document).ready(function(){
-    $(".editTrial").click(function( event ) {
-        alert( "Edit Trial clicked (insert js logic pls). Going to edit trial page" );
-        window.location.href = "edittrial.html"
+  // Add function to load in trials
+  function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    var profile = auth2.currentUser.get().getBasicProfile();
+    var email = profile.getEmail();
+    alert(email)
+    auth2.signOut().then(function () {
+      $.ajax({
+          type: "POST",
+          url: "/logout",                
+          dataType : "json",
+          contentType: "application/json; charset=utf-8",
+          data : JSON.stringify(email),
+          success: function(result){
+            alert( "Logged out!" );
+          },
+          error: function(request, status, error){
+              console.log("Error");
+              console.log(request)
+              console.log(status)
+              console.log(error)
+          }
+      });
     });
-    $(".cancelTrial").click(function( event ) {
-        alert( "Cancel trial clicked (insert js logic pls)" );
+  }
+    $(".editTrial").click(function( event ) {
+        // get trial id
+        var trial_id = 2
+        window.location.href = "/edit/".concat(trial_id.toString()),   
     });
 })

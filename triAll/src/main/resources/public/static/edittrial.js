@@ -10,6 +10,8 @@ $(document).ready(function(){
       });
     });
 
+    // Add function to load in trial info
+
 
 
 function signOut() {
