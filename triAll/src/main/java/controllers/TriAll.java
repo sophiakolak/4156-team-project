@@ -28,8 +28,9 @@ class TriAll {
 			config.addStaticFiles("/public");
 		}).start(PORT_NUMBER);
 		
-		app.get("/", ctx -> {
-			if(user.isLoggedIn()) {
+		app.get("/", ctx -> {		
+			ctx.redirect("login.html");
+			/**if(user.isLoggedIn()) {
 			  if(user.isResearcher()) {
 				ctx.redirect("/researcher-dashboard");
 			  } else {
@@ -37,7 +38,7 @@ class TriAll {
 			  }
 			} else {
 			  ctx.redirect("/login.html");
-			}
+			}**/
 		});
 		
 		app.post("/login-submit", ctx -> {
