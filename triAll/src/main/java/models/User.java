@@ -12,9 +12,13 @@ public class User {
 	private String email;
 	private boolean isResearcher;
 	private Criteria data;
-	private boolean loggedIn = false;
+	private boolean loggedIn;
 	private HashMap<Integer, Trial> trials;
 	private LinkedList<Match> matches;
+	
+	public User() {
+		loggedIn = false;
+	}
 	
 	public User(int id, double lat, double lon, String first, String last, String email, boolean isR) {
 		this.id = id;
