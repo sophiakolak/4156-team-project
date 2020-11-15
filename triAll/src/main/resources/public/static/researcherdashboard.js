@@ -10,7 +10,49 @@ gapi.load('auth2', function() {
 });
 
 // Add function to load in trials
+              // <div class="card">
+              //   <div class="card-header" id="headingOne">
+              //     <h2 class="mb-0">
+              //       <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+              //         1. Death Trial - Tuesday, September 58th, 2020 - 2 miles away
+              //       </button>
+              //     </h2>
+              //   </div>
 
+              //   <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#trialAccordian">
+              //     <div class="card-body">
+              //       University of Something <br>
+              //       Trial Description <br>
+              //       OTher stuff <br>
+              //       text teest <br>
+              //       i love code <br>
+
+              //       <button type="button" class="btn btn-primary editTrial">Edit</button>
+              //     </div>
+              //   </div>
+              // </div>
+
+function loadTrial(id, researcher, desc, lat, lon, time, IRB, part_needed, part_confirmed){
+    var card = $("<div class = 'card_container'>")
+    var cardHeader = $('<div class="card-header" id="headingOne">')
+    var h2 = $('<h2 class="mb-0">')
+    var expandBtn = $('<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false">')
+    expandBtn.append(time)
+    h2.append(expandBtn)
+    cardHeader.append(h2)
+    card.append(cardHeader)
+
+    var collapsableDiv = $('<div id="collapseOne" class="collapse" data-parent="#trialAccordian">')
+    cardBody = $('<div class="card-body">')
+    cardBody.append("Description: ", desc, "<br>", lat, lon, time, IRB, part_needed, part_confirmed)
+    var editBtn = $('<button type="button" class="btn btn-primary editTrial">')
+    editBtn.append("Edit")
+    editBtn.attr('id', id)
+    cardBody.append(editBtn)
+    collapsibleDiv.append(cardBody)
+    card.append(collapsibleDiv)
+    $("#trialAccordian").append(card)
+}
 
 
 $(document).ready(function(){
@@ -40,8 +82,7 @@ $(document).ready(function(){
     });
   }
     $(".editTrial").click(function( event ) {
-        // get trial id
-        var trial_id = 2
-        window.location.href = "/edit/".concat(trial_id.toString()),   
+        var trial_id = event.target.id
+        window.location.href = "/edit/:".concat(trial_id.toString())   
     });
 })
