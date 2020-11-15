@@ -172,6 +172,23 @@ public class SqliteDB {
     	
     }
     
+    public int updateUser(String table, int ID, double lat, double lon, String first, String last, String email) {
+    	int id = 0;
+    	try {
+    	  String add = "INSERT INTO " + table + " VALUES (" + ID + ", "
+    					+ lat + ", " + lon + ", '" + first + "', '" + last + "', '" + email + "');";
+    	  stmt.executeUpdate(add);
+    	  String check = "SELECT last_insert_rowid() AS num;";
+    	  ResultSet rs = stmt.executeQuery(check);
+    	  rs.next();
+    	  id = rs.getInt("num");
+    	} catch (Exception e) {
+    		return 0;
+    	}
+    	return id;
+    	
+    }
+    
     public int insertTrial(String table, int res_id, String desc, double lat, double lon, String time, int IRB, int needed, int confirmed) {
     	int id = 0;
     	try {
@@ -188,10 +205,42 @@ public class SqliteDB {
     	return id;
     }
     
+    public int updateTrial(String table, int ID, int res_id, String desc, double lat, double lon, String time, int IRB, int needed, int confirmed) {
+    	int id = 0;
+    	try {
+    	  String add = "REPLACE INTO " + table + " VALUES (" + ID + ", " + res_id +", " + lat + ", " + lon
+    			      + ", '" + time + "', " + IRB + ", " + needed + ", " + confirmed + ");";
+    	  stmt.executeUpdate(add);
+    	  String check = "SELECT last_insert_rowid() AS num;";
+    	  ResultSet rs = stmt.executeQuery(check);
+    	  rs.next();
+    	  id = rs.getInt("num");
+    	} catch (Exception e) {
+    		return 0;
+    	}
+    	return id;
+    }
+    
     public int insertCriteria(String table, int parent, int age, int height, int weight, String gender, String race, String nationality) {
     	int id = 0;
     	try {
     	  String add = "INSERT INTO " + table + " VALUES (null, " + parent + ", " + age +", " + height + ", " + weight
+    			       + ", '" + gender + "', '" + race + "', '" + nationality + "');";
+    	  stmt.executeUpdate(add);
+    	  String check = "SELECT last_insert_rowid() AS num;";
+    	  ResultSet rs = stmt.executeQuery(check);
+    	  rs.next();
+    	  id = rs.getInt("num");
+    	} catch (Exception e) {
+    		return 0;
+    	}
+    	return id;
+    }
+    
+    public int updateCriteria(String table, int ID, int parent, int age, int height, int weight, String gender, String race, String nationality) {
+    	int id = 0;
+    	try {
+    	  String add = "REPLACE INTO " + table + " VALUES (" + ID + ", " + parent + ", " + age +", " + height + ", " + weight
     			       + ", '" + gender + "', '" + race + "', '" + nationality + "');";
     	  stmt.executeUpdate(add);
     	  String check = "SELECT last_insert_rowid() AS num;";

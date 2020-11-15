@@ -20,4 +20,8 @@ public class Criteria {
 		this.race = race;
 		this.nationality = nationality;
 	}
+	
+	public int getID() {
+		return id;
+	}
 }
