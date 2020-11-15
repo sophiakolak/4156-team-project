@@ -1,6 +1,7 @@
 package models;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class User {
 	private int id;
@@ -13,6 +14,7 @@ public class User {
 	private Criteria data;
 	private boolean loggedIn = false;
 	private HashMap<Integer, Trial> trials;
+	private LinkedList<Match> matches;
 	
 	public User(int id, double lat, double lon, String first, String last, String email, boolean isR) {
 		this.id = id;
@@ -23,7 +25,19 @@ public class User {
 		this.email = email;
 		isResearcher = isR;
 		loggedIn = true;
-		trials = new HashMap<>();
+		if(isR) {
+		  trials = new HashMap<>();
+		} else {
+		  matches = new LinkedList<>();
+		}
+	}
+	
+	public void update(double lat, double lon, String first, String last, String email) {
+		this.lat = lat;
+		this.lon = lon;
+		this.first = first;
+		this.last = last;
+		this.email = email;
 	}
 	
 	public int getID() {
@@ -43,7 +57,26 @@ public class User {
 	}
 	
 	public Trial getTrial(int trial_ID) {
-		return trials.get(trial_ID);
+		if(isResearcher) {
+			return trials.get(trial_ID);
+		} else {
+		  return null;
+		}
+	}
+	
+	public boolean containsTrial(int trial_ID) {
+		if(isResearcher && trials.containsKey(trial_ID)) {
+			return true;
+		}
+		return false;
+	}
+	
+	public Criteria getData() {
+		return data;
+	}
+	
+	public void addMatch() {
+		
 	}
 	
 	public boolean isResearcher() {

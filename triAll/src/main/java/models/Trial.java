@@ -26,4 +26,8 @@ public class Trial {
 		this.part_confirmed = pc;
 		this.crit = crit;		
 	}
+	
+	public Criteria getCriteria() {
+		return crit;
+	}
 }

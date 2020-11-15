@@ -29,9 +29,15 @@ class TriAll {
 		}).start(PORT_NUMBER);
 		
 		app.get("/", ctx -> {
-			ctx.redirect("/login.html") ;
-			//update to homepage later
-			//this is dashboard if already logged in
+			if(user.isLoggedIn()) {
+			  if(user.isResearcher()) {
+				ctx.redirect("/researcher-dashboard");
+			  } else {
+				ctx.redirect("/participant-dashboard");
+			  }
+			} else {
+			  ctx.redirect("/login.html");
+			}
 		});
 		
 		app.post("/login-submit", ctx -> {
@@ -59,6 +65,7 @@ class TriAll {
 						}
 						user.addTrial(trial_rs.getInt(1), new Trial(trial_rs.getInt(1), user, trial_rs.getString(3), trial_rs.getDouble(4), trial_rs.getDouble(5), trial_rs.getString(6), trial_rs.getInt(7), trial_rs.getInt(8), trial_rs.getInt(9), c));
 					}
+					ctx.redirect("/researcher-dashboard");
 				}
 			} else {
 				//is participant
@@ -68,15 +75,13 @@ class TriAll {
 					//there is no data
 				} else {
 					user.setData(new Criteria(data.getInt(1), data.getInt(2), data.getInt(3), data.getDouble(4), data.getDouble(5), data.getString(6), data.getString(7), data.getString(8)));
+					ResultSet match_rs = db.fetchInt("matches", "participant_ID", user.getID());
+					while(match_rs.next()) {
+						user.addMatch();
+					}
 				}
+				ctx.redirect("/participant-dashboard");
 			}
-			// if user is participant
-			// get trial matches
-			// redirect to participant dashboard
-			
-			// if user is researcher
-			// get trials
-			// redirect to researcher dashboard
 		});
 		
 		app.get("/signup", ctx -> {
@@ -106,7 +111,7 @@ class TriAll {
 	            ctx.redirect("not_found.html");	  
 	          } else {
 	        	user.setData(new Criteria(crit_id, part_id, age, height, weight, gender, race, nationality));
-	        	ctx.redirect("participantdashboard.html");  
+	        	ctx.redirect("/participantdashboard.html");  
 	          }
 			}
 		});
@@ -120,10 +125,9 @@ class TriAll {
 			int id = db.insertUser("researchers", lat, lon, first,  last, email);
 			if(id == 0) {
 			    ctx.redirect("not_found.html");
-			}
-			else {
+			} else {
 				user = new User(id,lat,lon,first,last,email,true);
-				ctx.redirect("researcherdashboard.html");
+				ctx.redirect("/researcherdashboard.html");
 			}
 		});
 		
@@ -132,7 +136,7 @@ class TriAll {
 		});
         
         app.post("/new-trial-submit", ctx -> {
-          try {
+          if(user.isLoggedIn() && user.isResearcher()) {
         	int res_id = user.getID();
       	  	String desc = ctx.formParam("description");
       	  	double lat = ctx.formParam("latitude", Double.class).get();
@@ -155,18 +159,15 @@ class TriAll {
       	  		int crit_id = db.insertCriteria("trial_criteria", trial_id, age, height, weight, gender, race, nationality);
       	  		if(crit_id==0) {
       	  		    ctx.redirect("not_found.html");
-      	  		}
-      	  		else {
+      	  		} else {
       	  			user.addTrial(trial_id, new Trial(trial_id, user, desc, lat, lon, time, IRB, needed, confirmed,
       	  					new Criteria(crit_id, trial_id, age, height, weight, gender, race, nationality)));
-      	  			ctx.redirect("researcherdashboard.html");
+      	  			ctx.redirect("/researcherdashboard.html");
       	  		}
       	  	}
-      	  	
-        	} catch (Exception e) {
-        		System.out.println("user does not exist");
-        		ctx.redirect("not_found.html");
-        	}
+          } else {
+        	//not allowed to make a trial
+          }
 		});
         
         app.get("/edit-part-form", ctx -> {
@@ -194,11 +195,54 @@ class TriAll {
 		});
 		
 		app.post("/edit-part-submit", ctx -> {
-			//barring issues, add to database
+		  if(user.isLoggedIn() && !user.isResearcher()) {
+			double lat = ctx.formParam("latitude", Double.class).get();
+			double lon = ctx.formParam("longitude", Double.class).get();
+			// location will also be passed in as a form param - can we store that too?
+			String first = ctx.formParam("first");
+			String last = ctx.formParam("last");
+			String email = ctx.formParam("email");
+			int part_id = db.updateUser("participants", user.getID(), lat, lon, first,  last, email);
+			if(part_id == 0) {
+				ctx.redirect("not_found.html");
+			} else {
+			  user.update(lat,lon,first,last,email);
+			  int age = ctx.formParam("age", Integer.class).get();
+	          int height = ctx.formParam("height", Integer.class).get();
+	          int weight = ctx.formParam("weight", Integer.class).get();
+	          String gender = ctx.formParam("gender");
+	          String race = ctx.formParam("race");
+	          String nationality = ctx.formParam("nationality");
+	          int crit_id = db.updateCriteria("participant_data", user.getData().getID(), part_id, age, height, weight, gender, race, nationality);
+	          if(crit_id == 0) {
+	            ctx.redirect("not_found.html");	  
+	          } else {
+	        	user.setData(new Criteria(crit_id, part_id, age, height, weight, gender, race, nationality));
+	        	ctx.redirect("/participantdashboard.html");  
+	          }
+			}
+		  } else {
+			//not allowed
+		  }
 		});
 		
 		app.post("/edit-res-submit", ctx -> {
-			//barring issues, add to database
+		  if(user.isLoggedIn() && user.isResearcher()) {
+			double lat = ctx.formParam("latitude", Double.class).get();
+			double lon = ctx.formParam("longitude", Double.class).get();
+			String first = ctx.formParam("first");
+			String last = ctx.formParam("last");
+			String email = ctx.formParam("email");
+			int id = db.updateUser("researchers", user.getID(), lat, lon, first,  last, email);
+			if(id == 0) {
+			    ctx.redirect("not_found.html");
+			} else {
+				user = new User(id,lat,lon,first,last,email,true);
+				ctx.redirect("/researcherdashboard.html");
+			}
+		  } else {
+			//not allowed
+		  }
 		});
 		
         app.get("/edit-trial-form/:trialId/", ctx -> {
@@ -229,7 +273,7 @@ class TriAll {
         		if(t != null) {
         			String trialJson = gson.toJson(t);
             	    ctx.result(trialJson);  
-            		ctx.redirect("edittrial.html");
+            		ctx.redirect("/edittrial.html");
         		} else {
         		  //not allowed to access this trial
         		}
@@ -239,8 +283,40 @@ class TriAll {
 		});
         
         app.post("/edit-trial-submit/:trialId/", ctx -> {
-        	
-        	//update db
+        	int trial_ID = ctx.pathParam("trialId", Integer.class).get();
+        	if(user.isLoggedIn() && user.containsTrial(trial_ID)) {
+        		int res_id = user.getID();
+          	  	String desc = ctx.formParam("description");
+          	  	double lat = ctx.formParam("latitude", Double.class).get();
+          	  	double lon = ctx.formParam("longitude", Double.class).get();
+          	  	String time = ctx.formParam("time");
+          	  	int IRB = ctx.formParam("IRB", Integer.class).get();
+          	  	int needed = ctx.formParam("participants_needed", Integer.class).get();
+          	  	int confirmed = 0;
+          	  	int trial_id = db.updateTrial("trials", trial_ID, res_id, desc, lat, lon, time, IRB, needed, confirmed);
+          	  	if(trial_id==0) {
+          	  		ctx.redirect("not_found.html");
+          	  	} 
+          	  	else {
+          	  		int age = ctx.formParam("age", Integer.class).get();
+          	  		int height = ctx.formParam("height", Integer.class).get();
+          	  		int weight = ctx.formParam("weight", Integer.class).get();
+          	  		String gender = ctx.formParam("gender");
+          	  		String race = ctx.formParam("race");
+          	  		String nationality = ctx.formParam("nationality");
+          	  		int crit_id = db.updateCriteria("trial_criteria", user.getTrial(trial_ID).getCriteria().getID(), trial_id, age, height, weight, gender, race, nationality);
+          	  		if(crit_id==0) {
+          	  		    ctx.redirect("not_found.html");
+          	  		}
+          	  		else {
+          	  			user.addTrial(trial_id, new Trial(trial_id, user, desc, lat, lon, time, IRB, needed, confirmed,
+          	  					new Criteria(crit_id, trial_id, age, height, weight, gender, race, nationality)));
+          	  			ctx.redirect("researcherdashboard.html");
+          	  		}
+          	  	}
+        	} else {
+        		//does not have permission to access trial
+        	}
         	
 		});        
         
@@ -263,13 +339,21 @@ class TriAll {
 		});
         
         app.get("/researcher-dashboard", ctx -> {
-        	// send all researcher's trials to front end and redirect to dashboard
-        	// if user is not a researcher redirect to participant dashboard?
+        	if(user.isLoggedIn() && user.isResearcher()) {
+        		//call sort on trials with date comparator, then send to frontend
+        		ctx.redirect("researcherdashboard.html");
+        	} else {
+        	  ctx.redirect("/");
+        	}
 		});
         
         app.get("/participant-dashboard", ctx -> {
-        	// send all participant's trials to front end and redirect to dashboard
-        	// if user is not a participant redirect to researcher dashboard?
+        	if(user.isLoggedIn() && !user.isResearcher()) {
+        		// call sort on matches with distance comparator, then send to frontend
+        		ctx.redirect("participantdashboard.html");
+        	} else {
+        	  ctx.redirect("/");
+        	}
 		});
         
 	}
