@@ -6,13 +6,17 @@ public class Match {
 	private Trial trial;
 	//private User researcher;
 	//private User participant;
-	private int distance;
+	private double distance;
 	private String status;
 	
-	public Match(int id, Trial t, int d, String s) {
+	public Match(int id, Trial t, double d, String s) {
 		this.id = id;
 		trial = t;
 		distance = d;
 		status = s;
+	}
+	
+	public double getDistance() {
+		return distance;
 	}
 }

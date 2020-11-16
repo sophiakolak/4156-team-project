@@ -1,5 +1,6 @@
 package models;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -15,6 +16,26 @@ public class User {
 	private boolean loggedIn;
 	private HashMap<Integer, Trial> trials;
 	private LinkedList<Match> matches;
+	
+	private final Comparator<Trial> DATE_COMPARE = new Comparator<Trial>() {
+		@Override
+		public int compare(Trial t1, Trial t2) {
+			return 0;
+		}
+	};
+	
+	private final Comparator<Match> DIST_COMPARE = new Comparator<Match>() {
+		@Override
+		public int compare(Match m1, Match m2) {
+			if(m1.getDistance() < m2.getDistance()) {
+				return -1;
+			} else if (m1.getDistance() > m2.getDistance()) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+	};
 	
 	public User() {
 		loggedIn = false;
@@ -98,5 +119,22 @@ public class User {
 	
 	public String getEmail() {
 		return email;
+	}
+	
+	public LinkedList<Trial> sortedTrials(){
+		if(!isResearcher) {
+			return null;
+		}
+		LinkedList<Trial> list = new LinkedList<>(trials.values());
+		list.sort(DATE_COMPARE);
+		return list;
+	}
+	
+	public LinkedList<Match> sortedMatches(){
+		if(isResearcher) {
+			return null;
+		}
+		matches.sort(DIST_COMPARE);
+		return matches;
 	}
 }

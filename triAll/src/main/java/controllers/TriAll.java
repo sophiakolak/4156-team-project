@@ -345,6 +345,7 @@ class TriAll {
         //If we don't need them please just delete them
         app.post("/accept-match/:trialId/", ctx -> {
         	// change trial status to accepted
+        	// increment participants_confirmed 
 		});
         
         app.post("/reject-match/:trialId/", ctx -> {
@@ -353,7 +354,8 @@ class TriAll {
         
         app.get("/researcher-dashboard", ctx -> {
         	if(user.isLoggedIn() && user.isResearcher()) {
-        		//call sort on trials with date comparator, then send to frontend
+        		String trialsJson = gson.toJson(user.sortedTrials());
+        		ctx.result(trialsJson);
         		ctx.redirect("researcherdashboard.html");
         	} else {
         	  ctx.redirect("/");
@@ -362,7 +364,8 @@ class TriAll {
         
         app.get("/participant-dashboard", ctx -> {
         	if(user.isLoggedIn() && !user.isResearcher()) {
-        		// call sort on matches with distance comparator, then send to frontend
+        		String matchesJson = gson.toJson(user.sortedMatches());
+        		ctx.result(matchesJson);
         		ctx.redirect("participantdashboard.html");
         	} else {
         	  ctx.redirect("/");
