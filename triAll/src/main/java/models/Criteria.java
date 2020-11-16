@@ -24,4 +24,36 @@ public class Criteria {
 	public int getID() {
 		return id;
 	}
+	
+	public int getAge() {
+		return age;
+	}
+	
+	public double getHeight() {
+		return height;
+	}
+	
+	public double getWeight() {
+		return weight;
+	}
+	
+	public String getGender() {
+		return gender;
+	}
+	
+	public String getRace() {
+		return race;
+	}
+	
+	public String getNationality() {
+		return nationality;
+	}
+	
+	public boolean matches(Criteria c) {
+		if(c.getAge() == age && c.getHeight() == height && c.getWeight() == weight && c.getGender().equals(gender) && c.getRace().equals(race) && c.getNationality().equals(nationality)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }

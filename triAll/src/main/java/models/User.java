@@ -79,7 +79,8 @@ public class User {
 		return data;
 	}
 	
-	public void addMatch() {
+	public void addMatch(Trial t) {
+		//calculate distance to this User
 		
 	}
 	
@@ -93,5 +94,9 @@ public class User {
 	
 	public boolean isLoggedIn() {
 		return loggedIn;
+	}
+	
+	public String getEmail() {
+		return email;
 	}
 }

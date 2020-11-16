@@ -27,7 +27,15 @@ public class Trial {
 		this.crit = crit;		
 	}
 	
+	public int getID() {
+		return id;
+	}
+	
 	public Criteria getCriteria() {
 		return crit;
+	}
+	
+	public User getResearcher() {
+		return researcher;
 	}
 }

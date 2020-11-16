@@ -7,6 +7,7 @@ import models.Trial;
 import models.User;
 import units.SqliteDB;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 class TriAll {
 	
@@ -78,7 +79,18 @@ class TriAll {
 					user.setData(new Criteria(data.getInt(1), data.getInt(2), data.getInt(3), data.getDouble(4), data.getDouble(5), data.getString(6), data.getString(7), data.getString(8)));
 					ResultSet match_rs = db.fetchInt("matches", "participant_ID", user.getID());
 					while(match_rs.next()) {
-						user.addMatch();
+						ResultSet trial_rs = db.fetchInt("trials", "ID", match_rs.getInt(2));
+						ResultSet res_rs = db.fetchInt("researchers", "ID", match_rs.getInt(3));
+						if(!trial_rs.next() || !res_rs.next() || trial_rs.getString("status").equals("rejected")) {
+							// no such trial
+						} else {
+						  ResultSet crit_rs = db.fetchInt("trial_criteria", "trial_ID", trial_rs.getInt(1));
+						  Criteria c = null;
+						  if(crit_rs.next()) {
+							  c = new Criteria(crit_rs.getInt(1), crit_rs.getInt(2), crit_rs.getInt(3), crit_rs.getDouble(4), crit_rs.getDouble(5), crit_rs.getString(6), crit_rs.getString(7), crit_rs.getString(8));
+						  }
+						  user.addMatch(new Trial(match_rs.getInt(2), new User(match_rs.getInt(3), res_rs.getDouble(2), res_rs.getDouble(4), res_rs.getString(5), res_rs.getString(6), res_rs.getString(7), true), trial_rs.getString(3), trial_rs.getDouble(4), trial_rs.getDouble(5), trial_rs.getString(6), trial_rs.getInt(7), trial_rs.getInt(8), trial_rs.getInt(9), c));
+						}
 					}
 				}
 				ctx.redirect("/participant-dashboard");
@@ -357,6 +369,44 @@ class TriAll {
         	}
 		});
         
+	}
+	
+	public static void checkMatches(User user) {
+		try {
+			ResultSet trials = db.fetchAll("trial_criteria");
+			while(trials.next()) {
+				Criteria c = new Criteria(trials.getInt(1), trials.getInt(2), trials.getInt(3), trials.getDouble(4), trials.getDouble(5), trials.getString(6), trials.getString(7), trials.getString(8));
+				if(user.getData().matches(c)) {
+					if(!db.matchExists("trial_matches", "trial_id", trials.getInt(2), "participant_id", user.getID())) {
+						//add this match
+						//notify
+					}
+				}
+			}
+		} catch (SQLException e) {
+			
+		}
+		
+		//check the extant matches, and remove any that no longer match
+	}
+	
+	public static void checkMatches(Trial trial) {
+		try {
+			ResultSet data = db.fetchAll("participant_data");
+			while(data.next()) {
+				Criteria d = new Criteria(data.getInt(1), data.getInt(2), data.getInt(3), data.getDouble(4), data.getDouble(5), data.getString(6), data.getString(7), data.getString(8));
+				if(trial.getCriteria().matches(d)) {
+					if(!db.matchExists("trial_matches", "trial_id", trial.getID(), "participant_id", data.getInt(2))) {
+						//add this match
+						//notify
+					}
+				}
+			}
+		} catch(SQLException e) {
+			
+		}
+		
+		//check the extant matches and remove any that no longer match
 	}
 	
 	public static void stop() {

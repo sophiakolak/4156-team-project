@@ -104,6 +104,21 @@ public class SqliteDB {
         return rs;
     }
     
+    public boolean matchExists(String table, String field1, int ID1, String field2, int ID2) {
+    	ResultSet rs = null;
+        try {
+          rs = stmt.executeQuery("SELECT COUNT(ID) FROM " + table + " WHERE "+ field1 +" = "+ ID1 +" AND "+ field2+" = "+ID2+";");
+          rs.next();
+          if (rs.getInt("total") == 1) {
+            rs.close();
+            return true;
+          }
+        } catch (Exception e) {
+          return false;
+        }
+        return false;
+    }
+    
     /**
      * Creates table in the database if it isn't already there.
      * @param table Name of the table.
