@@ -1,95 +1,116 @@
-<!-- Adapted from https://bootsnipp.com/snippets/z8aQr#comments -->
-
 <head>
-    <style>
-        .login-container{
-            margin-top: 5%;
-            margin-bottom: 5%;
-        }
-        .login-form-1{
-            padding: 5%;
-            box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 9px 26px 0 rgba(0, 0, 0, 0.19);
-        }
-        .login-form-1 h3{
-            text-align: center;
-            color: #333;
-        }
-        .login-form-2{
-            padding: 5%;
-            background: #0062cc;
-            box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 9px 26px 0 rgba(0, 0, 0, 0.19);
-        }
-        .login-form-2 h3{
-            text-align: center;
-            color: #fff;
-        }
-        .login-container form{
-            padding: 10%;
-        }
-        .btnSubmit
-        {
-            width: 50%;
-            border-radius: 1rem;
-            padding: 1.5%;
-            border: none;
-            cursor: pointer;
-        }
-        .login-form-1 .btnSubmit{
-            font-weight: 600;
-            color: #fff;
-            background-color: #0062cc;
-        }
-        .login-form-2 .btnSubmit{
-            font-weight: 600;
-            color: #0062cc;
-            background-color: #fff;
-        }
-        .login-form-2 .SignUp{
-            color: #fff;
-            font-weight: 600;
-            text-decoration: none;
-        }
-        .login-form-1 .SignUp{
-            color: #0062cc;
-            font-weight: 600;
-            text-decoration: none;
-        }
-        .Error
-        {
-            color: crimson;
-            font-size: 13px;
-        }
 
-        .Back
-        {
-            font-size: 25px;
-        }
-    </style>
+<style type="text/css">
+body {
+    font-family: "Lato", sans-serif;
+}
+.main-head{
+    height: 150px;
+    background: #FFF;
+}
+.sidenav {
+    height: 100%;
+    /*background-color: #5EE6A0;*/
+    background-color: 0;
+    overflow-x: hidden;
+    padding-top: 10px;
+}
+.main-part {
+    padding: 0px 10px;
+}
+@media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+}
 
-    <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
-    <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
-    <script src="https://apis.google.com/js/platform.js"></script>
-    <script type="text/javascript" src="./static/login.js"></script>
-    <meta name="google-signin-client_id" content="46819195782-rhbp0ull70okmgsid0rrd2p8cdub7fpn.apps.googleusercontent.com">
+@media screen and (min-width: 768px){
+    .main-part{
+        margin-left: 40%;
+    }
+    .sidenav{
+        width: 40%;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+    }
+    .title-triall{
+    /*margin-top: 5%;*/
+    padding-top: 40px;
+    color: 0;
+    font-size: 30;
+    text-align: center;
+   }
 
-    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
-    <script src="https://apis.google.com/js/api:client.js"></script>
+    .blurb{
+    /*margin-left: 100px;*/
+    /*padding: 5px;*/
+    color: 0;
+    font-size: 10;
+    text-align: center;
+   }
+}
+.login-main-text{
+    margin-top: 10%;
+    padding: 60px;
+    color: #fff;
+}
+.login-main-text h2{
+    font-weight: 300;
+}
+</style>
+
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+<script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
+
+<script src="https://apis.google.com/js/api:client.js"></script>
+<script src="https://apis.google.com/js/platform.js"></script>
+<script type="text/javascript" src="./static/login.js"></script>
+<meta name="google-signin-client_id" content="46819195782-rhbp0ull70okmgsid0rrd2p8cdub7fpn.apps.googleusercontent.com">
 
 </head>
+
+
 <body>
-    <div class="container login-container">
-        <div class = "row">
-            <h1>TriALL</h1>
-        </div>
+<div class="sidenav">
+      <div class="login-main-text">
+<!--         <div class = "row"> -->
+            <h1>Find a trial today!</h1>
+            <p>	<br> </p>
+            <p>	<br> </p>
+<!--         </div> -->
+        <!-- Sign in Button -->
+        <p>	Sign In </p>
         <div class="row">
-            <!-- Sign in Button -->
             <div id = "signInBtn" class="g-signin2" data-onsuccess="onSignIn" data-longtitle="true"></div>
         </div>
-        <div class = "row"><br></div>
+        <p>	<br> </p>
+        <p>	<br> </p>
+        <!-- Sign Up Button -->
+        <p>	Sign Up </p>
         <div class = "row">
             <div id = "signUpBtn" class="g-signin2" data-onsuccess="onSignIn" data-longtitle="true"></div>
         </div>
+    
     </div>
+</div>
+
+      <div class="main-part">
+
+            <div class="title-triall">
+                  <h1>Clinical TriAll</h1>
+            </div>
+
+            <div class="blurb">
+                  <!-- <h1>Matches researchers running clinical trials with trial participants</h1> -->
+                  <p style="font-size:20px">Matches researchers running clinical trials with trial participants</p>
+            </div>
+
+      </div>
 </body>
