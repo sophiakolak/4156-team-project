@@ -1,4 +1,8 @@
 $(document).ready(function(){
+
+    $('.metric').hide(); 
+    $('.imperial').show();
+    
     // Check if user is signed in 
     gapi.load('auth2', function() {
       gapi.auth2.init({
@@ -16,7 +20,7 @@ $(document).ready(function(){
     });
 
     $('input[type="radio"]').click(function() {
-       else if($(this).attr('id') == 'metricButton') {
+       if($(this).attr('id') == 'metricButton') {
             $('.imperial').hide();
             $('.metric').show()
 
@@ -111,7 +115,7 @@ function save_changes(form_data){
 
     $("#heightInInches").val(heightInInches)
     $("#weightInLbs").val(weightInLbs)
-    
+
     $.ajax({
         type: "POST",
         url: "/edit-part-submit",                
