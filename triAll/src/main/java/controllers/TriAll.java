@@ -26,6 +26,44 @@ class TriAll {
 		gson = new Gson();
 		user = new User();
 		
+		boolean res_created = db.create("researchers", 0);
+		boolean part_created = db.create("participants", 1);
+		boolean trial_created = db.create("trials", 2);
+		boolean trial_crit_created = db.create("trial_criteria", 3);
+		boolean part_data_created = db.create("participant_data", 4);
+		boolean trial_match_created = db.create("trial_matches", 5);
+		boolean email_created = db.create("email", 6);
+		
+		if (!res_created) {
+			System.out.print("researcher not created");
+		}
+		
+		if (!part_created) {
+			System.out.print("part not created");
+		}
+		
+		if (!trial_created) {
+			System.out.print("part not created");
+		}
+		
+		if (!trial_crit_created) {
+			System.out.print("trial criteria not created");
+		}
+		
+		if (!part_data_created) {
+			System.out.print("part data not created");
+		}
+		
+		if (!trial_match_created) {
+			System.out.print("trial match not created");
+		}
+		
+		if (!email_created) {
+			System.out.print("email not created");
+		}
+		
+		
+		
 		app = Javalin.create(config -> {
 			config.addStaticFiles("/public");
 		}).start(PORT_NUMBER);
