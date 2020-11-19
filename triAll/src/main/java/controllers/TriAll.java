@@ -84,6 +84,7 @@ class TriAll {
 			System.out.println("Signing in User");
 			String body = ctx.body();
 			System.out.println(body);
+			//System.out.println(getEmail(body));
 			// ctx.body() is json dictionary with email and key
 			// authenticate
 			String email = "";
@@ -448,6 +449,16 @@ class TriAll {
 		}
 		
 		//check the extant matches and remove any that no longer match
+	}
+	
+	public static String getEmail(String body) {
+		String[] parts = body.split("{\"email\":\"");
+		if(parts.length > 1) {
+			String[] email = parts[1].split("\"");
+			return email[0];
+		} else {
+			return parts[0];
+		}
 	}
 	
 	public static void stop() {
