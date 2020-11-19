@@ -36,6 +36,7 @@ $(document).ready(function(){
        }
    });
     $("#saveChanges").submit(function( event ) {
+      event.preventDefault();
       if($('#participantButton').is(':checked')) { submitParticipant($( this ).serializeArray()) }
       else if($('#researcherButton').is(':checked')) { submitResearcher($( this ).serializeArray()) }
       event.preventDefault();
