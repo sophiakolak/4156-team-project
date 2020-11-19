@@ -2,6 +2,23 @@ $(document).ready(function(){
 
     $('.metric').hide(); 
     $('.imperial').show();
+
+    // Get request
+    $.ajax({
+        type: "GET",
+        url: "/edit-res-form",                
+        dataType : "json",
+        contentType: "application/json; charset=utf-8",
+        success: function(result){
+          loadInfo(result)
+        },
+        error: function(request, status, error){
+            console.log("Error");
+            console.log(request)
+            console.log(status)
+            console.log(error)
+        }
+      });
     
     // Check if user is signed in 
     gapi.load('auth2', function() {
