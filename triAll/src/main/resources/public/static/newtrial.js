@@ -1,4 +1,6 @@
 $(document).ready(function(){
+    $('.metric').hide(); 
+    $('.imperial').show();
     // Check if user is signed in 
     gapi.load('auth2', function() {
       gapi.auth2.init({
@@ -13,6 +15,18 @@ $(document).ready(function(){
     	save_changes($( this ).serializeArray())
         event.preventDefault();
     });
+
+    $('input[type="radio"]').click(function() {
+       if($(this).attr('id') == 'metricButton') {
+            $('.imperial').hide();
+            $('.metric').show()
+
+       }
+       else if($(this).attr('id') == 'imperialButton') {
+            $('.metric').hide(); 
+            $('.imperial').show();      
+       }
+   });
 })
 
 var placeSearch, autocomplete, lat, lon;
@@ -80,7 +94,37 @@ function signOut() {
   });
 }
 
-function save_changes(form_data){    
+function save_changes(form_data){   
+    // Convert height to height in inches
+    // Convert weight to weight in pounds
+    var heightInInchesMin;
+    var weightInLbsMin;
+    var heightInInchesMax;
+    var weightInLbsMax;
+
+    if ($('#metricButton:checked').length > 0) {
+      // metric
+      weightInLbsMin = $('#kilogramsMin').val() * 2.205
+      heightInInchesMin = $('#centimetersMin').val() * (1/2.54)
+
+      weightInLbsMax = $('#kilogramsMax').val() * 2.205
+      heightInInchesMax = $('#centimetersMax').val() * (1/2.54)
+
+    } else {
+      // imperial
+      weightInLbsMin = $('#poundsMin').val()
+      heightInInchesMin = (12 * $('#feetMin').val()) + Number($('#inchesMin').val())
+
+      weightInLbsMax = $('#poundsMax').val()
+      heightInInchesMax = (12 * $('#feetMax').val()) + Number($('#inchesMax').val())
+    }
+
+    $("#heightInInchesMin").val(heightInInchesMin)
+    $("#weightInLbsMin").val(weightInLbsMin) 
+
+    $("#heightInInchesMax").val(heightInInchesMax)
+    $("#weightInLbsMax").val(weightInLbsMax)
+
     $.ajax({
         type: "POST",
         url: "/new-trial-submit",                

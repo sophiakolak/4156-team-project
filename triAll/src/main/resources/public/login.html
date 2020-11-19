@@ -21,7 +21,6 @@ body {
 @media screen and (max-height: 450px) {
     .sidenav {padding-top: 15px;}
 }
-
 @media screen and (min-width: 768px){
     .main-part{
         margin-left: 40%;
@@ -36,17 +35,30 @@ body {
     .title-triall{
     /*margin-top: 5%;*/
     padding-top: 40px;
+    padding-bottom: 20px;
     color: 0;
     font-size: 30;
     text-align: center;
    }
-
     .blurb{
     /*margin-left: 100px;*/
-    /*padding: 5px;*/
+    padding-top: 20px;
     color: 0;
-    font-size: 10;
+    font-size: 20;
     text-align: center;
+    /* color: #8BEBAB; */
+    /* font-weight: bold; */
+    font-family: Verdana, monospace;
+   }
+    .descrip {
+    /*margin-left: 100px;*/
+    padding-top: 20px;
+    color: 0;
+    font-size: 20;
+    text-align: center;
+    color: #8BEBAB;
+    font-weight: 800;
+    font-family: Verdana, monospace;
    }
 }
 .login-main-text{
@@ -55,7 +67,8 @@ body {
     color: #fff;
 }
 .login-main-text h2{
-    font-weight: 300;
+    /* font-weight: 300; */
+    text-align: center;
 }
 </style>
 
@@ -80,22 +93,22 @@ body {
 <body>
 <div class="sidenav">
       <div class="login-main-text">
-<!--         <div class = "row"> -->
-            <h1>Find a trial today!</h1>
+            <h1>Tri-All today!</h1>
             <p>	<br> </p>
             <p>	<br> </p>
-<!--         </div> -->
+            
         <!-- Sign in Button -->
-        <p>	Sign In </p>
+        <p style="font-size:20px">Sign In</p>
         <div class="row">
-            <div id = "signInBtn" class="g-signin2" data-onsuccess="onSignIn" data-longtitle="true"></div>
+            <div id = "signInBtn" class="g-signin2" data-width="300" data-height="60" data-onsuccess="onSignIn" data-longtitle="true"></div>
         </div>
         <p>	<br> </p>
         <p>	<br> </p>
+        
         <!-- Sign Up Button -->
-        <p>	Sign Up </p>
+        <p style="font-size:20px">Sign Up</p>
         <div class = "row">
-            <div id = "signUpBtn" class="g-signin2" data-onsuccess="onSignIn" data-longtitle="true"></div>
+            <div id = "signUpBtn" class="g-signin2" data-width="300" data-height="60" data-onsuccess="onSignIn" data-longtitle="true"></div>
         </div>
     
     </div>
@@ -104,12 +117,20 @@ body {
       <div class="main-part">
 
             <div class="title-triall">
-                  <h1>Clinical TriAll</h1>
+                  <!-- <h1>Clinical TriAll</h1> -->
+<!--                   <p style="font-size:20px">Are you a researcher looking for clinical trials </p>              
+                  <img src="circleLogo.png" width="300" height="300"> -->
             </div>
-
             <div class="blurb">
-                  <!-- <h1>Matches researchers running clinical trials with trial participants</h1> -->
-                  <p style="font-size:20px">Matches researchers running clinical trials with trial participants</p>
+                  <img src="circleLogo.png" width="400" height="400">              
+                  <p>	<br> </p>
+                  <!-- <p>Matches researchers running clinical trials with participants</p> -->
+                  <p>Are you a researcher looking for clinical trial participants?</p>
+                  <p>Are you a participant looking for clinical trials?</p>
+            </div>
+            
+            <div class="descrip">
+            	<p>Find what you're looking for with Clinical TriAll</p>
             </div>
 
       </div>
