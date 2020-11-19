@@ -118,7 +118,7 @@ class TriAll {
             }
           }
         }
-        ctx.result(gson.toJson("/participant-dashboard.html"));
+        ctx.result(gson.toJson("/participantdashboard.html"));
       }
     });
 
