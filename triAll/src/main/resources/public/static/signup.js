@@ -111,7 +111,7 @@ function submitParticipant(form_data){
         contentType: "application/json; charset=utf-8",
         data : JSON.stringify(form_data),
         success: function(result){
-            alert( "Created New Participant" );
+            window.location.href = result
         },
         error: function(request, status, error){
             console.log("Error");
@@ -130,7 +130,7 @@ function submitResearcher(form_data){
         contentType: "application/json; charset=utf-8",
         data : JSON.stringify(form_data),
         success: function(result){
-            alert("Created New Researcher");
+            window.location.href = result
         },
         error: function(request, status, error){
             console.log("Error");
