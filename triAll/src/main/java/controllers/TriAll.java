@@ -70,17 +70,17 @@ class TriAll {
           //is researcher
           user = new User(rs.getInt(1), rs.getDouble(2), rs.getDouble(3), rs.getString(4), 
             rs.getString(5), rs.getString(6), true);
-          ResultSet trial_rs = db.fetchInt("trials", "researcher_ID", user.getID());
-          while (trial_rs.next()) {
-            ResultSet crit = db.fetchInt("trial_criteria", "trial_id", trial_rs.getInt(1));
+          ResultSet trialRow = db.fetchInt("trials", "researcher_ID", user.getID());
+          while (trialRow.next()) {
+            ResultSet crit = db.fetchInt("trial_criteria", "trial_id", trialRow.getInt(1));
             Criteria c = null;
             if (crit.next()) {
               c = new Criteria(crit.getInt(1), crit.getInt(2), crit.getInt(3), crit.getDouble(4), 
                 crit.getDouble(5), crit.getString(6), crit.getString(7), crit.getString(8));
             }
-            user.addTrial(trial_rs.getInt(1), new Trial(trial_rs.getInt(1), user, 
-                trial_rs.getString(3), trial_rs.getDouble(4), trial_rs.getDouble(5), trial_rs
-                .getString(6), trial_rs.getInt(7), trial_rs.getInt(8), trial_rs.getInt(9), c));
+            user.addTrial(trialRow.getInt(1), new Trial(trialRow.getInt(1), user, 
+                trialRow.getString(3), trialRow.getDouble(4), trialRow.getDouble(5), trialRow
+                .getString(6), trialRow.getInt(7), trialRow.getInt(8), trialRow.getInt(9), c));
           }
           ctx.result(gson.toJson("/researcher-dashboard"));
         }
@@ -92,20 +92,28 @@ class TriAll {
         if (!data.next()) {
           //there is no data
         } else {
-          user.setData(new Criteria(data.getInt(1), data.getInt(2), data.getInt(3), data.getDouble(4), data.getDouble(5), data.getString(6), data.getString(7), data.getString(8)));
-          ResultSet match_rs = db.fetchInt("matches", "participant_ID", user.getID());
-          while (match_rs.next()) {
-            ResultSet trial_rs = db.fetchInt("trials", "ID", match_rs.getInt(2));
-            ResultSet res_rs = db.fetchInt("researchers", "ID", match_rs.getInt(3));
-            if(!trial_rs.next() || !res_rs.next() || trial_rs.getString("status").equals("rejected")) {
+          user.setData(new Criteria(data.getInt(1), data.getInt(2), data.getInt(3), data.getDouble(
+              4), data.getDouble(5), data.getString(6), data.getString(7), data.getString(8)));
+          ResultSet matchRS = db.fetchInt("matches", "participant_ID", user.getID());
+          while (matchRS.next()) {
+            ResultSet trialRS = db.fetchInt("trials", "ID", matchRS.getInt(2));
+            ResultSet resRS = db.fetchInt("researchers", "ID", matchRS.getInt(3));
+            if (!trialRS.next() || !resRS.next() || matchRS.getString("status")
+                .equals("rejected")) {
               // no such trial
             } else {
-              ResultSet crit_rs = db.fetchInt("trial_criteria", "trial_ID", trial_rs.getInt(1));
+              ResultSet critRS = db.fetchInt("trial_criteria", "trial_ID", trialRS.getInt(1));
               Criteria c = null;
-              if (crit_rs.next()) {
-                c = new Criteria(crit_rs.getInt(1), crit_rs.getInt(2), crit_rs.getInt(3), crit_rs.getDouble(4), crit_rs.getDouble(5), crit_rs.getString(6), crit_rs.getString(7), crit_rs.getString(8));
+              if (critRS.next()) {
+                c = new Criteria(critRS.getInt(1), critRS.getInt(2), critRS.getInt(3), critRS
+                    .getDouble(4), critRS.getDouble(5), critRS.getString(6), critRS.getString(
+                    7), critRS.getString(8));
               }
-              user.addMatch(new Trial(match_rs.getInt(2), new User(match_rs.getInt(3), res_rs.getDouble(2), res_rs.getDouble(4), res_rs.getString(5), res_rs.getString(6), res_rs.getString(7), true), trial_rs.getString(3), trial_rs.getDouble(4), trial_rs.getDouble(5), trial_rs.getString(6), trial_rs.getInt(7), trial_rs.getInt(8), trial_rs.getInt(9), c));
+              user.addMatch(new Trial(matchRS.getInt(2), new User(matchRS.getInt(3), resRS
+                  .getDouble(2), resRS.getDouble(4), resRS.getString(5), resRS.getString(6),
+                  resRS.getString(7), true), trialRS.getString(3), trialRS.getDouble(4), trialRS
+                  .getDouble(5), trialRS.getString(6), trialRS.getInt(7), 
+                  trialRS.getInt(8), trialRS.getInt(9), c));
             }
           }
         }
@@ -140,11 +148,13 @@ class TriAll {
         String gender = form.get(7).getAsJsonObject().get("value").getAsString();
         String race = form.get(17).getAsJsonObject().get("value").getAsString();
         String nationality = form.get(18).getAsJsonObject().get("value").getAsString();
-        int critRow = db.insertCriteria("participant_data", partRow, age, height, weight, gender, race, nationality);
+        int critRow = db.insertCriteria("participant_data", partRow, age, height, weight, gender, 
+            race, nationality);
         if (critRow == 0) {
-          ctx.redirect("not_found.html");	  
+          ctx.redirect("not_found.html");
         } else {
-          user.setData(new Criteria(critRow, partRow, age, height, weight, gender, race, nationality));
+          user.setData(new Criteria(critRow, partRow, age, height, weight, gender, 
+              race, nationality));
           ctx.result(gson.toJson("/participantdashboard"));  
         }
       }
@@ -183,7 +193,8 @@ class TriAll {
         int irb = form.get(4).getAsJsonObject().get("value").getAsInt();
         int needed = form.get(5).getAsJsonObject().get("value").getAsInt();
         int confirmed = 0;
-        int trialRow = db.insertTrial("trials", resRow, desc, lat, lon, time, irb, needed, confirmed);
+        int trialRow = db.insertTrial("trials", resRow, desc, lat, lon, time, irb, 
+            needed, confirmed);
         if (trialRow == 0) {
           ctx.redirect("not_found.html");
         } else {
@@ -193,12 +204,14 @@ class TriAll {
           String gender = form.get(6).getAsJsonObject().get("value").getAsString();
           String race = form.get(24).getAsJsonObject().get("value").getAsString();
           String nationality = form.get(25).getAsJsonObject().get("value").getAsString();
-          int critRow = db.insertCriteria("trial_criteria", trialRow, age, height, weight, gender, race, nationality);
+          int critRow = db.insertCriteria("trial_criteria", trialRow, age, height, weight, gender, 
+              race, nationality);
           if (critRow == 0) {
             ctx.redirect("not_found.html");
           } else {
-            user.addTrial(trialRow, new Trial(trialRow, user, desc, lat, lon, time, irb, needed, confirmed,
-              new Criteria(critRow, trialRow, age, height, weight, gender, race, nationality)));
+            user.addTrial(trialRow, new Trial(trialRow, user, desc, lat, lon, time, irb, needed, 
+                confirmed, new Criteria(critRow, trialRow, age, height, weight, gender, 
+                race, nationality)));
             ctx.result(gson.toJson("/researcherdashboard"));
           }
         }
@@ -209,9 +222,9 @@ class TriAll {
         
     app.get("/edit-part-form", ctx -> {
       if (!user.isLoggedIn()) {
-
+        ctx.result(gson.toJson("/"));
       } else if (user.isResearcher()) {
-
+        ctx.result(gson.toJson("/"));
       } else {
         String partJson = gson.toJson(user);
         ctx.result(partJson);
@@ -221,9 +234,9 @@ class TriAll {
 
     app.get("/edit-res-form", ctx -> {
       if (!user.isLoggedIn()) {
-
+        ctx.result(gson.toJson("/"));
       } else if (!user.isResearcher()) {
-
+        ctx.result(gson.toJson("/"));
       } else {
         String resJson = gson.toJson(user);
         ctx.result(resJson);
@@ -251,11 +264,13 @@ class TriAll {
           String gender = form.get(7).getAsJsonObject().get("value").getAsString();
           String race = form.get(17).getAsJsonObject().get("value").getAsString();
           String nationality = form.get(18).getAsJsonObject().get("value").getAsString();
-          int critRow = db.updateCriteria("participant_data", user.getData().getID(), partId, age, height, weight, gender, race, nationality);
+          int critRow = db.updateCriteria("participant_data", user.getData().getID(), partId, 
+              age, height, weight, gender, race, nationality);
           if (critRow == 0) {
-            ctx.redirect("not_found.html");	  
+            ctx.redirect("not_found.html");
           } else {
-            user.setData(new Criteria(critRow, partId, age, height, weight, gender, race, nationality));
+            user.setData(new Criteria(critRow, partId, age, height, weight, gender, 
+                race, nationality));
             ctx.result(gson.toJson("/participantdashboard"));  
           }
         }
@@ -297,7 +312,7 @@ class TriAll {
           //not allowed to access this trial
         }
       }
-        	
+
 
     });
         
@@ -313,7 +328,8 @@ class TriAll {
         int irb = form.get(4).getAsJsonObject().get("value").getAsInt();
         int needed = form.get(5).getAsJsonObject().get("value").getAsInt();
         int confirmed = 0;
-        int trialRow = db.updateTrial("trials", trialID, resId, desc, lat, lon, time, irb, needed, confirmed);
+        int trialRow = db.updateTrial("trials", trialID, resId, desc, lat, lon, time, irb, 
+            needed, confirmed);
         if (trialRow == 0) {
           ctx.redirect("not_found.html");
         } else {
@@ -323,19 +339,21 @@ class TriAll {
           String gender = form.get(6).getAsJsonObject().get("value").getAsString();
           String race = form.get(24).getAsJsonObject().get("value").getAsString();
           String nationality = form.get(25).getAsJsonObject().get("value").getAsString();
-          int critRow = db.updateCriteria("trial_criteria", user.getTrial(trialID).getCriteria().getID(), trialRow, age, height, weight, gender, race, nationality);
+          int critRow = db.updateCriteria("trial_criteria", user.getTrial(trialID).getCriteria()
+              .getID(), trialRow, age, height, weight, gender, race, nationality);
           if (critRow == 0) {
             ctx.redirect("not_found.html");
           } else {
-            user.addTrial(trialRow, new Trial(trialRow, user, desc, lat, lon, time, irb, needed, confirmed,
-          	  					new Criteria(critRow, trialRow, age, height, weight, gender, race, nationality)));
+            user.addTrial(trialRow, new Trial(trialRow, user, desc, lat, lon, time, irb, needed, 
+                confirmed, new Criteria(critRow, trialRow, age, height, weight, gender, 
+                race, nationality)));
             ctx.result(gson.toJson("/researcherdashboard"));
           }
         }
       } else {
         //does not have permission to access trial
       }
-        	
+
     });        
         
         
@@ -343,7 +361,7 @@ class TriAll {
       //ctx.body() contains email of user to be logged out
       user.logOut();
       System.out.println("Logging out user");
-      ctx.redirect("/");        	
+      ctx.redirect("/");   
     });
         
     //Routes added by sarah that we might need
@@ -378,40 +396,48 @@ class TriAll {
     });
 
   }
-	
+
   public static void checkMatches(User user) {
     try {
       ResultSet trials = db.fetchAll("trial_criteria");
       while (trials.next()) {
-        Criteria c = new Criteria(trials.getInt(1), trials.getInt(2), trials.getInt(3), trials.getDouble(4), trials.getDouble(5), trials.getString(6), trials.getString(7), trials.getString(8));
+        Criteria c = new Criteria(trials.getInt(1), trials.getInt(2), trials.getInt(3), trials
+            .getDouble(4), trials.getDouble(5), trials.getString(6), trials.getString(7), 
+            trials.getString(8));
         if (user.getData().matches(c)) {
-          if (!db.matchExists("trial_matches", "trial_id", trials.getInt(2), "participant_id", user.getID())) {
-            //add this match
-            //notify
-           }
-        }
-      }
-    } catch (SQLException e) {
-
-    }
-
-    //check the extant matches, and remove any that no longer match
-  }
-	
-  public static void checkMatches(Trial trial) {
-    try {
-      ResultSet data = db.fetchAll("participant_data");
-      while (data.next()) {
-        Criteria d = new Criteria(data.getInt(1), data.getInt(2), data.getInt(3), data.getDouble(4), data.getDouble(5), data.getString(6), data.getString(7), data.getString(8));
-        if (trial.getCriteria().matches(d)) {
-          if (!db.matchExists("trial_matches", "trial_id", trial.getID(), "participant_id", data.getInt(2))) {
+          if (!db.matchExists("trial_matches", "trial_id", trials.getInt(2), "participant_id", 
+              user.getID())) {
             //add this match
             //notify
           }
         }
       }
     } catch (SQLException e) {
+      System.err.println(e.getClass().getName() + ": " + e.getMessage());
+      System.exit(0);
+    }
 
+    //check the extant matches, and remove any that no longer match
+  }
+
+  public static void checkMatches(Trial trial) {
+    try {
+      ResultSet data = db.fetchAll("participant_data");
+      while (data.next()) {
+        Criteria d = new Criteria(data.getInt(1), data.getInt(2), data.getInt(3), data
+            .getDouble(4), data.getDouble(5), data.getString(6), data.getString(7), 
+            data.getString(8));
+        if (trial.getCriteria().matches(d)) {
+          if (!db.matchExists("trial_matches", "trial_id", trial.getID(), "participant_id", 
+              data.getInt(2))) {
+            //add this match
+            //notify
+          }
+        }
+      }
+    } catch (SQLException e) {
+      System.err.println(e.getClass().getName() + ": " + e.getMessage());
+      System.exit(0);
     }
 
     //check the extant matches and remove any that no longer match
