@@ -93,7 +93,7 @@ class TriAll {
 				rs = db.fetchString("researchers", "email", email);
 				if(!rs.next()) {
 					// user does not exist
-					ctx.redirect("/signup");
+					ctx.result(gson.toJson("/signup"));
 				} else {
 					//is researcher
 					user = new User(rs.getInt(1), rs.getDouble(2), rs.getDouble(3), rs.getString(4), rs.getString(5), rs.getString(6), true);
@@ -106,7 +106,8 @@ class TriAll {
 						}
 						user.addTrial(trial_rs.getInt(1), new Trial(trial_rs.getInt(1), user, trial_rs.getString(3), trial_rs.getDouble(4), trial_rs.getDouble(5), trial_rs.getString(6), trial_rs.getInt(7), trial_rs.getInt(8), trial_rs.getInt(9), c));
 					}
-					ctx.redirect("/researcher-dashboard");
+//					ctx.redirect("/researcher-dashboard");
+					ctx.result(gson.toJson("/researcher-dashboard"));
 				}
 			} else {
 				//is participant
@@ -132,7 +133,8 @@ class TriAll {
 						}
 					}
 				}
-				ctx.redirect("/participant-dashboard");
+//				ctx.redirect("/participant-dashboard");
+				ctx.result(gson.toJson("/participant-dashboard"));
 			}
 		});
 		
@@ -141,6 +143,8 @@ class TriAll {
 		});
 		
 		app.post("/new-part-submit", ctx -> {
+			String body = ctx.body();
+			System.out.println(body);
 			double lat = ctx.formParam("latitude", Double.class).get();
 			double lon = ctx.formParam("longitude", Double.class).get();
 			// location will also be passed in as a form param - can we store that too?
