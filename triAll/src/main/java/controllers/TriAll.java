@@ -6,6 +6,7 @@ import io.javalin.Javalin;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import models.Criteria;
+import models.Match;
 import models.Trial;
 import models.User;
 import units.SqliteDB;
@@ -43,9 +44,9 @@ class TriAll {
     app.get("/", ctx -> {
       if (user.isLoggedIn()) {
         if (user.isResearcher()) {
-          ctx.result(gson.toJson("/researcher-dashboard"));
+          ctx.result(gson.toJson("/researcherdashboard.html"));
         } else {
-          ctx.result(gson.toJson("/participant-dashboard"));
+          ctx.result(gson.toJson("/participantdashboard.html"));
         }
       } else {
         ctx.redirect("/login.html");
@@ -82,7 +83,7 @@ class TriAll {
                 trialRow.getString(3), trialRow.getDouble(4), trialRow.getDouble(5), trialRow
                 .getString(6), trialRow.getInt(7), trialRow.getInt(8), trialRow.getInt(9), c));
           }
-          ctx.result(gson.toJson("/researcher-dashboard"));
+          ctx.result(gson.toJson("/researcherdashboard.html"));
         }
       } else {
         //is participant
@@ -174,7 +175,7 @@ class TriAll {
         ctx.redirect("not_found.html");
       } else {
         user = new User(id, lat, lon, first, last, email, true);
-        ctx.result(gson.toJson("/researcherdashboard"));
+        ctx.result(gson.toJson("/researcherdashboard.html"));
       }
     });
 
@@ -189,6 +190,7 @@ class TriAll {
         String desc = form.get(1).getAsJsonObject().get("value").getAsString();
         double lat = 0;
         double lon = 0;
+        // need start date, end date, pay
         String time = form.get(3).getAsJsonObject().get("value").getAsString();
         int irb = form.get(4).getAsJsonObject().get("value").getAsInt();
         int needed = form.get(5).getAsJsonObject().get("value").getAsInt();
@@ -212,7 +214,7 @@ class TriAll {
             user.addTrial(trialRow, new Trial(trialRow, user, desc, lat, lon, time, irb, needed, 
                 confirmed, new Criteria(critRow, trialRow, age, height, weight, gender, 
                 race, nationality)));
-            ctx.result(gson.toJson("/researcherdashboard"));
+            ctx.result(gson.toJson("/researcherdashboard.html"));
           }
         }
       } else {
@@ -240,7 +242,6 @@ class TriAll {
       } else {
         String resJson = gson.toJson(user);
         ctx.result(resJson);
-        ctx.redirect("/editresearcherinfo.html"); 
       }
     });
 
@@ -293,7 +294,7 @@ class TriAll {
           ctx.redirect("not_found.html");
         } else {
           user = new User(id, lat, lon, first, last, email, true);
-          ctx.result(gson.toJson("/researcherdashboard"));
+          ctx.result(gson.toJson("/researcherdashboard.html"));
         }
       } else {
         //not allowed
@@ -347,7 +348,6 @@ class TriAll {
             user.addTrial(trialRow, new Trial(trialRow, user, desc, lat, lon, time, irb, needed, 
                 confirmed, new Criteria(critRow, trialRow, age, height, weight, gender, 
                 race, nationality)));
-            ctx.result(gson.toJson("/researcherdashboard"));
           }
         }
       } else {
@@ -377,9 +377,9 @@ class TriAll {
         
     app.get("/researcher-dashboard", ctx -> {
       if (user.isLoggedIn() && user.isResearcher()) {
-        String trialsJson = gson.toJson(user.sortedTrials());
+        Match[] array = user.sortedTrials().toArray(new Match[user.sortedTrials().size()]);
+        String trialsJson = gson.toJson(array);
         ctx.result(trialsJson);
-        ctx.redirect("researcherdashboard.html");
       } else {
         ctx.redirect("/");
       }
@@ -389,7 +389,6 @@ class TriAll {
       if (user.isLoggedIn() && !user.isResearcher()) {
         String matchesJson = gson.toJson(user.sortedMatches());
         ctx.result(matchesJson);
-        ctx.redirect("participantdashboard.html");
       } else {
         ctx.redirect("/");
       }

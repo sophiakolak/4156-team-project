@@ -9,6 +9,33 @@ gapi.load('auth2', function() {
   });
 });
 
+
+// sign out finction
+function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    var profile = auth2.currentUser.get().getBasicProfile();
+    var email = profile.getEmail();
+    alert(email)
+    auth2.signOut().then(function () {
+      $.ajax({
+          type: "POST",
+          url: "/logout",                
+          dataType : "json",
+          contentType: "application/json; charset=utf-8",
+          data : JSON.stringify(email),
+          success: function(result){
+            alert( "Logged out!" );
+          },
+          error: function(request, status, error){
+              console.log("Error");
+              console.log(request)
+              console.log(status)
+              console.log(error)
+          }
+      });
+    });
+  }
+
 // Add function to load in trials
               // <div class="card">
               //   <div class="card-header" id="headingOne">
@@ -36,13 +63,13 @@ function loadTrial(id, researcher, desc, lat, lon, time, IRB, part_needed, part_
     var card = $("<div class = 'card_container'>")
     var cardHeader = $('<div class="card-header" id="headingOne">')
     var h2 = $('<h2 class="mb-0">')
-    var expandBtn = $('<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false">')
+    var expandBtn = $('<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">')
     expandBtn.append(time)
     h2.append(expandBtn)
     cardHeader.append(h2)
     card.append(cardHeader)
 
-    var collapsableDiv = $('<div id="collapseOne" class="collapse" data-parent="#trialAccordian">')
+    var collapsableDiv = $('<div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#trialAccordian">')
     cardBody = $('<div class="card-body">')
     cardBody.append("Description: ", desc, "<br>", lat, lon, time, IRB, part_needed, part_confirmed)
     var editBtn = $('<button type="button" class="btn btn-primary editTrial">')
@@ -55,15 +82,15 @@ function loadTrial(id, researcher, desc, lat, lon, time, IRB, part_needed, part_
 }
 
 function noTrials() {
-  cardHeader = "You have no upcoming trials. Create one by clicking \"New Trial\"."
-  var card = $("<div class = 'card_container'>")
+    var card = $("<div class = 'card_container'>")
     var cardHeader = $('<div class="card-header" id="headingOne">')
     var h2 = $('<h2 class="mb-0">')
-    var expandBtn = $('<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false">')
+    var expandBtn = $('<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">')
+    expandBtn.append("You have no upcoming trials. Create one by clicking \"New Trial\".")
     h2.append(expandBtn)
     cardHeader.append(h2)
     card.append(cardHeader)
-    var collapsableDiv = $('<div id="collapseOne" class="collapse" data-parent="#trialAccordian">')
+    var collapsableDiv = $('<div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#trialAccordian">')
     cardBody = $('<div class="card-body">')
     cardBody.append("What are you waiting for? Create a trial now!")
     var editBtn = $('<button type="button" class="btn btn-primary" onclick="window.location.href=\'newtrial.html\'">')
@@ -109,32 +136,6 @@ $(document).ready(function(){
       }
     });
 
-
-
-  function signOut() {
-    var auth2 = gapi.auth2.getAuthInstance();
-    var profile = auth2.currentUser.get().getBasicProfile();
-    var email = profile.getEmail();
-    alert(email)
-    auth2.signOut().then(function () {
-      $.ajax({
-          type: "POST",
-          url: "/logout",                
-          dataType : "json",
-          contentType: "application/json; charset=utf-8",
-          data : JSON.stringify(email),
-          success: function(result){
-            alert( "Logged out!" );
-          },
-          error: function(request, status, error){
-              console.log("Error");
-              console.log(request)
-              console.log(status)
-              console.log(error)
-          }
-      });
-    });
-  }
     $(".editTrial").click(function( event ) {
         var trial_id = event.target.id
         window.location.href = "/edit/:".concat(trial_id.toString())   
