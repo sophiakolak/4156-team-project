@@ -13,7 +13,7 @@ $(document).ready(function(){
     });
     $("#createTrial").submit(function( event ) {
     	save_changes($( this ).serializeArray())
-        event.preventDefault();
+      event.preventDefault();
     });
 
     $('input[type="radio"]').click(function() {
@@ -130,8 +130,7 @@ function save_changes(form_data){
         url: "/new-trial-submit",                
         dataType : "json",
         contentType: "application/json; charset=utf-8",
-        // data : JSON.stringify(form_data),
-        data : JSON.stringify("TEST TEST HI"),
+        data : JSON.stringify(form_data),
         success: function(result){
         	alert( "Saved Changes" );
         },

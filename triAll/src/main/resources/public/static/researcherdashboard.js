@@ -59,19 +59,19 @@ function signOut() {
               //   </div>
               // </div>
 
-function loadTrial(id, researcher, desc, lat, lon, time, IRB, part_needed, part_confirmed){
+function loadTrial(id, researcher, desc, lat, lon, start_date, end_date, pay, IRB, part_needed, part_confirmed){
     var card = $("<div class = 'card_container'>")
     var cardHeader = $('<div class="card-header" id="headingOne">')
     var h2 = $('<h2 class="mb-0">')
     var expandBtn = $('<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">')
-    expandBtn.append(time)
+    expandBtn.append(start_date, "<br>", end_date, "<br>", location)
     h2.append(expandBtn)
     cardHeader.append(h2)
     card.append(cardHeader)
 
     var collapsableDiv = $('<div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#trialAccordian">')
     cardBody = $('<div class="card-body">')
-    cardBody.append("Description: ", desc, "<br>", lat, lon, time, IRB, part_needed, part_confirmed)
+    cardBody.append("Description: ", desc, "<br>", IRB, part_needed, part_confirmed, pay)
     var editBtn = $('<button type="button" class="btn btn-primary editTrial">')
     editBtn.append("Edit")
     editBtn.attr('id', id)
@@ -111,7 +111,17 @@ function loadTrials(trialList) {
     for (index = 0; index < trials.length; index++) { 
         trial = trials[index]
         console.log("trial: " + trial)
-        // call loadTrial function
+        var id = trial.id
+        var researcher = trial.researcher
+        var desc = trial.desc
+        var location = trial.location
+        var startDate = trial.start_date
+        var endDate = trial.end_date
+        var pay = trial.pay
+        var IRB = trial.IRB
+        var part_needed = trial.part_needed
+        var part_confirmed = trial.part_confirmed
+        loadTrial(id, researcher, desc, lat, lon, start_date, end_date, pay, IRB, part_needed, part_confirmed)
     } 
   }
 }
