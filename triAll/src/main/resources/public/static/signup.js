@@ -9,11 +9,11 @@ $(document).ready(function(){
       }).then(function(){
         auth2 = gapi.auth2.getAuthInstance();
         var signedIn = auth2.isSignedIn.get()
-        if (!signedIn) {window.location.href = "/login.html"}   
-        else {
-          var profile = auth2.currentUser.get().getBasicProfile();
-          var email = profile.getEmail()
-          ("#email").val(email)
+        if (!signedIn) {
+          window.location.href = "/login.html"
+        }  else {
+          var email = auth2.currentUser.get().getBasicProfile().getEmail();
+          $("#email").val(email)
         }
       });
     });
