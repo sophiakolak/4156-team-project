@@ -176,22 +176,17 @@
           <form id = "saveChanges">
             <div class="form-group">
                 <label>First Name:</label>
-                <input class="form-control" type="text" name="firstname" required placeholder="Enter Your First Name"/>
+                <input class="form-control first" type="text" name="firstname" required placeholder="Enter Your First Name"/>
                 <span class="Error"></span>
             </div>
             <div class="form-group">
                 <label>Last Name:</label>
-                <input class="form-control" type="text" name="lastname"required placeholder="Enter Your Last Name"/>
-                <span class="Error"></span>
-            </div>
-            <div class="form-group">
-                <label>Email:</label>
-                <input class="form-control" type="email" name="email" required placeholder="Enter Your Email"/>
+                <input class="form-control last" type="text" name="lastname"required placeholder="Enter Your Last Name"/>
                 <span class="Error"></span>
             </div>
             <div class="form-group">
                 <label>Location:</label>
-                <input id = "autocomplete" class="form-control" type="text" name="location" onFocus="geolocate()" required placeholder="Enter Your Location"/>
+                <input id = "autocomplete" class="form-control location" type="text" name="location" onFocus="geolocate()" required placeholder="Enter Your Location"/>
                 <span class="Error"></span>
             </div>
             <div class="form-group">
@@ -202,8 +197,8 @@
                 <span class="Error"></span>
             </div>
             <div class="form-group">
-                <label>Date of Birth:</label>
-                <input class="form-control" type="date" name="birthday"/>
+                <label>Age:</label>
+                <input class="form-control age" type="number" name="age"/>
                 <span class="Error"></span>
             </div>
                         <div class="form-group participant">

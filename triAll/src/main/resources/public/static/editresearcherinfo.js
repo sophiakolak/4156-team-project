@@ -39,8 +39,10 @@ function loadInfo(researcherInfo) {
   var id = researcherInfo.id
   var first = researcherInfo.first
   var last = researcherInfo.last
+  var location = researcherInfo.location
   $(".first").val(first)
   $(".last").val(last)
+  $(".location").val(location)
 }
 
 function signOut() {

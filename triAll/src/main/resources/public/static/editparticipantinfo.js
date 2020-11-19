@@ -32,7 +32,21 @@ $(document).ready(function(){
    });
 })
 
-// Add function to load in participant info
+// load in participant info
+function loadInfo(participantInfo) {
+  console.log("participant: " + participantInfo)
+  var id = participantInfo.id
+  var first = participantInfo.first
+  var last = participantInfo.last
+  var location = participantInfo.location
+  var age = participantInfo.age
+  $(".first").val(first)
+  $(".last").val(last)
+  $(".location").val(location)
+  $(".age").val(age)
+  // add other fields!
+
+}
 
 var placeSearch, autocomplete, lat, lon;
 
@@ -77,7 +91,6 @@ function signOut() {
   var auth2 = gapi.auth2.getAuthInstance();
   var profile = auth2.currentUser.get().getBasicProfile();
   var email = profile.getEmail();
-  alert(email)
   auth2.signOut().then(function () {
     $.ajax({
         type: "POST",
