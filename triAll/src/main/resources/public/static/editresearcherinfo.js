@@ -1,4 +1,22 @@
 $(document).ready(function(){
+
+    // Get request
+    $.ajax({
+        type: "GET",
+        url: "/edit-res-form",                
+        dataType : "json",
+        contentType: "application/json; charset=utf-8",
+        success: function(result){
+          loadInfo(result)
+        },
+        error: function(request, status, error){
+            console.log("Error");
+            console.log(request)
+            console.log(status)
+            console.log(error)
+        }
+      });
+
     // Check if user is signed in 
     gapi.load('auth2', function() {
       gapi.auth2.init({
@@ -16,7 +34,14 @@ $(document).ready(function(){
     });
 })
 
-// Add function to load researcher info
+function loadInfo(researcherInfo) {
+  console.log("Researcher: " + researcherInfo)
+  var id = researcherInfo.id
+  var first = researcherInfo.first
+  var last = researcherInfo.last
+  $(".first").val(first)
+  $(".last").val(last)
+}
 
 function signOut() {
   var auth2 = gapi.auth2.getAuthInstance();
