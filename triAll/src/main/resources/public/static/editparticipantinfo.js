@@ -6,7 +6,7 @@ $(document).ready(function(){
     // Get request
     $.ajax({
         type: "GET",
-        url: "/edit-res-form",                
+        url: "/edit-part-form",                
         dataType : "json",
         contentType: "application/json; charset=utf-8",
         success: function(result){
