@@ -156,7 +156,7 @@ class TriAll {
         } else {
           user.setData(new Criteria(critRow, partRow, age, height, weight, gender, 
               race, nationality));
-          ctx.result(gson.toJson("/participantdashboard"));  
+          ctx.result(gson.toJson("/participantdashboard.html"));  
         }
       }
     });
