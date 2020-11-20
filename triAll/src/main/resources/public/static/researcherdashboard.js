@@ -59,6 +59,29 @@ function signOut() {
               //   </div>
               // </div>
 
+function editTrial(id){
+  route = "/edit-trial-form/" + id
+  console.log("calling editTrial")
+$.ajax({
+      type: "GET",
+      url: route,                
+      dataType : "json",
+      contentType: "application/json; charset=utf-8",
+      success: function(trial){
+        // ??
+        console.log(trial)
+        sessionStorage.setItem('trial', trial);
+        window.location.href = "edittrial.html"
+      },
+      error: function(request, status, error){
+          console.log("Error");
+          console.log(request)
+          console.log(status)
+          console.log(error)
+      }
+    });
+}
+
 function loadTrial(id, researcher, desc, lat, lon, start_date, end_date, pay, IRB, part_needed, part_confirmed){
     var card = $("<div class = 'card_container'>")
     var cardHeader = $('<div class="card-header" id="headingOne">')
@@ -71,8 +94,8 @@ function loadTrial(id, researcher, desc, lat, lon, start_date, end_date, pay, IR
 
     var collapsableDiv = $('<div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#trialAccordian">')
     cardBody = $('<div class="card-body">')
-    cardBody.append("Description: ", JSON.stringify(desc), "<br>", IRB, part_needed, part_confirmed, pay)
-    var editBtn = $('<button type="button" class="btn btn-primary editTrial">')
+    cardBody.append("Description: ", desc, "<br>", "IRB: ", IRB, "<br>", "Participants Needed: ", part_needed, "<br>", "Participants Confirmed: ", part_confirmed, "<br>", "Hourly Pay in USD: ", pay)
+    var editBtn = $('<button type="button" class="btn btn-primary editTrial" onclick=editTrial(' + id +')>')
     editBtn.append("Edit")
     editBtn.attr('id', id)
     cardBody.append(editBtn)
@@ -144,10 +167,5 @@ $(document).ready(function(){
           console.log(status)
           console.log(error)
       }
-    });
-
-    $(".editTrial").click(function( event ) {
-        var trial_id = event.target.id
-        window.location.href = "/edit/:".concat(trial_id.toString())   
     });
 })
