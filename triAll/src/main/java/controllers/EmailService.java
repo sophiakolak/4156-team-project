@@ -15,9 +15,11 @@ public class EmailService {
 	}
 	
 	public void sendEmails(Notification n) {
-		Email e = EmailBuilder.startingBlank().from("jg3796@columbia.edu").to(n.getPartEmail()).withSubject("Clinical TriAll").withPlainText("You have a match.").buildEmail();
+		Email e = EmailBuilder.startingBlank().from("jg3796@columbia.edu").to(
+				n.getPartEmail()).withSubject("Clinical TriAll").withPlainText("You have a match.").buildEmail();
 		mailer.sendMail(e);
-		e = EmailBuilder.startingBlank().from("jg3796@columbia.edu").to(n.getResEmail()).withSubject("Clinical TriAll").withPlainText("You have a match.").buildEmail();
+		e = EmailBuilder.startingBlank().from("jg3796@columbia.edu").to(
+				n.getResEmail()).withSubject("Clinical TriAll").withPlainText("You have a match.").buildEmail();
 		mailer.sendMail(e);
 	}
 }

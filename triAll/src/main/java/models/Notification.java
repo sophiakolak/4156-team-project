@@ -6,7 +6,10 @@ public class Notification {
 	private String time;
 	private String partEmail;
 	private String resEmail;
-	
+
+	  /**
+	   * Create new notification.
+	   */
 	public Notification(String p, String r){
 		partEmail = p;
 		resEmail = r;

@@ -17,7 +17,12 @@ public class Trial {
 	
 	private Criteria crit;
 	
-	public Trial(int id, User r, String d, double lat, double lon, String location, String s, String e, double p, int IRB, int pn, int pc, Criteria crit) {
+	  /**
+	   * Creates trial object.
+	   */
+	public Trial(int id, User r, String d, double lat, double lon, String location, String s, 
+			String e, double p, int IRB, int pn, int pc, Criteria crit) {
+
 		this.id = id;
 		//this.researcher = r;
 		this.desc = d;

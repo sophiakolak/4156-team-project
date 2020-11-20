@@ -23,10 +23,13 @@ $(document).ready(function(){
             $('.imperial').show();      
        }
    });
-    // Add function to load in trial info
-    // should be trial ID
-    // this is here for testing
-    var trialId = 4
+
+
+    var trial = localStorage.getItem('trial')
+    var description = trial.desc
+    $(".description").val(decription)
+
+
 
 
 
