@@ -3,7 +3,7 @@ package models;
 public class Trial {
 	
 	private int id;
-	private User researcher;
+	//private User researcher;
 	private String desc;
 	private double lat;
 	private double lon;
@@ -16,7 +16,7 @@ public class Trial {
 	
 	public Trial(int id, User r, String d, double lat, double lon, String t, int IRB, int pn, int pc, Criteria crit) {
 		this.id = id;
-		this.researcher = r;
+		//this.researcher = r;
 		this.desc = d;
 		this.lat = lat;
 		this.lon = lon;
@@ -35,7 +35,5 @@ public class Trial {
 		return crit;
 	}
 	
-	public User getResearcher() {
-		return researcher;
-	}
+	
 }

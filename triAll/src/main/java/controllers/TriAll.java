@@ -1,12 +1,18 @@
 package controllers;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import io.javalin.Javalin;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.LinkedList;
 import models.Criteria;
-import models.Match;
 import models.Trial;
 import models.User;
 import units.SqliteDB;
@@ -60,65 +66,73 @@ class TriAll {
       // ctx.body() is json dictionary with email and key
       // authenticate
       String email = getEmail(body);
-      ResultSet rs = db.fetchString("participants", "email", email);
-      if (!rs.next()) {
-        rs = db.fetchString("researchers", "email", email);
-        if (!rs.next()) {
-          // user does not exist
-          //ctx.redirect("/signup");
-          ctx.result(gson.toJson("/signup"));
-        } else {
-          //is researcher
-          user = new User(rs.getInt(1), rs.getDouble(2), rs.getDouble(3), rs.getString(4), 
-            rs.getString(5), rs.getString(6), true);
-          ResultSet trialRow = db.fetchInt("trials", "researcher_ID", user.getID());
-          while (trialRow.next()) {
-            ResultSet crit = db.fetchInt("trial_criteria", "trial_id", trialRow.getInt(1));
-            Criteria c = null;
-            if (crit.next()) {
-              c = new Criteria(crit.getInt(1), crit.getInt(2), crit.getInt(3), crit.getDouble(4), 
-                crit.getDouble(5), crit.getString(6), crit.getString(7), crit.getString(8));
-            }
-            user.addTrial(trialRow.getInt(1), new Trial(trialRow.getInt(1), user, 
-                trialRow.getString(3), trialRow.getDouble(4), trialRow.getDouble(5), trialRow
-                .getString(6), trialRow.getInt(7), trialRow.getInt(8), trialRow.getInt(9), c));
-          }
-          ctx.result(gson.toJson("/researcherdashboard.html"));
-        }
+      if (!authenticate(body, email)) {
+        ctx.redirect("not_found.html");
       } else {
-        //is participant
-        user = new User(rs.getInt(1), rs.getDouble(2), rs.getDouble(3), rs.getString(4), rs
-          .getString(5), rs.getString(6), false);
-        ResultSet data = db.fetchInt("participant_data", "participant_ID", user.getID());
-        if (!data.next()) {
-          //there is no data
-        } else {
-          user.setData(new Criteria(data.getInt(1), data.getInt(2), data.getInt(3), data.getDouble(
-              4), data.getDouble(5), data.getString(6), data.getString(7), data.getString(8)));
-          ResultSet matchRS = db.fetchInt("matches", "participant_ID", user.getID());
-          while (matchRS.next()) {
-            ResultSet trialRS = db.fetchInt("trials", "ID", matchRS.getInt(2));
-            ResultSet resRS = db.fetchInt("researchers", "ID", matchRS.getInt(3));
-            if (!trialRS.next() || !resRS.next() || matchRS.getString("status")
-                .equals("rejected")) {
-              // no such trial
-            } else {
-              ResultSet critRS = db.fetchInt("trial_criteria", "trial_ID", trialRS.getInt(1));
+        ResultSet rs = db.fetchString("participants", "email", email);
+        if (!rs.next()) {
+          rs = db.fetchString("researchers", "email", email);
+          if (!rs.next()) {
+            // user does not exist
+            //ctx.redirect("/signup");
+            ctx.result(gson.toJson("/signup"));
+          } else {
+            //is researcher
+            user = new User(rs.getInt(1), rs.getDouble(2), rs.getDouble(3), rs.getString(4), 
+              rs.getString(5), rs.getString(6), true);
+            ResultSet trialRS = db.fetchInt("trials", "researcher_ID", user.getID());
+            System.out.println(trialRS.getString(7));
+            while (trialRS.next()) {
+              ResultSet crit = db.fetchInt("trial_criteria", "trial_id", trialRS.getInt(1));
               Criteria c = null;
-              if (critRS.next()) {
-                c = new Criteria(critRS.getInt(1), critRS.getInt(2), critRS.getInt(3), critRS
-                    .getDouble(4), critRS.getDouble(5), critRS.getString(6), critRS.getString(
-                    7), critRS.getString(8));
+              if (crit.next()) {
+                c = new Criteria(crit.getInt(1), crit.getInt(2), crit.getInt(3), crit.getDouble(4), 
+                  crit.getDouble(5), crit.getString(6), crit.getString(7), crit.getString(8));
               }
-              user.addMatch(new Trial(matchRS.getInt(2), new User(matchRS.getInt(3), resRS
-                  .getDouble(2), resRS.getDouble(4), resRS.getString(5), resRS.getString(6),
-                  resRS.getString(7), true), trialRS.getString(3), trialRS.getDouble(4), trialRS
-                  .getDouble(5), trialRS.getString(6), trialRS.getInt(7), 
-                  trialRS.getInt(8), trialRS.getInt(9), c));
+              System.out.println(crit.getString(8));
+              System.out.println(trialRS.getString(7));
+              user.addTrial(trialRS.getInt(1), new Trial(trialRS.getInt(1), user, 
+                  trialRS.getString(3), trialRS.getDouble(4), trialRS.getDouble(5), trialRS
+                  .getString(6), trialRS.getInt(7), trialRS.getInt(8), trialRS.getInt(9), c));
+            }
+            ctx.result(gson.toJson("/researcherdashboard.html"));
+          }
+        } else {
+          //is participant
+          user = new User(rs.getInt(1), rs.getDouble(2), rs.getDouble(3), rs.getString(4), rs
+            .getString(5), rs.getString(6), false);
+          ResultSet data = db.fetchInt("participant_data", "participant_ID", user.getID());
+          if (!data.next()) {
+            //there is no data
+          } else {
+            user.setData(new Criteria(data.getInt(1), data.getInt(2), data.getInt(3), data
+                .getDouble(4), data.getDouble(5), data.getString(6), data.getString(7), data
+                .getString(8)));
+            ResultSet matchRS = db.fetchInt("matches", "participant_ID", user.getID());
+            while (matchRS.next()) {
+              ResultSet trialRS = db.fetchInt("trials", "ID", matchRS.getInt(2));
+              ResultSet resRS = db.fetchInt("researchers", "ID", matchRS.getInt(3));
+              if (!trialRS.next() || !resRS.next() || matchRS.getString("status")
+                  .equals("rejected")) {
+                // no such trial
+              } else {
+                ResultSet critRS = db.fetchInt("trial_criteria", "trial_ID", trialRS.getInt(1));
+                Criteria c = null;
+                if (critRS.next()) {
+                  c = new Criteria(critRS.getInt(1), critRS.getInt(2), critRS.getInt(3), critRS
+                      .getDouble(4), critRS.getDouble(5), critRS.getString(6), critRS.getString(
+                      7), critRS.getString(8));
+                }
+                user.addMatch(new Trial(matchRS.getInt(2), new User(matchRS.getInt(3), resRS
+                    .getDouble(2), resRS.getDouble(4), resRS.getString(5), resRS.getString(6),
+                    resRS.getString(7), true), trialRS.getString(3), trialRS.getDouble(4), trialRS
+                    .getDouble(5), trialRS.getString(6), trialRS.getInt(7), 
+                    trialRS.getInt(8), trialRS.getInt(9), c));
+              }
             }
           }
+          ctx.result(gson.toJson("/participant-dashboard"));
         }
-        ctx.result(gson.toJson("/participant-dashboard"));
       }
     });
 
@@ -143,9 +157,9 @@ class TriAll {
         ctx.redirect("not_found.html");
       } else {
         user = new User(partRow, lat, lon, first, last, email, false);
-        int age = 0;
-        int height = form.get(16).getAsJsonObject().get("value").getAsInt();
-        int weight = form.get(13).getAsJsonObject().get("value").getAsInt();
+        int age = form.get(8).getAsJsonObject().get("value").getAsInt();
+        int height = form.get(13).getAsJsonObject().get("value").getAsInt();
+        int weight = form.get(16).getAsJsonObject().get("value").getAsInt();
         String gender = form.get(7).getAsJsonObject().get("value").getAsString();
         String race = form.get(17).getAsJsonObject().get("value").getAsString();
         String nationality = form.get(18).getAsJsonObject().get("value").getAsString();
@@ -188,24 +202,24 @@ class TriAll {
         int resRow = user.getID();
         JsonArray form = gson.fromJson(ctx.body(), JsonArray.class);
         String desc = form.get(1).getAsJsonObject().get("value").getAsString();
-        double lat = 0;
-        double lon = 0;
+        double lat = form.get(3).getAsJsonObject().get("value").getAsDouble();
+        double lon = form.get(4).getAsJsonObject().get("value").getAsDouble();
         // need start date, end date, pay
-        String time = form.get(3).getAsJsonObject().get("value").getAsString();
-        int irb = form.get(4).getAsJsonObject().get("value").getAsInt();
-        int needed = form.get(5).getAsJsonObject().get("value").getAsInt();
+        String time = form.get(5).getAsJsonObject().get("value").getAsString();
+        int irb = form.get(8).getAsJsonObject().get("value").getAsInt();
+        int needed = form.get(9).getAsJsonObject().get("value").getAsInt();
         int confirmed = 0;
         int trialRow = db.insertTrial("trials", resRow, desc, lat, lon, time, irb, 
             needed, confirmed);
         if (trialRow == 0) {
           ctx.redirect("not_found.html");
         } else {
-          int age = form.get(7).getAsJsonObject().get("value").getAsInt();
-          int height = form.get(13).getAsJsonObject().get("value").getAsInt();
-          int weight = form.get(20).getAsJsonObject().get("value").getAsInt();
-          String gender = form.get(6).getAsJsonObject().get("value").getAsString();
-          String race = form.get(24).getAsJsonObject().get("value").getAsString();
-          String nationality = form.get(25).getAsJsonObject().get("value").getAsString();
+          int age = form.get(11).getAsJsonObject().get("value").getAsInt();
+          int height = form.get(17).getAsJsonObject().get("value").getAsInt();
+          int weight = form.get(24).getAsJsonObject().get("value").getAsInt();
+          String gender = form.get(10).getAsJsonObject().get("value").getAsString();
+          String race = form.get(28).getAsJsonObject().get("value").getAsString();
+          String nationality = form.get(29).getAsJsonObject().get("value").getAsString();
           int critRow = db.insertCriteria("trial_criteria", trialRow, age, height, weight, gender, 
               race, nationality);
           if (critRow == 0) {
@@ -377,8 +391,10 @@ class TriAll {
         
     app.get("/researcher-dashboard", ctx -> {
       if (user.isLoggedIn() && user.isResearcher()) {
-        Match[] array = user.sortedTrials().toArray(new Match[user.sortedTrials().size()]);
-        String trialsJson = gson.toJson(array);
+        LinkedList<Trial> trials = user.sortedTrials();
+        //Trial[] array = trials.toArray(new Trial[trials.size()]);
+        String trialsJson = gson.toJson(trials);
+        System.out.println(trialsJson);
         ctx.result(trialsJson);
       } else {
         ctx.redirect("/");
@@ -450,6 +466,40 @@ class TriAll {
     } else {
       return parts[0];
     }
+  }
+  
+  public static boolean authenticate(String body, String email) {
+    String[] parts = body.split(":");
+    if (parts.length > 2) {
+      String[] token = parts[2].split("\"");
+      System.out.println(token[1]);
+      try {
+        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(),
+            new JacksonFactory())
+            // Specify the CLIENT_ID of the app that accesses the backend:
+            .setAudience(Collections.singletonList("46819195782-rhbp0ull70okmgsid0rrd2p8cdub7fpn.apps.googleusercontent.com"))
+            // Or, if multiple clients access the backend:
+            //.setAudience(Arrays.asList(CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3))
+            .build();
+        GoogleIdToken idToken = verifier.verify(token[1]);
+        if (idToken != null) {
+          System.out.println("Checking Email");
+          Payload payload = idToken.getPayload();
+          String email2 = payload.getEmail();
+          if (email.equals(email2)) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          System.out.println("This is not avalid token");
+          return false;
+        }
+      } catch (Exception e) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public static void stop() {
