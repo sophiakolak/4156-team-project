@@ -64,14 +64,14 @@ function loadTrial(id, researcher, desc, lat, lon, start_date, end_date, pay, IR
     var cardHeader = $('<div class="card-header" id="headingOne">')
     var h2 = $('<h2 class="mb-0">')
     var expandBtn = $('<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">')
-    expandBtn.append(start_date, "<br>", end_date, "<br>", location)
+    expandBtn.append("TEST TEST", start_date, "<br>", end_date, "<br>", location)
     h2.append(expandBtn)
     cardHeader.append(h2)
     card.append(cardHeader)
 
     var collapsableDiv = $('<div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#trialAccordian">')
     cardBody = $('<div class="card-body">')
-    cardBody.append("Description: ", desc, "<br>", IRB, part_needed, part_confirmed, pay)
+    cardBody.append("Description: ", JSON.stringify(desc), "<br>", IRB, part_needed, part_confirmed, pay)
     var editBtn = $('<button type="button" class="btn btn-primary editTrial">')
     editBtn.append("Edit")
     editBtn.attr('id', id)
@@ -105,7 +105,7 @@ function loadTrials(trialList) {
   if (trialList == "") {
     noTrials()
   } else {
-    var trials = JSON.parse(trialList)
+    var trials = trialList
     console.log("TRIALS: " + trials)
 
     for (index = 0; index < trials.length; index++) { 
@@ -121,7 +121,7 @@ function loadTrials(trialList) {
         var IRB = trial.IRB
         var part_needed = trial.part_needed
         var part_confirmed = trial.part_confirmed
-        loadTrial(id, researcher, desc, lat, lon, start_date, end_date, pay, IRB, part_needed, part_confirmed)
+        loadTrial(id, researcher, desc, location, startDate, endDate, pay, IRB, part_needed, part_confirmed)
     } 
   }
 }
@@ -135,8 +135,8 @@ $(document).ready(function(){
       url: "/researcher-dashboard",                
       dataType : "json",
       contentType: "application/json; charset=utf-8",
-      success: function(result){
-        loadTrials(result)
+      success: function(trials){
+        loadTrials(trials)
       },
       error: function(request, status, error){
           console.log("Error");
