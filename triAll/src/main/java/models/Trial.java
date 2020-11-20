@@ -7,21 +7,31 @@ public class Trial {
 	private String desc;
 	private double lat;
 	private double lon;
-	private String time;
+	private String location;
+	private String start;
+	private String end;
+	private double pay;
 	private int IRB;
 	private int part_needed;
 	private int part_confirmed;
 	
 	private Criteria crit;
 	
-	public Trial(int id, User r, String d, double lat, double lon, 
-			String t, int IRB, int pn, int pc, Criteria crit) {
+	  /**
+	   * Creates trial object.
+	   */
+	public Trial(int id, User r, String d, double lat, double lon, String location, String s, 
+			String e, double p, int IRB, int pn, int pc, Criteria crit) {
+
 		this.id = id;
 		//this.researcher = r;
 		this.desc = d;
 		this.lat = lat;
 		this.lon = lon;
-		this.time = t;
+		this.location = location;
+		this.start = s;
+		this.end = e;
+		this.pay = p;
 		this.IRB = IRB;
 		this.part_needed = pn;
 		this.part_confirmed = pc;
@@ -34,6 +44,14 @@ public class Trial {
 	
 	public Criteria getCriteria() {
 		return crit;
+	}
+	
+	public double getLat() {
+		return this.lat;
+	}
+	
+	public double getLong() {
+		return this.lon;
 	}
 	
 	
