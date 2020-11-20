@@ -131,7 +131,7 @@ class TriAll {
               }
             }
           }
-          ctx.result(gson.toJson("/participant-dashboard.html"));
+          ctx.result(gson.toJson("/participantdashboard.html"));
         }
       }
     });
@@ -244,7 +244,6 @@ class TriAll {
       } else {
         String partJson = gson.toJson(user);
         ctx.result(partJson);
-        ctx.redirect("/editparticipantinfo.html");
       } 
     });
 
