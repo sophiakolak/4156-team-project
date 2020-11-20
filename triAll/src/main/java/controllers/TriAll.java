@@ -172,6 +172,7 @@ class TriAll {
         } else {
           user.setData(new Criteria(critRow, partRow, age, height, weight, gender, 
               race, nationality));
+          checkMatches(user);
           ctx.result(gson.toJson("/participantdashboard.html"));  
         }
       }
@@ -231,9 +232,11 @@ class TriAll {
           if (critRow == 0) {
             ctx.redirect("not_found.html");
           } else {
-            user.addTrial(trialRow, new Trial(trialRow, user, desc, lat, lon, location, start, end,
+            Trial t = new Trial(trialRow, user, desc, lat, lon, location, start, end,
                 pay, irb, needed, confirmed, new Criteria(critRow, trialRow, age, height, weight,
-                gender, race, nationality)));
+                gender, race, nationality));
+            user.addTrial(trialRow, t);
+            checkMatches(t);
             ctx.result(gson.toJson("/researcherdashboard.html"));
           }
         }
@@ -291,6 +294,7 @@ class TriAll {
           } else {
             user.setData(new Criteria(critRow, partId, age, height, weight, gender, 
                 race, nationality));
+            checkMatches(user);
             ctx.result(gson.toJson("/participantdashboard"));  
           }
         }
@@ -330,6 +334,7 @@ class TriAll {
           ctx.redirect("/edittrial.html");
         } else {
           //not allowed to access this trial
+          ctx.redirect("not_found.html");
         }
       }
 
@@ -368,9 +373,11 @@ class TriAll {
           if (critRow == 0) {
             ctx.redirect("not_found.html");
           } else {
-            user.addTrial(trialRow, new Trial(trialRow, user, desc, lat, lon, location, start, end,
+            Trial t = new Trial(trialRow, user, desc, lat, lon, location, start, end,
                 pay, irb, needed, confirmed, new Criteria(critRow, trialRow, age, height, weight,
-                gender, race, nationality)));
+                gender, race, nationality));
+            checkMatches(t); 
+            user.addTrial(trialRow, t);
           }
         }
       } else {
@@ -421,7 +428,7 @@ class TriAll {
 
   }
 
-  public static void checkMatches(User user, SqliteDB db) {
+  public static void checkMatches(User user) {
     try {
       ResultSet trials = db.fetchAll("trial_criteria");
       while (trials.next()) {
@@ -464,9 +471,9 @@ class TriAll {
               data.getInt(2))) {
             ResultSet trialRS = db.fetchInt("trials", "ID", data.getInt(2));
             if (trialRS.next()) {
-              int row = db.insertMatch("trial_matches", trialRS.getInt(1), trialRS.getInt(2), 
+              db.insertMatch("trial_matches", trialRS.getInt(1), trialRS.getInt(2), 
                   user.getID(), "pending");
-              //notify
+              //Notification n = new Notification()
             }
           }
         }
@@ -494,15 +501,15 @@ class TriAll {
     if (parts.length > 2) {
       String[] token = parts[2].split("\"");
       System.out.println(token[1]);
+      GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(),
+              new JacksonFactory())
+              // Specify the CLIENT_ID of the app that accesses the backend:
+              .setAudience(Collections.singletonList(
+              "46819195782-rhbp0ull70okmgsid0rrd2p8cdub7fpn.apps.googleusercontent.com"))
+              // Or, if multiple clients access the backend:
+              //.setAudience(Arrays.asList(CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3))
+              .build();
       try {
-        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(),
-            new JacksonFactory())
-            // Specify the CLIENT_ID of the app that accesses the backend:
-            .setAudience(Collections.singletonList(
-            "46819195782-rhbp0ull70okmgsid0rrd2p8cdub7fpn.apps.googleusercontent.com"))
-            // Or, if multiple clients access the backend:
-            //.setAudience(Arrays.asList(CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3))
-            .build();
         GoogleIdToken idToken = verifier.verify(token[1]);
         if (idToken != null) {
           System.out.println("Checking Email");
