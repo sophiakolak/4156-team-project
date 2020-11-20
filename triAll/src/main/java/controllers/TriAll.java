@@ -131,7 +131,7 @@ class TriAll {
               }
             }
           }
-          ctx.result(gson.toJson("/participant-dashboard"));
+          ctx.result(gson.toJson("/participant-dashboard.html"));
         }
       }
     });
@@ -170,7 +170,7 @@ class TriAll {
         } else {
           user.setData(new Criteria(critRow, partRow, age, height, weight, gender, 
               race, nationality));
-          ctx.result(gson.toJson("/participantdashboard"));  
+          ctx.result(gson.toJson("/participantdashboard.html"));  
         }
       }
     });
