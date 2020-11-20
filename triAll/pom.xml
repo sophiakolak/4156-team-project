@@ -40,7 +40,11 @@
         <scope>test</scope>
     </dependency>
     
+<<<<<<< HEAD
      <dependency>
+=======
+      <dependency>
+>>>>>>> 5c32b01ad243b1b28f755bf3695193a7ee78cf96
        <groupId>org.xerial</groupId>
        <artifactId>sqlite-jdbc</artifactId>
        <version>3.32.3.2</version>

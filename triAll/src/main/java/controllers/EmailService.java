@@ -15,9 +15,11 @@ class EmailService {
 	}
 	
 	public void sendEmails(Notification n) {
-		Email e = EmailBuilder.startingBlank().from("").to(n.getPartEmail()).withSubject("").withHTMLText(" ").buildEmail();
+		Email e = EmailBuilder.startingBlank().from("").to(
+				n.getPartEmail()).withSubject("").withHTMLText(" ").buildEmail();
 		mailer.sendMail(e);
-		e = EmailBuilder.startingBlank().from("").to(n.getResEmail()).withSubject("").withHTMLText(" ").buildEmail();
+		e = EmailBuilder.startingBlank().from("").to(
+				n.getResEmail()).withSubject("").withHTMLText(" ").buildEmail();
 		mailer.sendMail(e);
 	}
 }
