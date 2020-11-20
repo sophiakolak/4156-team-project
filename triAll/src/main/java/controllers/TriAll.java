@@ -93,7 +93,8 @@ class TriAll {
               //System.out.println(trialRS.getString(7));
               user.addTrial(trialRS.getInt(1), new Trial(trialRS.getInt(1), user, 
                   trialRS.getString(3), trialRS.getDouble(4), trialRS.getDouble(5), trialRS
-                  .getString(6), trialRS.getInt(7), trialRS.getInt(8), trialRS.getInt(9), c));
+                  .getString(6), trialRS.getString(7), trialRS.getString(8), trialRS.getDouble(9), 
+                  trialRS.getInt(10), trialRS.getInt(11), trialRS.getInt(12), c));
             }
             ctx.result(gson.toJson("/researcherdashboard.html"));
           }
@@ -124,10 +125,11 @@ class TriAll {
                       7), critRS.getString(8));
                 }
                 user.addMatch(matchRS.getInt(1), new Trial(matchRS.getInt(2), new User(matchRS
-                    .getInt(3),resRS.getDouble(2), resRS.getDouble(4), resRS.getString(5), resRS.getString(6),
-                    resRS.getString(7), true), trialRS.getString(3), trialRS.getDouble(4), trialRS
-                    .getDouble(5), trialRS.getString(6), trialRS.getInt(7), 
-                    trialRS.getInt(8), trialRS.getInt(9), c));
+                    .getInt(3), resRS.getDouble(2), resRS.getDouble(4), resRS.getString(5), resRS
+                    .getString(6), resRS.getString(7), true), trialRS.getString(3), trialRS
+                    .getDouble(4), trialRS.getDouble(5), trialRS.getString(6), trialRS.getString(
+                    7), trialRS.getString(8), trialRS.getDouble(9), trialRS.getInt(10), trialRS
+                    .getInt(11), trialRS.getInt(12), c));
               }
             }
           }
@@ -203,15 +205,18 @@ class TriAll {
         System.out.println(ctx.body());
         JsonArray form = gson.fromJson(ctx.body(), JsonArray.class);
         String desc = form.get(1).getAsJsonObject().get("value").getAsString();
+        String location = form.get(2).getAsJsonObject().get("value").getAsString();
         double lat = form.get(3).getAsJsonObject().get("value").getAsDouble();
         double lon = form.get(4).getAsJsonObject().get("value").getAsDouble();
         // need start date, end date, pay
-        String time = form.get(5).getAsJsonObject().get("value").getAsString();
+        String start = form.get(5).getAsJsonObject().get("value").getAsString();
+        String end = form.get(6).getAsJsonObject().get("value").getAsString();
+        double pay = form.get(7).getAsJsonObject().get("value").getAsDouble();
         int irb = form.get(8).getAsJsonObject().get("value").getAsInt();
         int needed = form.get(9).getAsJsonObject().get("value").getAsInt();
         int confirmed = 0;
-        int trialRow = db.insertTrial("trials", resRow, desc, lat, lon, time, irb, 
-            needed, confirmed);
+        int trialRow = db.insertTrial("trials", resRow, desc, lat, lon, location, start, end,
+            pay, irb, needed, confirmed);
         if (trialRow == 0) {
           ctx.redirect("not_found.html");
         } else {
@@ -226,9 +231,9 @@ class TriAll {
           if (critRow == 0) {
             ctx.redirect("not_found.html");
           } else {
-            user.addTrial(trialRow, new Trial(trialRow, user, desc, lat, lon, time, irb, needed, 
-                confirmed, new Criteria(critRow, trialRow, age, height, weight, gender, 
-                race, nationality)));
+            user.addTrial(trialRow, new Trial(trialRow, user, desc, lat, lon, location, start, end,
+                pay, irb, needed, confirmed, new Criteria(critRow, trialRow, age, height, weight,
+                gender, race, nationality)));
             ctx.result(gson.toJson("/researcherdashboard.html"));
           }
         }
@@ -337,14 +342,18 @@ class TriAll {
         int resId = user.getID();
         JsonArray form = gson.fromJson(ctx.body(), JsonArray.class);
         String desc = form.get(1).getAsJsonObject().get("value").getAsString();
-        double lat = 0;
-        double lon = 0;
-        String time = form.get(3).getAsJsonObject().get("value").getAsString();
-        int irb = form.get(4).getAsJsonObject().get("value").getAsInt();
-        int needed = form.get(5).getAsJsonObject().get("value").getAsInt();
+        String location = form.get(2).getAsJsonObject().get("value").getAsString();
+        double lat = form.get(3).getAsJsonObject().get("value").getAsDouble();
+        double lon = form.get(4).getAsJsonObject().get("value").getAsDouble();
+        // need start date, end date, pay
+        String start = form.get(5).getAsJsonObject().get("value").getAsString();
+        String end = form.get(6).getAsJsonObject().get("value").getAsString();
+        double pay = form.get(7).getAsJsonObject().get("value").getAsDouble();
+        int irb = form.get(8).getAsJsonObject().get("value").getAsInt();
+        int needed = form.get(9).getAsJsonObject().get("value").getAsInt();
         int confirmed = 0;
-        int trialRow = db.updateTrial("trials", trialID, resId, desc, lat, lon, time, irb, 
-            needed, confirmed);
+        int trialRow = db.updateTrial("trials", trialID, resId, desc, lat, lon, location, start,
+            end, pay, irb, needed, confirmed);
         if (trialRow == 0) {
           ctx.redirect("not_found.html");
         } else {
@@ -359,9 +368,9 @@ class TriAll {
           if (critRow == 0) {
             ctx.redirect("not_found.html");
           } else {
-            user.addTrial(trialRow, new Trial(trialRow, user, desc, lat, lon, time, irb, needed, 
-                confirmed, new Criteria(critRow, trialRow, age, height, weight, gender, 
-                race, nationality)));
+            user.addTrial(trialRow, new Trial(trialRow, user, desc, lat, lon, location, start, end,
+                pay, irb, needed, confirmed, new Criteria(critRow, trialRow, age, height, weight,
+                gender, race, nationality)));
           }
         }
       } else {
@@ -425,10 +434,11 @@ class TriAll {
             ResultSet trial = db.fetchInt("trials", "ID", trials.getInt(2));
             if (trial.next()) {
               int row = db.insertMatch("trial_matches", trial.getInt(1), trial.getInt(2), 
-                  user.getID(), "undecided");
+                  user.getID(), "pending");
               user.addMatch(row, new Trial(trial.getInt(1), null, trial.getString(3), trial
-                      .getDouble(4), trial.getDouble(5), trial.getString(6), trial.getInt(7), 
-                      trial.getInt(8), trial.getInt(9), c));
+                      .getDouble(4), trial.getDouble(5), trial.getString(6), trial.getString(7), 
+                      trial.getString(8), trial.getDouble(9), trial.getInt(10), trial.getInt(11),
+                      trial.getInt(12), c));
             }
             //notify
           }
@@ -455,7 +465,7 @@ class TriAll {
             ResultSet trialRS = db.fetchInt("trials", "ID", data.getInt(2));
             if (trialRS.next()) {
               int row = db.insertMatch("trial_matches", trialRS.getInt(1), trialRS.getInt(2), 
-                  user.getID(), "undecided");
+                  user.getID(), "pending");
               //notify
             }
           }
@@ -488,7 +498,8 @@ class TriAll {
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(),
             new JacksonFactory())
             // Specify the CLIENT_ID of the app that accesses the backend:
-            .setAudience(Collections.singletonList("46819195782-rhbp0ull70okmgsid0rrd2p8cdub7fpn.apps.googleusercontent.com"))
+            .setAudience(Collections.singletonList(
+            		"46819195782-rhbp0ull70okmgsid0rrd2p8cdub7fpn.apps.googleusercontent.com"))
             // Or, if multiple clients access the backend:
             //.setAudience(Arrays.asList(CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3))
             .build();

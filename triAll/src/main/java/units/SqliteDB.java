@@ -167,7 +167,8 @@ public class SqliteDB {
         case trial:
           create = "CREATE TABLE IF NOT EXISTS " + table + " (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
               + " researcher_ID INT NOT NULL, description TEXT, Location TEXT, lat REAL, long REAL,"
-              + " start_date TEXT, IRB INT, participants_needed INT, participants_confirmed INT);";
+              + " location TEXT, start_date TEXT, end_date TEXT, pay REAL, IRB INT, "
+              + "participants_needed INT, participants_confirmed INT);";
           break;
         case trialCriteria:
           create = "CREATE TABLE IF NOT EXISTS " + table + " (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -265,18 +266,21 @@ public class SqliteDB {
    * @param desc Description of trial.
    * @param lat Latitude coordinate.
    * @param lon Longitude coordinate.
-   * @param time Time of day.
+   * @param start Start date.
+   * @param end End date.
+   * @param pay Hourly payment in dollars.
    * @param irb Institutional Review Board number.
    * @param needed Participants needed for trial.
    * @param confirmed Participants confirmed so far.
    * @return The row into which the new trial was inserted - 0 upon failure.
    */
-  public int insertTrial(String table, int resId, String desc, double lat, double lon, 
-      String time, int irb, int needed, int confirmed) {
+  public int insertTrial(String table, int resId, String desc, double lat, double lon,
+      String location, String start, String end, double pay, int irb, int needed, int confirmed) {
     int id = 0;
     try {
       String add = "INSERT INTO " + table + " VALUES (null, " + resId + ", '" + desc + "', " + lat
-          + ", '" + lon + "', " + time + ", " + irb + ", " + needed + ", " + confirmed + ");";
+          + ", " + lon + ", '" + location + "', '" + start + "', '" + end + "', " + pay + ", "
+          + irb + ", " + needed + ", " + confirmed + ");";
       stmt.executeUpdate(add);
       String check = "SELECT last_insert_rowid() AS num;";
       ResultSet rs = stmt.executeQuery(check);
@@ -297,19 +301,21 @@ public class SqliteDB {
    * @param desc Description of trial.
    * @param lat Latitude coordinate.
    * @param lon Longitude coordinate.
-   * @param time Time of day.
+   * @param start Start date.
+   * @param end End date.
+   * @param pay Hourly payment in dollars.
    * @param irb Institutional Review Board number.
    * @param needed Participants needed for trial.
    * @param confirmed Participants confirmed so far.
    * @return The row which was updated - 0 upon failure.
    */
-  public int updateTrial(String table, int row, int resId, String desc, double lat, double lon, 
-      String time, int irb, int needed, int confirmed) {
+  public int updateTrial(String table, int row, int resId, String desc, double lat, double lon,
+      String location, String start, String end, double pay, int irb, int needed, int confirmed) {
     int id = 0;
     try {
-      String add = "REPLACE INTO " + table + " VALUES (" + row + ", " + resId + ", " + desc + ", " 
-           + lat + ", '" + lon + "', " + time + ", " + irb + ", " + needed + ", " 
-           + confirmed + ");";
+      String add = "REPLACE INTO " + table + " VALUES (" + row + ", " + resId + ", '" + desc + "', "
+          + lat + ", " + lon + ", '" + location + "', '" + start + "', '" + end + "', " + pay + ", "
+          + irb + ", " + needed + ", " + confirmed + ");";
       stmt.executeUpdate(add);
       String check = "SELECT last_insert_rowid() AS num;";
       ResultSet rs = stmt.executeQuery(check);
