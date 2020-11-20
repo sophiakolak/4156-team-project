@@ -102,9 +102,9 @@ public class User {
 
   public void addMatch(int id, Trial t) {
     //calculate distance to this User
-	double distance = distance(t.getLat(),t.getLong(), this.lat, this.lon, "M");
-	Match m = new Match(id, t, distance, "pending");
-	this.matches.add(m);
+    double distance = distance(t.getLat(), t.getLong(), this.lat, this.lon, "M");
+    Match m = new Match(id, t, distance, "pending");
+    this.matches.add(m);
   }
 
   public boolean isResearcher() {
