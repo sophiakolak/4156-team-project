@@ -77,7 +77,8 @@ public class SqliteDB {
   public ResultSet fetchAll(String table) {
     ResultSet rs = null;
     try {
-      rs = stmt.executeQuery("SELECT * FROM " + table + ";");
+      Statement st = conn.createStatement();
+      rs = st.executeQuery("SELECT * FROM " + table + ";");
     } catch (Exception e) {
       return rs;
     }
@@ -157,16 +158,16 @@ public class SqliteDB {
       switch (type) {
         case researcher:
           create = "CREATE TABLE IF NOT EXISTS " + table + " (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-              + " Lat REAL, Long REAL, First TEXT, Last TEXT, Email TEXT);";
+              + " Location TEXT, Lat REAL, Long REAL, First TEXT, Last TEXT, Email TEXT);";
           break;
         case participant:
           create = "CREATE TABLE IF NOT EXISTS " + table + " (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-              + " Lat REAL, Long REAL, First TEXT, Last TEXT, Email TEXT);";
+              + " Location TEXT, Lat REAL, Long REAL, First TEXT, Last TEXT, Email TEXT);";
           break;
         case trial:
           create = "CREATE TABLE IF NOT EXISTS " + table + " (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-              + " researcher_ID INT NOT NULL, description TEXT, lat REAL, long REAL, time TEXT,"
-              + " IRB INT, participants_needed INT, participants_confirmed INT);";
+              + " researcher_ID INT NOT NULL, description TEXT, Location TEXT, lat REAL, long REAL,"
+              + " start_date TEXT, IRB INT, participants_needed INT, participants_confirmed INT);";
           break;
         case trialCriteria:
           create = "CREATE TABLE IF NOT EXISTS " + table + " (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -368,6 +369,31 @@ public class SqliteDB {
     try {
       String add = "REPLACE INTO " + table + " VALUES (" + row + ", " + parent + ", " + age + ", "
           + height + ", " + weight + ", '" + gender + "', '" + race + "', '" + nationality + "');";
+      stmt.executeUpdate(add);
+      String check = "SELECT last_insert_rowid() AS num;";
+      ResultSet rs = stmt.executeQuery(check);
+      rs.next();
+      id = rs.getInt("num");
+    } catch (Exception e) {
+      return 0;
+    }
+    return id;
+  }
+  
+  /**
+   * Inserts a new entry into a Criteria-style table.
+   * @param table Name of the table.
+   * @param trialID Row of trial.
+   * @param resID Row of researcher.
+   * @param partID Row of participant.
+   * @param status Status of the match.
+   * @return The row into which the new criteria was inserted - 0 upon failure.
+   */
+  public int insertMatch(String table, int trialID, int resID, int partID, String status) {
+    int id = 0;
+    try {
+      String add = "INSERT INTO " + table + " VALUES (null, " + trialID + ", " + resID + ", "
+          + partID + ", " + status + "');";
       stmt.executeUpdate(add);
       String check = "SELECT last_insert_rowid() AS num;";
       ResultSet rs = stmt.executeQuery(check);
