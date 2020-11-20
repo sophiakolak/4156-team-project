@@ -116,7 +116,7 @@ function signOut() {
         contentType: "application/json; charset=utf-8",
         data : JSON.stringify(email),
         success: function(result){
-          alert( "Logged out!" );
+          window.location.href = "/"
         },
         error: function(request, status, error){
             console.log("Error");

@@ -13,34 +13,34 @@ $(document).ready(function(){
     });
     $("#createTrial").submit(function( event ) {
       // Convert height to height in inches
-    // Convert weight to weight in pounds
-    var heightInInchesMin;
-    var weightInLbsMin;
-    var heightInInchesMax;
-    var weightInLbsMax;
+      // Convert weight to weight in pounds
+      var heightInInchesMin;
+      var weightInLbsMin;
+      var heightInInchesMax;
+      var weightInLbsMax;
 
-    if ($('#metricButton:checked').length > 0) {
-      // metric
-      weightInLbsMin = $('#kilogramsMin').val() * 2.205
-      heightInInchesMin = $('#centimetersMin').val() * (1/2.54)
+      if ($('#metricButton:checked').length > 0) {
+        // metric
+        weightInLbsMin = $('#kilogramsMin').val() * 2.205
+        heightInInchesMin = $('#centimetersMin').val() * (1/2.54)
 
-      weightInLbsMax = $('#kilogramsMax').val() * 2.205
-      heightInInchesMax = $('#centimetersMax').val() * (1/2.54)
+        weightInLbsMax = $('#kilogramsMax').val() * 2.205
+        heightInInchesMax = $('#centimetersMax').val() * (1/2.54)
 
-    } else {
-      // imperial
-      weightInLbsMin = $('#poundsMin').val()
-      heightInInchesMin = (12 * $('#feetMin').val()) + Number($('#inchesMin').val())
+      } else {
+        // imperial
+        weightInLbsMin = $('#poundsMin').val()
+        heightInInchesMin = (12 * $('#feetMin').val()) + Number($('#inchesMin').val())
 
-      weightInLbsMax = $('#poundsMax').val()
-      heightInInchesMax = (12 * $('#feetMax').val()) + Number($('#inchesMax').val())
-    }
+        weightInLbsMax = $('#poundsMax').val()
+        heightInInchesMax = (12 * $('#feetMax').val()) + Number($('#inchesMax').val())
+      }
 
-    $("#heightInInchesMin").val(heightInInchesMin)
-    $("#weightInLbsMin").val(weightInLbsMin) 
+      $("#heightInInchesMin").val(heightInInchesMin)
+      $("#weightInLbsMin").val(weightInLbsMin) 
 
-    $("#heightInInchesMax").val(heightInInchesMax)
-    $("#weightInLbsMax").val(weightInLbsMax)
+      $("#heightInInchesMax").val(heightInInchesMax)
+      $("#weightInLbsMax").val(weightInLbsMax)
     	save_changes($( this ).serializeArray())
       event.preventDefault();
     });
@@ -132,7 +132,7 @@ function save_changes(form_data){
         contentType: "application/json; charset=utf-8",
         data : JSON.stringify(form_data),
         success: function(result){
-        	alert( "Saved Changes" );
+        	window.location.href = "/researcherdashboard.html"
         },
         error: function(request, status, error){
             console.log("Error");

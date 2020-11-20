@@ -54,7 +54,7 @@ function signOut() {
     });
   });
 }
-
+//FIX THIS
     $("#saveChanges").submit(function( event ) {
         // Convert height to height in inches
         // Convert weight to weight in pounds
@@ -86,15 +86,16 @@ function signOut() {
         $("#heightInInchesMax").val(heightInInchesMax)
         $("#weightInLbsMax").val(weightInLbsMax)
 
+        form_data = $( this ).serializeArray()
+
         $.ajax({
           type: "POST",
           url: "/edit-trial-submit/:" + trialId + "/",                
           dataType : "json",
           contentType: "application/json; charset=utf-8",
-          // data : JSON.stringify(form_data),
-          data : JSON.stringify("TEST TEST HI"),
+          data : JSON.stringify(form_data),
           success: function(result){
-            alert( "Saved Changes" );
+            window.location.href = "/researcherdashboard.html"
           },
           error: function(request, status, error){
               console.log("Error");
