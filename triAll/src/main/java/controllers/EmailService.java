@@ -1,7 +1,6 @@
 package controllers;
 
 import models.Notification;
-
 import org.simplejavamail.api.email.Email;
 import org.simplejavamail.api.mailer.Mailer;
 import org.simplejavamail.email.EmailBuilder;
