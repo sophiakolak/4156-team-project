@@ -94,7 +94,8 @@ public class SqliteDB {
   public ResultSet fetchInt(String table, String field, int id) {
     ResultSet rs = null;
     try {
-      rs = stmt.executeQuery("SELECT * FROM " + table + " WHERE " + field + " = " + id + ";");
+      Statement st = conn.createStatement();
+      rs = st.executeQuery("SELECT * FROM " + table + " WHERE " + field + " = " + id + ";");
     } catch (Exception e) {
       return rs;
     }
@@ -111,7 +112,8 @@ public class SqliteDB {
   public ResultSet fetchString(String table, String field, String id) {
     ResultSet rs = null;
     try {
-      rs = stmt.executeQuery("SELECT * FROM " + table + " WHERE " + field + " = '" + id + "';");
+      Statement st = conn.createStatement();
+      rs = st.executeQuery("SELECT * FROM " + table + " WHERE " + field + " = '" + id + "';");
     } catch (Exception e) {
       return rs;
     }
@@ -272,14 +274,15 @@ public class SqliteDB {
       String time, int irb, int needed, int confirmed) {
     int id = 0;
     try {
-      String add = "INSERT INTO " + table + " VALUES (null, " + resId + ", " + lat + ", " + lon
-          + ", '" + time + "', " + irb + ", " + needed + ", " + confirmed + ");";
+      String add = "INSERT INTO " + table + " VALUES (null, " + resId + ", '" + desc + "', " + lat
+          + ", '" + lon + "', " + time + ", " + irb + ", " + needed + ", " + confirmed + ");";
       stmt.executeUpdate(add);
       String check = "SELECT last_insert_rowid() AS num;";
       ResultSet rs = stmt.executeQuery(check);
       rs.next();
       id = rs.getInt("num");
     } catch (Exception e) {
+      System.err.println(e.getClass().getName() + ": " + e.getMessage());
       return 0;
     }
     return id;
@@ -303,8 +306,9 @@ public class SqliteDB {
       String time, int irb, int needed, int confirmed) {
     int id = 0;
     try {
-      String add = "REPLACE INTO " + table + " VALUES (" + row + ", " + resId + ", " + lat + ", " 
-           + lon + ", '" + time + "', " + irb + ", " + needed + ", " + confirmed + ");";
+      String add = "REPLACE INTO " + table + " VALUES (" + row + ", " + resId + ", " + desc + ", " 
+           + lat + ", '" + lon + "', " + time + ", " + irb + ", " + needed + ", " 
+           + confirmed + ");";
       stmt.executeUpdate(add);
       String check = "SELECT last_insert_rowid() AS num;";
       ResultSet rs = stmt.executeQuery(check);

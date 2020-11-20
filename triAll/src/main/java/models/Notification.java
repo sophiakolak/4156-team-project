@@ -11,6 +11,6 @@ public class Notification {
 	}
 	
 	public String getResEmail() {
-		return trial.getResearcher().getEmail();
+		return "";
 	}
 }
