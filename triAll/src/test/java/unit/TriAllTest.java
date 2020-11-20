@@ -27,17 +27,16 @@ public class TriAllTest {
 	//test Criteria.matches
 	//test Notification.getPartEmail
 	//test Notification.getResEmail 
+	//test User.update
 	
 	//test User.compare trials 
 	//test User.compare matches
 	
-	//test User.update
 	//test User.addTrial
 	//test User.containstrial
 	//test User.Sortedtrials 
 	//test User.Sortedmatches
 	//test User.distance
-	
 	
 	  
 	HashMap<Integer, Trial> trials = new HashMap<Integer, Trial>();
@@ -45,7 +44,7 @@ public class TriAllTest {
 	Criteria d = new Criteria(1, 1, 25, 1.2, 1.2, "male", "cool", "cool");
 	User u = new User(1, 0, 0, "Shirish","Shirish", "shirishIsCool@gmail.com", false);
 	User r = new User(1, 0, 0, "Gail","Kaiser", "gailIsCool@gmail.com", true);
-	Trial t = new Trial(1, r, "cool trial", 0, 0, "15:04:05Z07:00", 123, 100, 0, d);
+	Trial t = new Trial(1, r, "cool trial", 0, 0, "Siberia", "2020-12-01", "2020-12-02", 12, 123, 100, 0, d);
 	
 	@Test 
 	public void testMatches() {
@@ -73,6 +72,9 @@ public class TriAllTest {
 		u.update(0, 0, "Shirish", "Shirish", "shirishIsNotCool@gmail.com");
 		assertEquals("shirishIsNotCool@gmail.com", u.getEmail());
 	}
+	
+	
+	
 	
 	
 	
