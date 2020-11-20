@@ -29,18 +29,18 @@ public class TriAllTest {
 	//test Notification.getResEmail 
 	//test User.update
 	
-	//test User.compare trials 
-	//test User.compare matches
-	
 	//test User.addTrial
 	//test User.containstrial
-	//test User.Sortedtrials 
-	//test User.Sortedmatches
+	
+	//test User.Sortedtrials /compare_date 
+	//test User.Sortedmatches /compare_dist
 	//test User.distance
+	
 	
 	  
 	HashMap<Integer, Trial> trials = new HashMap<Integer, Trial>();
 	LinkedList<Match> matches = new LinkedList<Match>();
+	
 	Criteria d = new Criteria(1, 1, 25, 1.2, 1.2, "male", "cool", "cool");
 	User u = new User(1, 0, 0, "Shirish","Shirish", "shirishIsCool@gmail.com", false);
 	User r = new User(1, 0, 0, "Gail","Kaiser", "gailIsCool@gmail.com", true);
@@ -73,8 +73,40 @@ public class TriAllTest {
 		assertEquals("shirishIsNotCool@gmail.com", u.getEmail());
 	}
 	
+	@Test
+	public void addTrial() {
+		r.addTrial(1, t);
+		assertEquals(r.getTrial(1).getID(),1);
+	}
 	
+	@Test
+	public void containsTrial() {
+		r.addTrial(1, t);
+		assertEquals(r.containsTrial(1), true);
+	}
 	
+	@Test 
+	public void sortedMatches() {
+		 Trial t2 = new Trial(2, r, "cooler trial", 1, 1, "Siberia", "2020-12-01", "2020-12-02", 12, 123, 100, 0, d);
+		 u.addMatch(1, t);
+		 u.addMatch(2, t2);
+		 assertEquals(u.sortedMatches().get(0).getID(),1);
+	}
+	
+	@Test 
+	public void sortedTrials() {
+		Trial t1 = new Trial(2, r, "even cooler trial", 1, 1, "NYC", "2020-12-01", "2020-12-02", 12, 123, 100, 0, d);
+		Trial t2 = new Trial(3, r, "cooler trial", 1, 1, "Siberia", "2020-11-20", "2020-11-21", 12, 123, 100, 0, d);
+		r.addTrial(2, t1);
+		r.addTrial(3, t2);
+		assertEquals(r.sortedTrials().get(0).getID(), 3);
+	}
+	
+	@Test 
+	public void distance() {
+		double dist = u.distance(0,0,0,0,"M");
+		assertEquals(dist, 0);
+	}
 	
 	
 	
