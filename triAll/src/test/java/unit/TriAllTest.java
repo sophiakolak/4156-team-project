@@ -27,19 +27,25 @@ public class TriAllTest {
 	//test Criteria.matches
 	//test Notification.getPartEmail
 	//test Notification.getResEmail 
+	
 	//test User.compare trials 
 	//test User.compare matches
+	
 	//test User.update
 	//test User.addTrial
 	//test User.containstrial
 	//test User.Sortedtrials 
 	//test User.Sortedmatches
 	//test User.distance
+	
+	
 	  
 	HashMap<Integer, Trial> trials = new HashMap<Integer, Trial>();
 	LinkedList<Match> matches = new LinkedList<Match>();
 	Criteria d = new Criteria(1, 1, 25, 1.2, 1.2, "male", "cool", "cool");
 	User u = new User(1, 0, 0, "Shirish","Shirish", "shirishIsCool@gmail.com", false);
+	User r = new User(1, 0, 0, "Gail","Kaiser", "gailIsCool@gmail.com", true);
+	Trial t = new Trial(1, r, "cool trial", 0, 0, "15:04:05Z07:00", 123, 100, 0, d);
 	
 	@Test 
 	public void testMatches() {
@@ -47,4 +53,27 @@ public class TriAllTest {
 		boolean is_match = d.matches(c);
 		assertEquals(true, is_match);		
 	}
+	
+	@Test 
+	public void testPartEmail() {
+		Notification n = new Notification("15:04:05Z07:00", u, t);
+		String part_email = n.getPartEmail();
+		assertEquals("shirishIsCool@gmail.com", part_email);
+	}
+	
+	@Test 
+	public void testResEmail() {
+		Notification n = new Notification("15:04:05Z07:00", u, t);
+		String res_email = n.getResEmail();
+		assertEquals("", res_email);
+	}
+	
+	@Test 
+	public void testUpdate() {
+		u.update(0, 0, "Shirish", "Shirish", "shirishIsNotCool@gmail.com");
+		assertEquals("shirishIsNotCool@gmail.com", u.getEmail());
+	}
+	
+	
+	
 }
