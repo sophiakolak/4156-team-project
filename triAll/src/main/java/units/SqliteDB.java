@@ -2,19 +2,21 @@ package units;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 public class SqliteDB {
   private Connection conn;
   private Statement stmt;
-  public final int researcher = 0;
-  public final int participant = 1;
-  public final int trial = 2;
-  public final int trialCriteria = 3;
-  public final int participantData = 4;
-  public final int trialMatch = 5;
-  public final int email = 6;
+  public static final int researcher = 0;
+  public static final int participant = 1;
+  public static final int trial = 2;
+  public static final int trialCriteria = 3;
+  public static final int participantData = 4;
+  public static final int trialMatch = 5;
+  public static final int email = 6;
 
   /**
     * Initializes connection to database.
@@ -29,7 +31,6 @@ public class SqliteDB {
       stmt = conn.createStatement();
     } catch (Exception e) {
       System.err.println(e.getClass().getName() + ": " + e.getMessage());
-      System.exit(0);
     }
   }
 
@@ -39,10 +40,20 @@ public class SqliteDB {
     * @return Whether the operation was successful.
     */
   public boolean drop(String table) {
+	PreparedStatement st = null;
     try {
+      st = conn.prepareStatement("DROP TABLE IF EXISTS ? ;");
+      st.setString(1, table);
       String drop = "DROP TABLE IF EXISTS " + table + ";";
       stmt.executeUpdate(drop);
     } catch (Exception e) {
+    	if (st != null) {
+            try {
+              st.close();
+            } catch (SQLException e1) {
+              e1.printStackTrace();
+            }
+          }
       return false;
     }
     return true;
@@ -54,16 +65,24 @@ public class SqliteDB {
     * @return Whether table is in the database.
     */
   public boolean isTable(String table) {
+	PreparedStatement st = null;
     try {
-      String query = "SELECT COUNT(name) AS total FROM sqlite_master"
-                     + " WHERE type='table' AND name='" + table + "';";
-      ResultSet rs = stmt.executeQuery(query);
+      st = conn.prepareStatement("SELECT COUNT(name) AS total FROM sqlite_master WHERE type='table' AND name='?';");
+      st.setString(1, table);
+      ResultSet rs = st.executeQuery();
       rs.next();
       if (rs.getInt("total") == 1) {
         rs.close();
         return true;
       }
     } catch (Exception e) {
+    	if (st != null) {
+            try {
+              st.close();
+            } catch (SQLException e1) {
+              e1.printStackTrace();
+            }
+          }
       return false;
     }
     return false;
@@ -76,10 +95,19 @@ public class SqliteDB {
     */
   public ResultSet fetchAll(String table) {
     ResultSet rs = null;
+    PreparedStatement st = null;
     try {
-      Statement st = conn.createStatement();
+      st = conn.prepareStatement("SELECT * FROM ?;");
+      st.setString(1,  table);
       rs = st.executeQuery("SELECT * FROM " + table + ";");
     } catch (Exception e) {
+      if (st != null) {
+        try {
+          st.close();
+        } catch (SQLException e1) {
+          e1.printStackTrace();
+        }
+      }
       return rs;
     }
     return rs;
@@ -94,10 +122,21 @@ public class SqliteDB {
    */
   public ResultSet fetchInt(String table, String field, int id) {
     ResultSet rs = null;
+    PreparedStatement st = null;
     try {
-      Statement st = conn.createStatement();
-      rs = st.executeQuery("SELECT * FROM " + table + " WHERE " + field + " = " + id + ";");
+      st = conn.prepareStatement("SELECT * FROM ? WHERE ? = ?;");
+      st.setString(1,  table);
+      st.setString(2, field);
+      st.setInt(3, id);
+      rs = st.executeQuery();
     } catch (Exception e) {
+      if (st != null) {
+        try {
+          st.close();
+        } catch (SQLException e1) {
+          e1.printStackTrace();
+        }
+      }
       return rs;
     }
     return rs;
@@ -112,10 +151,21 @@ public class SqliteDB {
    */
   public ResultSet fetchString(String table, String field, String id) {
     ResultSet rs = null;
+    PreparedStatement st = null;
     try {
-      Statement st = conn.createStatement();
-      rs = st.executeQuery("SELECT * FROM " + table + " WHERE " + field + " = '" + id + "';");
+      st = conn.prepareStatement("SELECT * FROM ? WHERE ? = '?';");
+      st.setString(1,  table);
+      st.setString(2,  field);
+      st.setString(3,  id);
+      rs = st.executeQuery();
     } catch (Exception e) {
+      if (st != null) {
+        try {
+          st.close();
+        } catch (SQLException e1) {
+          e1.printStackTrace();
+        }
+      }
       return rs;
     }
     return rs;
@@ -132,15 +182,28 @@ public class SqliteDB {
    */
   public boolean matchExists(String table, String field1, int id1, String field2, int id2) {
     ResultSet rs = null;
+    PreparedStatement st = null;
     try {
-      rs = stmt.executeQuery("SELECT COUNT(ID) FROM " + table + " WHERE " + field1 + " = " + id1
-          + " AND " + field2 + " = " + id2 + ";");
+      st = conn.prepareStatement("SELECT COUNT(ID) FROM ? WHERE ? = ? AND ? = ?;");
+      st.setString(1, table);
+      st.setString(2,  field1);
+      st.setInt(3, id1);
+      st.setString(4, field2);
+      st.setInt(5,  id2);
+      rs = st.executeQuery();
       rs.next();
       if (rs.getInt("total") == 1) {
         rs.close();
         return true;
       }
     } catch (Exception e) {
+    	if (st != null) {
+            try {
+              st.close();
+            } catch (SQLException e1) {
+              e1.printStackTrace();
+            }
+          }
       return false;
     }
     return false;
@@ -153,49 +216,70 @@ public class SqliteDB {
     * @return Whether the operation was successful.
     */
   public boolean create(String table, int type) {
+	PreparedStatement st = null;
     try {
       String create;
       switch (type) {
         case researcher:
-          create = "CREATE TABLE IF NOT EXISTS " + table + " (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-              + " Location TEXT, Lat REAL, Long REAL, First TEXT, Last TEXT, Email TEXT);";
+          st = conn.prepareStatement("\"CREATE TABLE IF NOT EXISTS ? (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+          		+ "Location TEXT, Lat REAL, Long REAL, First TEXT, Last TEXT, Email TEXT);");
+          st.setString(1, table);
+          st.executeUpdate();
           break;
         case participant:
-          create = "CREATE TABLE IF NOT EXISTS " + table + " (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-              + " Location TEXT, Lat REAL, Long REAL, First TEXT, Last TEXT, Email TEXT);";
+          st = conn.prepareStatement("CREATE TABLE IF NOT EXISTS ? (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+              + " Location TEXT, Lat REAL, Long REAL, First TEXT, Last TEXT, Email TEXT);");
+          st.setString(1, table);
+          st.executeUpdate();
           break;
         case trial:
-          create = "CREATE TABLE IF NOT EXISTS " + table + " (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-              + " researcher_ID INT NOT NULL, description TEXT, Location TEXT, lat REAL, long REAL,"
-              + " location TEXT, start_date TEXT, end_date TEXT, pay REAL, IRB INT, "
-              + "participants_needed INT, participants_confirmed INT);";
+          st = conn.prepareStatement("CREATE TABLE IF NOT EXISTS ? (ID INTEGER PRIMARY KEY"
+              + "AUTOINCREMENT, researcher_ID INT NOT NULL, description TEXT, Location TEXT,"
+              + " lat REAL, long REAL, location TEXT, start_date TEXT, end_date TEXT, pay REAL,"
+              + " IRB INT, participants_needed INT, participants_confirmed INT);");
+          st.setString(1, table);
+          st.executeUpdate();
           break;
         case trialCriteria:
-          create = "CREATE TABLE IF NOT EXISTS " + table + " (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+          st = conn.prepareStatement("CREATE TABLE IF NOT EXISTS ? (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
               + " trial_ID INT NOT NULL, Age INT, Height_in_inches REAL, Weight_in_lbs REAL, Gender"
-              + " TEXT, Race TEXT, Nationality TEXT);";
+              + " TEXT, Race TEXT, Nationality TEXT);");
+          st.setString(1, table);
+          st.executeUpdate();
           break;
         case participantData:
-          create = "CREATE TABLE IF NOT EXISTS " + table + " (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+        	st = conn.prepareStatement("CREATE TABLE IF NOT EXISTS ? (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
               + " participant_ID INT NOT NULL, Age INT, Height_in_inches REAL, Weight_in_lbs REAL, "
-              + "Gender TEXT, Race TEXT, Nationality TEXT);";
+              + "Gender TEXT, Race TEXT, Nationality TEXT);");
+        	st.setString(1, table);
+            st.executeUpdate();
           break;
         case trialMatch:
-          create = "CREATE TABLE IF NOT EXISTS " + table + " (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+        	st = conn.prepareStatement("CREATE TABLE IF NOT EXISTS ? (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
               + " trial_ID INT NOT NULL, researcher_ID INT NOT NULL, participant_ID INT NOT NULL, "
-              + "status TEXT);";
+              + "status TEXT);");
+        	st.setString(1, table);
+            st.executeUpdate();
           break;
         case email:
-          create = "CREATE TABLE IF NOT EXISTS " + table + " (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+        	st = conn.prepareStatement("CREATE TABLE IF NOT EXISTS ? (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
               + " trial_ID INT, researcher_ID INT, participant_ID INT, type TEXT, time_sent TEXT,"
-              + " delivery_success INT);";
+              + " delivery_success INT);");
+        	st.setString(1, table);
+            st.executeUpdate();
           break;
         default:
           return false;
       }
-      stmt.executeUpdate(create);
     } catch (Exception e) {
       System.err.println(e.getClass().getName() + ": " + e.getMessage());
+      try {
+        if (st != null) {
+          st.close();
+        }
+      } catch(SQLException e1) {
+    	  e1.printStackTrace();
+      }
       return false;
     }
     return true;
@@ -213,17 +297,31 @@ public class SqliteDB {
    */
   public int insertUser(String table, double lat, double lon, String first, String last, 
       String email) {
+	PreparedStatement st = null;
     int id = 0;
     try {
-      String add = "INSERT INTO " + table + " (Lat, Long, First, Last, Email) VALUES ("
-          + lat + ", " + lon + ", '" + first + "', '" + last + "', '" + email + "');";
-      stmt.executeUpdate(add);
+      st = conn.prepareStatement("INSERT INTO ? (Lat, Long, First, Last, Email) VALUES ("
+    		  + "?, ?, '?', '?', '?');");
+      st.setString(1, table);
+      st.setDouble(2, lat);
+      st.setDouble(3, lon);
+      st.setString(4, first);
+      st.setString(5, last);
+      st.setString(6, email);
+      st.executeUpdate();
       String check = "SELECT last_insert_rowid() AS num;";
       ResultSet rs = stmt.executeQuery(check);
       rs.next();
       id = rs.getInt("num");
     } catch (Exception e) {
       System.err.println(e.getClass().getName() + ": " + e.getMessage());
+      try {
+          if (st != null) {
+            st.close();
+          }
+        } catch(SQLException e1) {
+      	  e1.printStackTrace();
+        }
       return 0;
     }
     return id;
@@ -244,15 +342,30 @@ public class SqliteDB {
   public int updateUser(String table, int id, double lat, double lon, String first, String last, 
       String email) {
     int row = 0;
+    PreparedStatement st = null;
     try {
-      String add = "REPLACE INTO " + table + " VALUES (" + id + ", "
-          + lat + ", " + lon + ", '" + first + "', '" + last + "', '" + email + "');";
-      stmt.executeUpdate(add);
+    	st = conn.prepareStatement("REPLACE INTO ? VALUES ( ?"
+      		  + "?, ?, '?', '?', '?');");
+        st.setString(1, table);
+        st.setInt(2, id);
+        st.setDouble(3, lat);
+        st.setDouble(4, lon);
+        st.setString(5, first);
+        st.setString(6, last);
+        st.setString(7, email);
+        st.executeUpdate();
       String check = "SELECT last_insert_rowid() AS num;";
       ResultSet rs = stmt.executeQuery(check);
       rs.next();
       row = rs.getInt("num");
     } catch (Exception e) {
+    	try {
+            if (st != null) {
+              st.close();
+            }
+          } catch(SQLException e1) {
+        	  e1.printStackTrace();
+          }
       return 0;
     }
     return row;
@@ -277,17 +390,36 @@ public class SqliteDB {
   public int insertTrial(String table, int resId, String desc, double lat, double lon,
       String location, String start, String end, double pay, int irb, int needed, int confirmed) {
     int id = 0;
+    PreparedStatement st = null;
     try {
-      String add = "INSERT INTO " + table + " VALUES (null, " + resId + ", '" + desc + "', " + lat
-          + ", " + lon + ", '" + location + "', '" + start + "', '" + end + "', " + pay + ", "
-          + irb + ", " + needed + ", " + confirmed + ");";
-      stmt.executeUpdate(add);
+      st = conn.prepareStatement("INSERT INTO ? VALUES (null, ?, ' ? ', ?"
+          + ", ?, '?', '?', '?', ?, ?, ?, ?);");
+      st.setString(1, table);
+      st.setInt(2, resId);
+      st.setString(3, desc);
+      st.setDouble(4, lat);
+      st.setDouble(5, lon);
+      st.setString(6, location);
+      st.setString(7, start);
+      st.setString(8, end);
+      st.setDouble(9, pay);
+      st.setInt(10, irb);
+      st.setInt(11, needed);
+      st.setInt(12, confirmed);
+      st.executeUpdate();
       String check = "SELECT last_insert_rowid() AS num;";
       ResultSet rs = stmt.executeQuery(check);
       rs.next();
       id = rs.getInt("num");
     } catch (Exception e) {
       System.err.println(e.getClass().getName() + ": " + e.getMessage());
+      try {
+          if (st != null) {
+            st.close();
+          }
+        } catch(SQLException e1) {
+      	  e1.printStackTrace();
+        }
       return 0;
     }
     return id;
@@ -312,16 +444,36 @@ public class SqliteDB {
   public int updateTrial(String table, int row, int resId, String desc, double lat, double lon,
       String location, String start, String end, double pay, int irb, int needed, int confirmed) {
     int id = 0;
+    PreparedStatement st = null;
     try {
-      String add = "REPLACE INTO " + table + " VALUES (" + row + ", " + resId + ", '" + desc + "', "
-          + lat + ", " + lon + ", '" + location + "', '" + start + "', '" + end + "', " + pay + ", "
-          + irb + ", " + needed + ", " + confirmed + ");";
-      stmt.executeUpdate(add);
+      st = conn.prepareStatement("REPLACE INTO ? VALUES (?, ?, ' ? ', ?"
+             + ", ?, '?', '?', '?', ?, ?, ?, ?);");
+      st.setString(1, table);
+      st.setInt(2, row);
+      st.setInt(3, resId);
+      st.setString(4, desc);
+      st.setDouble(5, lat);
+      st.setDouble(6, lon);
+      st.setString(7, location);
+      st.setString(8, start);
+      st.setString(9, end);
+      st.setDouble(10, pay);
+      st.setInt(11, irb);
+      st.setInt(12, needed);
+      st.setInt(13, confirmed);
+      st.executeUpdate();
       String check = "SELECT last_insert_rowid() AS num;";
       ResultSet rs = stmt.executeQuery(check);
       rs.next();
       id = rs.getInt("num");
     } catch (Exception e) {
+    	try {
+            if (st != null) {
+              st.close();
+            }
+          } catch(SQLException e1) {
+        	  e1.printStackTrace();
+          }
       return 0;
     }
     return id;
@@ -342,15 +494,30 @@ public class SqliteDB {
   public int insertCriteria(String table, int parent, int age, int height, int weight, 
       String gender, String race, String nationality) {
     int id = 0;
+    PreparedStatement st  = null;
     try {
-      String add = "INSERT INTO " + table + " VALUES (null, " + parent + ", " + age + ", "
-          + height + ", " + weight + ", '" + gender + "', '" + race + "', '" + nationality + "');";
-      stmt.executeUpdate(add);
+      st = conn.prepareStatement("INSERT INTO ? VALUES (null, ?, ?, ?, ?, ?, '?', '?', '?';");
+      st.setString(1, table);
+      st.setInt(2, parent);
+      st.setInt(3,  age);
+      st.setInt(4, height);
+      st.setInt(5, weight);
+      st.setString(6, gender);
+      st.setString(7, race);
+      st.setString(8, nationality);
+      st.executeUpdate();
       String check = "SELECT last_insert_rowid() AS num;";
       ResultSet rs = stmt.executeQuery(check);
       rs.next();
       id = rs.getInt("num");
     } catch (Exception e) {
+    	try {
+            if (st != null) {
+              st.close();
+            }
+          } catch(SQLException e1) {
+        	  e1.printStackTrace();
+          }
       return 0;
     }
     return id;
@@ -372,15 +539,31 @@ public class SqliteDB {
   public int updateCriteria(String table, int row, int parent, int age, int height, int weight,
       String gender, String race, String nationality) {
     int id = 0;
+    PreparedStatement st = null;
     try {
-      String add = "REPLACE INTO " + table + " VALUES (" + row + ", " + parent + ", " + age + ", "
-          + height + ", " + weight + ", '" + gender + "', '" + race + "', '" + nationality + "');";
-      stmt.executeUpdate(add);
+    	st = conn.prepareStatement("INSERT INTO ? VALUES (?, ?, ?, ?, ?, ?, '?', '?', '?';");
+        st.setString(1, table);
+        st.setInt(2, row);
+        st.setInt(3, parent);
+        st.setInt(4,  age);
+        st.setInt(5, height);
+        st.setInt(6, weight);
+        st.setString(7, gender);
+        st.setString(8, race);
+        st.setString(9, nationality);
+        st.executeUpdate();
       String check = "SELECT last_insert_rowid() AS num;";
       ResultSet rs = stmt.executeQuery(check);
       rs.next();
       id = rs.getInt("num");
     } catch (Exception e) {
+    	try {
+            if (st != null) {
+              st.close();
+            }
+          } catch(SQLException e1) {
+        	  e1.printStackTrace();
+          }
       return 0;
     }
     return id;
@@ -397,15 +580,27 @@ public class SqliteDB {
    */
   public int insertMatch(String table, int trialID, int resID, int partID, String status) {
     int id = 0;
+    PreparedStatement st = null;
     try {
-      String add = "INSERT INTO " + table + " VALUES (null, " + trialID + ", " + resID + ", "
-          + partID + ", " + status + "');";
-      stmt.executeUpdate(add);
+    	st = conn.prepareStatement("INSERT INTO ? VALUES (null, ?, ?, ?, '?';");
+      st.setString(1,  table);
+      st.setInt(2,  trialID);
+      st.setInt(3, resID);
+      st.setInt(4,  partID);
+      st.setString(5, status);
+      st.executeUpdate();
       String check = "SELECT last_insert_rowid() AS num;";
       ResultSet rs = stmt.executeQuery(check);
       rs.next();
       id = rs.getInt("num");
     } catch (Exception e) {
+    	try {
+            if (st != null) {
+              st.close();
+            }
+          } catch(SQLException e1) {
+        	  e1.printStackTrace();
+          }
       return 0;
     }
     return id;

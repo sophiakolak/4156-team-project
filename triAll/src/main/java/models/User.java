@@ -36,13 +36,7 @@ public class User {
   private final Comparator<Match> distCompare = new Comparator<Match>() {
     @Override
     public int compare(Match m1, Match m2) {
-      if (m1.getDistance() < m2.getDistance()) {
-        return -1;
-      } else if (m1.getDistance() > m2.getDistance()) {
-        return 1;
-      } else {
-        return 0;
-      }
+      return Double.compare(m1.getDistance(), m2.getDistance());
     }
   };
 
