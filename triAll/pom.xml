@@ -46,6 +46,12 @@
        <version>3.32.3.2</version>
     </dependency>
     
+      <dependency>
+        <groupId>org.simplejavamail</groupId>
+        <artifactId>simple-java-mail</artifactId>
+        <version>6.4.4</version>
+      </dependency>
+    
 	<dependency>
 	    <groupId>com.konghq</groupId>
 	    <artifactId>unirest-java</artifactId>

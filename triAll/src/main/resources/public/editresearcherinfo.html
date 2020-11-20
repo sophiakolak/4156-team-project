@@ -14,14 +14,22 @@
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <!-- Custom JS -->
-    <script type="text/javascript" src="../static/participantdashboard.js"></script>
-
     <!-- Icons -->
     <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
     <script>
       feather.replace()
     </script>
+
+    <!-- Google Sign In -->
+    <script src="https://apis.google.com/js/platform.js"></script>
+    <meta name="google-signin-client_id" content="46819195782-rhbp0ull70okmgsid0rrd2p8cdub7fpn.apps.googleusercontent.com">
+
+    <!-- Google Maps API -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAYSwqY4yLII5q5a-fXGTdWy9uEBdBWPRo&libraries=places&callback=initAutocomplete" async defer></script>
+
+    <!-- Custom JS -->
+    <script type="text/javascript" src="./static/editresearcherinfo.js"></script>
 
 
    <style>
@@ -132,7 +140,7 @@
       <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">TriALL</a>
       <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
-          <a class="nav-link" href="login.html">Sign out</a>
+          <a class="nav-link" onclick="signOut();">Sign out</a>
         </li>
       </ul>
     </nav>
@@ -143,76 +151,59 @@
           <div class="sidebar-sticky">
             <ul class="nav flex-column">
               <li class="nav-item">
-                <a class="nav-link active" href="participantdashboard.html">
+                <a class="nav-link" href="researcherdashboard.html">
                   <span data-feather="home"></span>
-                  Dashboard <span class="sr-only">(current)</span>
+                  Dashboard 
                 </a>
               </li>
               <li class="nav-item">
                 <!-- add route later -->
-                <a class="nav-link" href="editparticipantinfo.html">
+                <a class="nav-link active" href="editresearcherinfo.html">
                   <span data-feather="users"></span>
-                  Edit Information
+                  Edit Information <span class="sr-only">(current)</span>
                 </a>
-            </li>
+              </li>
+              <li class="nav-item">
+                <!-- add route later -->
+                <a class="nav-link" href="newtrial.html">
+                  <span data-feather="plus"></span>
+                  New Trial
+                </a>
+              </li>
             </ul>
           </div>
         </nav>
 
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
           <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-            <h1 class="h2">Welcome Shirish Participant!</h1>
+            <h1 class="h2">Edit Information</h1>
             <div class="btn-toolbar mb-2 mb-md-0">
             </div>
           </div>
-          <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Here's a list of your matched trials.</h3>
-            </div>   
-
-            <div class="accordion" id="accordionExample">
-              <div class="card">
-                <div class="card-header" id="headingOne">
-                  <h2 class="mb-0">
-                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                      1. Death Trial - Tuesday, September 58th, 2020 - 2 miles away
-                    </button>
-                  </h2>
-                </div>
-
-                <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-                  <div class="card-body">
-                    University of Something <br>
-                    Trial Description <br>
-                    OTher stuff <br>
-                    text teest <br>
-                    i love code <br>
-                    <button type="button" class="btn btn-success acceptMatch">Accept Match</button>
-                    <button type="button" class="btn btn-danger rejectMatch">Reject Match</button>
-                  </div>
-                </div>
-              </div>
-              <div class="card">
-                <div class="card-header" id="headingTwo">
-                  <h2 class="mb-0">
-                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                      2. Putin Vaccine Trial - Tuesday, October 8th, 2020 - 7 miles away
-                    </button>
-                  </h2>
-                </div>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-                  <div class="card-body">
-                    University of Something<br>
-                    Trial Description<br>
-                    OTher stuff<br>
-                    putin putin putin<br>
-                    putin putin<br>
-                    <button type="button" class="btn btn-success acceptMatch">Accept Match</button>
-                    <button type="button" class="btn btn-danger rejectMatch">Reject Match</button>
-                  </div>
-                </div>
-              </div>
+          <form action="" method="post">
+            <div class="form-group">
+                <label>First Name:</label>
+                <input class="form-control first" type="text" name="firstname" required placeholder="Enter Your First Name"/>
+                <span class="Error"></span>
             </div>
+            <div class="form-group">
+                <label>Last Name:</label>
+                <input class="form-control last" type="text" name="lastname" required placeholder="Enter Your Last Name"/>
+                <span class="Error"></span>
+            </div>
+            <div class="form-group">
+                <label>Location:</label>
+                <input id = "autocomplete" class="form-control location" type="text" name="location" onFocus="geolocate()" required placeholder="Enter Your Location"/>
+                <span class="Error"></span>
+            </div>
+            <div class = "hidden_fields">
+                 <input id = "lat" type="hidden" name="lat">
+                 <input id = "lon" type="hidden" name="lon">
+            </div>
+            <div class="form-group">
+                <input class="btn btn-primary btn-block" type="submit" value="Save Changes"/>
+            </div>
+          </form>
         </main>
       </div>
     </div>
