@@ -68,7 +68,7 @@ public class SqliteDB {
   public boolean isTable(String table) {
 	PreparedStatement st = null;
     try {
-      st = conn.prepareStatement("SELECT COUNT(name) AS total FROM sqlite_master WHERE type='table' AND name='?';");
+      st = conn.prepareStatement("SELECT COUNT(name) AS total FROM sqlite_master WHERE type='table' AND name=?;");
       st.setString(1, table);
       ResultSet rs = st.executeQuery();
       rs.next();
@@ -159,12 +159,13 @@ public class SqliteDB {
     ResultSet rs = null;
     PreparedStatement st = null;
     try {
-      String command = "SELECT * FROM %s WHERE %s = '?';";
+      String command = "SELECT * FROM %s WHERE %s = ?;";
       command = String.format(command, table, field);
       st = conn.prepareStatement(command);
-      st.setString(1,  id);
+      st.setString(1, id);
       rs = st.executeQuery();
     } catch (Exception e) {
+      e.printStackTrace();
       if (st != null) {
         try {
           st.close();
@@ -227,21 +228,21 @@ public class SqliteDB {
       switch (type) {
         case researcher:
           create = "CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-            		+ "Location TEXT, Lat REAL, Long REAL, First TEXT, Last TEXT, Email TEXT);";
+            		+ " Lat REAL, Long REAL, Location TEXT, First TEXT, Last TEXT, Email TEXT);";
           create = String.format(create, table);
           st = conn.prepareStatement(create);
           st.executeUpdate();
           break;
         case participant:
           create = "CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-              + " Location TEXT, Lat REAL, Long REAL, First TEXT, Last TEXT, Email TEXT);";
+              + " Lat REAL, Long REAL, Location TEXT, First TEXT, Last TEXT, Email TEXT);";
           create = String.format(create, table);
           st = conn.prepareStatement(create);
           st.executeUpdate();
           break;
         case trial:
          create = "CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY "
-              + "AUTOINCREMENT, researcher_ID INT NOT NULL, description TEXT, Location TEXT,"
+              + "AUTOINCREMENT, researcher_ID INT NOT NULL, description TEXT,"
               + " lat REAL, long REAL, location TEXT, start_date TEXT, end_date TEXT, pay REAL,"
               + " IRB INT, participants_needed INT, participants_confirmed INT);";
           create = String.format(create, table);
@@ -313,7 +314,7 @@ public class SqliteDB {
     int id = 0;
     try {
       String command = "INSERT INTO %s (Lat, Long, First, Last, Email) VALUES ("
-    		  + "?, ?, '?', '?', '?';";
+    		  + "?, ?, ?, ?, ?;";
       command = String.format(command, table);
       st = conn.prepareStatement(command);
       st.setDouble(1, lat);
@@ -359,7 +360,7 @@ public class SqliteDB {
     PreparedStatement st = null;
     try {
     	String command = "REPLACE INTO %s VALUES ( ?"
-        		  + "?, ?, '?', '?', '?');";
+        		  + "?, ?, ?, ?, ?);";
         command = String.format(command, table)	;  
     	st = conn.prepareStatement(command);
         st.setInt(1, id);
@@ -408,8 +409,8 @@ public class SqliteDB {
     int id = 0;
     PreparedStatement st = null;
     try {
-      String command = "INSERT INTO %s VALUES (null, ?, ' ? ', ?"
-              + ", ?, '?', '?', '?', ?, ?, ?, ?);";
+      String command = "INSERT INTO %s VALUES (null, ?, ?, ?"
+              + ", ?, ?, ?, ?, ?, ?, ?, ?);";
       command = String.format(command, table);
       st = conn.prepareStatement(command);
       st.setInt(1, resId);
@@ -465,7 +466,7 @@ public class SqliteDB {
     PreparedStatement st = null;
     try {
       String command = "REPLACE INTO %s VALUES (?, ?, ' ? ', ?"
-              + ", ?, '?', '?', '?', ?, ?, ?, ?);";
+              + ", ?, ?, ?, ?, ?, ?, ?, ?);";
       command = String.format(command, table);
       st = conn.prepareStatement(command);
       st.setInt(1, row);
@@ -516,7 +517,7 @@ public class SqliteDB {
     int id = 0;
     PreparedStatement st  = null;
     try {
-      String command = "INSERT INTO %s VALUES (null, ?, ?, ?, ?, ?, '?', '?', '?';";
+      String command = "INSERT INTO %s VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?;";
       command = String.format(command, table);
       st = conn.prepareStatement(command);
       st.setInt(1, parent);
@@ -563,7 +564,7 @@ public class SqliteDB {
     int id = 0;
     PreparedStatement st = null;
     try {
-    	String command = "INSERT INTO %s VALUES (?, ?, ?, ?, ?, ?, '?', '?', '?';";
+    	String command = "INSERT INTO %s VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?;";
     	command = String.format(command, table);
     	st = conn.prepareStatement(command);
         st.setInt(1, row);
@@ -606,7 +607,7 @@ public class SqliteDB {
     int id = 0;
     PreparedStatement st = null;
     try {
-      String command = "INSERT INTO %s VALUES (null, ?, ?, ?, '?';";
+      String command = "INSERT INTO %s VALUES (null, ?, ?, ?, ?;";
       command = String.format(command, table);
       st = conn.prepareStatement(command);
       st.setInt(1,  trialID);
