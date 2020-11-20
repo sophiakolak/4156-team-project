@@ -41,7 +41,8 @@ public class User {
     loggedIn = false;
   }
 
-  public User(int id, double lat, double lon, String first, String last, String email, boolean isR) {
+  public User(int id, double lat, double lon, String first, 
+		  String last, String email, boolean isR) {
     this.id = id;
     this.lat = lat;
     this.lon = lon;

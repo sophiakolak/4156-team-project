@@ -14,7 +14,8 @@ public class Trial {
 	
 	private Criteria crit;
 	
-	public Trial(int id, User r, String d, double lat, double lon, String t, int IRB, int pn, int pc, Criteria crit) {
+	public Trial(int id, User r, String d, double lat, double lon, 
+			String t, int IRB, int pn, int pc, Criteria crit) {
 		this.id = id;
 		//this.researcher = r;
 		this.desc = d;
