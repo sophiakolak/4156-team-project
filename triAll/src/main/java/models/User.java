@@ -24,8 +24,8 @@ public class User {
     @Override
     public int compare(Trial t1, Trial t2) {
       try {
-        Date d1 = new SimpleDateFormat("YYYY-MM-DD").parse(t1.getStart());
-        Date d2 = new SimpleDateFormat("YYYY-MM-DD").parse(t2.getStart());
+        Date d1 = new SimpleDateFormat("yyyy-MM-dd").parse(t1.getStart());
+        Date d2 = new SimpleDateFormat("yyyy-MM-dd").parse(t2.getStart());
         return d1.compareTo(d2);
       } catch (ParseException e) {
         return 0;
@@ -151,10 +151,10 @@ public class User {
   /**
    * Sort trials.
    */
-  public LinkedList<Trial> sortedTrials(){
+  public LinkedList<Trial> sortedTrials() {
     if (!isResearcher) {
       return null;
-	}
+    }
     LinkedList<Trial> list = new LinkedList<>(trials.values());
     list.sort(dateCompare);
     return list;
