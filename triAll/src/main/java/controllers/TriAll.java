@@ -89,8 +89,8 @@ class TriAll {
                 c = new Criteria(crit.getInt(1), crit.getInt(2), crit.getInt(3), crit.getDouble(4), 
                   crit.getDouble(5), crit.getString(6), crit.getString(7), crit.getString(8));
               }
-              System.out.println(crit.getString(8));
-              System.out.println(trialRS.getString(7));
+              //System.out.println(crit.getString(8));
+              //System.out.println(trialRS.getString(7));
               user.addTrial(trialRS.getInt(1), new Trial(trialRS.getInt(1), user, 
                   trialRS.getString(3), trialRS.getDouble(4), trialRS.getDouble(5), trialRS
                   .getString(6), trialRS.getInt(7), trialRS.getInt(8), trialRS.getInt(9), c));
@@ -123,8 +123,8 @@ class TriAll {
                       .getDouble(4), critRS.getDouble(5), critRS.getString(6), critRS.getString(
                       7), critRS.getString(8));
                 }
-                user.addMatch(new Trial(matchRS.getInt(2), new User(matchRS.getInt(3), resRS
-                    .getDouble(2), resRS.getDouble(4), resRS.getString(5), resRS.getString(6),
+                user.addMatch(matchRS.getInt(1), new Trial(matchRS.getInt(2), new User(matchRS
+                    .getInt(3),resRS.getDouble(2), resRS.getDouble(4), resRS.getString(5), resRS.getString(6),
                     resRS.getString(7), true), trialRS.getString(3), trialRS.getDouble(4), trialRS
                     .getDouble(5), trialRS.getString(6), trialRS.getInt(7), 
                     trialRS.getInt(8), trialRS.getInt(9), c));
@@ -200,6 +200,7 @@ class TriAll {
     app.post("/new-trial-submit", ctx -> {
       if (user.isLoggedIn() && user.isResearcher()) {
         int resRow = user.getID();
+        System.out.println(ctx.body());
         JsonArray form = gson.fromJson(ctx.body(), JsonArray.class);
         String desc = form.get(1).getAsJsonObject().get("value").getAsString();
         double lat = form.get(3).getAsJsonObject().get("value").getAsDouble();
@@ -412,7 +413,7 @@ class TriAll {
 
   }
 
-  public static void checkMatches(User user) {
+  public static void checkMatches(User user, SqliteDB db) {
     try {
       ResultSet trials = db.fetchAll("trial_criteria");
       while (trials.next()) {
@@ -422,7 +423,14 @@ class TriAll {
         if (user.getData().matches(c)) {
           if (!db.matchExists("trial_matches", "trial_id", trials.getInt(2), "participant_id", 
               user.getID())) {
-            //add this match
+            ResultSet trial = db.fetchInt("trials", "ID", trials.getInt(2));
+            if (trial.next()) {
+              int row = db.insertMatch("trial_matches", trial.getInt(1), trial.getInt(2), 
+                  user.getID(), "undecided");
+              user.addMatch(row, new Trial(trial.getInt(1), null, trial.getString(3), trial
+                      .getDouble(4), trial.getDouble(5), trial.getString(6), trial.getInt(7), 
+                      trial.getInt(8), trial.getInt(9), c));
+            }
             //notify
           }
         }
@@ -445,8 +453,12 @@ class TriAll {
         if (trial.getCriteria().matches(d)) {
           if (!db.matchExists("trial_matches", "trial_id", trial.getID(), "participant_id", 
               data.getInt(2))) {
-            //add this match
-            //notify
+            ResultSet trialRS = db.fetchInt("trials", "ID", data.getInt(2));
+            if (trialRS.next()) {
+              int row = db.insertMatch("trial_matches", trialRS.getInt(1), trialRS.getInt(2), 
+                  user.getID(), "undecided");
+              //notify
+            }
           }
         }
       }

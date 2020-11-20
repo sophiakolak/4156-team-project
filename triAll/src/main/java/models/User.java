@@ -100,7 +100,7 @@ public class User {
     return data;
   }
 
-  public void addMatch(Trial t) {
+  public void addMatch(int id, Trial t) {
     //calculate distance to this User
 	
   }
