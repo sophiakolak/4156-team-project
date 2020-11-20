@@ -1,21 +1,29 @@
 package models;
 
+import controllers.EmailService;
+
 public class Notification {
 	private String time;
-	private User participant;
-	private Trial trial;
+	private String partEmail;
+	private String resEmail;
 	
-	public Notification(String time, User p, Trial t){
-		this.time = time;
-		this.participant = p;
-		this.trial = t;
+	public Notification(String p, String r){
+		partEmail = p;
+		resEmail = r;
 	}
 	
 	public String getPartEmail() {
-		return participant.getEmail();
+		return partEmail;
+		
 	}
 	
 	public String getResEmail() {
-		return "";
+		return resEmail;
+	}
+	
+	public void notifyUsers() {
+      EmailService e = new EmailService();
+      e.sendEmails(this);
+      time = java.time.LocalTime.now().toString();
 	}
 }

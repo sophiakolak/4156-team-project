@@ -1,6 +1,9 @@
 package models;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -17,14 +20,20 @@ public class User {
   private HashMap<Integer, Trial> trials;
   private LinkedList<Match> matches;
 
-  private final Comparator<Trial> DATE_COMPARE = new Comparator<Trial>() {
+  private final Comparator<Trial> dateCompare = new Comparator<Trial>() {
     @Override
     public int compare(Trial t1, Trial t2) {
-      return 0;
+      try {
+        Date d1 = new SimpleDateFormat("YYYY-MM-DD").parse(t1.getStart());
+        Date d2 = new SimpleDateFormat("YYYY-MM-DD").parse(t2.getStart());
+        return d1.compareTo(d2);
+      } catch (ParseException e) {
+        return 0;
+      }
     }
   };
 
-  private final Comparator<Match> DIST_COMPARE = new Comparator<Match>() {
+  private final Comparator<Match> distCompare = new Comparator<Match>() {
     @Override
     public int compare(Match m1, Match m2) {
       if (m1.getDistance() < m2.getDistance()) {
@@ -81,16 +90,16 @@ public class User {
     }
   }
 
-  public Trial getTrial(int trial_ID) {
+  public Trial getTrial(int trialID) {
     if (isResearcher) {
-      return trials.get(trial_ID);
+      return trials.get(trialID);
     } else {
       return null;
     }
   }
 
-  public boolean containsTrial(int trial_ID) {
-    if (isResearcher && trials.containsKey(trial_ID)) {
+  public boolean containsTrial(int trialID) {
+    if (isResearcher && trials.containsKey(trialID)) {
       return true;
     }
     return false;
@@ -128,7 +137,7 @@ public class User {
       return null;
 	}
     LinkedList<Trial> list = new LinkedList<>(trials.values());
-    list.sort(DATE_COMPARE);
+    list.sort(dateCompare);
     return list;
   }
 
@@ -136,7 +145,7 @@ public class User {
     if (isResearcher) {
       return null;
 	}
-    matches.sort(DIST_COMPARE);
+    matches.sort(distCompare);
     return matches;
   }
   
