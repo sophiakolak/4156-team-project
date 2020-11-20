@@ -5,7 +5,10 @@ public class Notification {
 	private User participant;
 	private Trial trial;
 	
-	public Notification(String time, User p, Trial t){
+	  /**
+	   * Create new notification.
+	   */
+	public Notification(String time, User p, Trial t) {
 		this.time = time;
 		this.participant = p;
 		this.trial = t;
