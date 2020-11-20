@@ -11,9 +11,9 @@ public class Trial {
 	private String start;
 	private String end;
 	private double pay;
-	private int IRB;
-	private int part_needed;
-	private int part_confirmed;
+	private int irb;
+	private int partNeeded;
+	private int partConfirmed;
 	
 	private Criteria crit;
 	
@@ -32,9 +32,9 @@ public class Trial {
 		this.start = s;
 		this.end = e;
 		this.pay = p;
-		this.IRB = IRB;
-		this.part_needed = pn;
-		this.part_confirmed = pc;
+		this.irb = IRB;
+		this.partNeeded = pn;
+		this.partConfirmed = pc;
 		this.crit = crit;		
 	}
 	
@@ -52,6 +52,10 @@ public class Trial {
 	
 	public double getLong() {
 		return this.lon;
+	}
+	
+	public String getStart() {
+		return start;
 	}
 	
 	
