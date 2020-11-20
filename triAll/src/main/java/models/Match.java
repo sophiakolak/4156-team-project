@@ -26,4 +26,9 @@ public class Match {
   public double getDistance() {
     return distance;
   }
+  
+  public int getID() {
+	return this.id;
+  }
+  
 }
