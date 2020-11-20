@@ -35,5 +35,13 @@ public class Trial {
 		return crit;
 	}
 	
+	public double getLat() {
+		return this.lat;
+	}
+	
+	public double getLong() {
+		return this.lon;
+	}
+	
 	
 }
