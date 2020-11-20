@@ -100,7 +100,7 @@ public class User {
   /**
    * Get trial.
    */
-  public Trial getTrial(int trial_ID) {
+  public Trial getTrial(int trialID) {
     if (isResearcher) {
       return trials.get(trialID);
     } else {
@@ -111,8 +111,8 @@ public class User {
   /**
    * Check if contains trial.
    */
-  public boolean containsTrial(int trial_ID) {
-    if (isResearcher && trials.containsKey(trial_ID)) {
+  public boolean containsTrial(int trialID) {
+    if (isResearcher && trials.containsKey(trialID)) {
       return true;
     }
     return false;
