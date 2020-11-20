@@ -168,15 +168,11 @@ public class User {
     return matches;
   }
   
-<<<<<<< HEAD
-  public static double distance(double lat1, double lon1, double lat2, double lon2, String unit) {
-=======
   /**
    * Calculate distance.
    */
-  private static double distance(double lat1, double lon1, 
+  public static double distance(double lat1, double lon1, 
 		  double lat2, double lon2, String unit) {
->>>>>>> 5c32b01ad243b1b28f755bf3695193a7ee78cf96
 		if ((lat1 == lat2) && (lon1 == lon2)) {
 			return 0;
 		} else {
