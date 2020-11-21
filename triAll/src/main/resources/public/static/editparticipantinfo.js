@@ -76,10 +76,17 @@ $(document).ready(function(){
 // load in participant info
 function loadInfo(participantInfo) {
   console.log("participant: " + participantInfo)
-  var criteria = participantInfo.criteria
+  var criteria = participantInfo.data
   $(".first").val(participantInfo.first)
   $(".last").val(participantInfo.last)
-  $(".age").val(age)
+  $(".email").val(participantInfo.email)
+  $(".age").val(criteria.age)
+  $(".race").val(criteria.race)
+  $(".nationality").val(criteria.nationality)
+
+  var heightInInches = criteria.height
+  var weightInPounds = criteria.weight
+
   // add other fields!
 
 }

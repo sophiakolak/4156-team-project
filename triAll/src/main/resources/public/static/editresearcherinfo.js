@@ -2,7 +2,6 @@ function signOut() {
   var auth2 = gapi.auth2.getAuthInstance();
   var profile = auth2.currentUser.get().getBasicProfile();
   var email = profile.getEmail();
-  alert(email)
   auth2.signOut().then(function () {
     $.ajax({
         type: "POST",
@@ -11,7 +10,7 @@ function signOut() {
         contentType: "application/json; charset=utf-8",
         data : JSON.stringify(email),
         success: function(result){
-          alert( "Logged out!" );
+          window.location.href = "/"
         },
         error: function(request, status, error){
             console.log("Error");

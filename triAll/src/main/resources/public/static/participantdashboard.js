@@ -13,7 +13,6 @@ function signOut() {
   var auth2 = gapi.auth2.getAuthInstance();
   var profile = auth2.currentUser.get().getBasicProfile();
   var email = profile.getEmail();
-  alert(email)
   auth2.signOut().then(function () {
     $.ajax({
         type: "POST",
@@ -22,7 +21,7 @@ function signOut() {
         contentType: "application/json; charset=utf-8",
         data : JSON.stringify(email),
         success: function(result){
-          alert( "Logged out!" );
+          window.location.href = "/"
         },
         error: function(request, status, error){
             console.log("Error");
@@ -72,7 +71,7 @@ function noTrials() {
     card.append(cardHeader)
     var collapsableDiv = $('<div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#trialAccordian">')
     cardBody = $('<div class="card-body">')
-    cardBody.append("What are you waiting for? Update your information now.")
+    cardBody.append("What are you waiting for? Update your information now. <br>")
     var editBtn = $('<button type="button" class="btn btn-primary" onclick="window.location.href=\'editparticipantinfo.html\'">')
     editBtn.append("Edit Information")
     cardBody.append(editBtn)
