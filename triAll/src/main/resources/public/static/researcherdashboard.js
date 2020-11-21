@@ -103,7 +103,7 @@ function noTrials() {
     cardBody.append("What are you waiting for? Create a trial now!")
     var editBtn = $('<button type="button" class="btn btn-primary" onclick="window.location.href=\'newtrial.html\'">')
     editBtn.append("New Trial")
-    cardBody.append(editBtn)
+    cardBody.append("<br>", editBtn)
     collapsableDiv.append(cardBody)
     card.append(collapsableDiv)
     $("#trialAccordian").append(card)

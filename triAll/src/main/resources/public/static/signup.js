@@ -37,7 +37,25 @@ $(document).ready(function(){
    });
     $("#saveChanges").submit(function( event ) {
       event.preventDefault();
-      if($('#participantButton').is(':checked')) { submitParticipant($( this ).serializeArray()) }
+      if($('#participantButton').is(':checked')) { 
+        // Convert height to height in inches
+        // Convert weight to weight in pounds
+        var heightInInches;
+        var weightInLbs
+        if ($('#metricButton:checked').length > 0) {
+          // metric
+          weightInLbs = $('#kilograms').val() * 2.205
+          heightInInches = $('#centimeters').val() * (1/2.54)
+        } else {
+          // imperial
+          weightInLbs = $('#pounds').val()
+          heightInInches = (12 * $('#feet').val()) + Number($('#inches').val())
+        }
+
+        $("#heightInInches").val(heightInInches)
+        $("#weightInLbs").val(weightInLbs)
+        submitParticipant($( this ).serializeArray()) 
+      }
       else if($('#researcherButton').is(':checked')) { submitResearcher($( this ).serializeArray()) }
       event.preventDefault();
     });
@@ -86,23 +104,6 @@ function geolocate() {
 }
 
 function submitParticipant(form_data){
-    // Convert height to height in inches
-    // Convert weight to weight in pounds
-    var heightInInches;
-    var weightInLbs
-    if ($('#metricButton:checked').length > 0) {
-      // metric
-      weightInLbs = $('#kilograms').val() * 2.205
-      heightInInches = $('#centimeters').val() * (1/2.54)
-    } else {
-      // imperial
-      weightInLbs = $('#pounds').val()
-      heightInInches = (12 * $('#feet').val()) + Number($('#inches').val())
-    }
-
-    $("#heightInInches").val(heightInInches)
-    $("#weightInLbs").val(weightInLbs)
-
 
     $.ajax({
         type: "POST",
