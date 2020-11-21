@@ -59,28 +59,6 @@ function signOut() {
               //   </div>
               // </div>
 
-function editTrial(id){
-  route = "/edit-trial-form/" + id
-  console.log("calling editTrial")
-$.ajax({
-      type: "GET",
-      url: route,                
-      dataType : "json",
-      contentType: "application/json; charset=utf-8",
-      success: function(trial){
-        // ??
-        console.log(trial)
-        sessionStorage.setItem('trial', trial);
-        window.location.href = "edittrial.html"
-      },
-      error: function(request, status, error){
-          console.log("Error");
-          console.log(request)
-          console.log(status)
-          console.log(error)
-      }
-    });
-}
 
 function loadTrial(id, researcher, desc, lat, lon, start_date, end_date, pay, IRB, part_needed, part_confirmed){
     var card = $("<div class = 'card_container'>")
@@ -95,13 +73,20 @@ function loadTrial(id, researcher, desc, lat, lon, start_date, end_date, pay, IR
     var collapsableDiv = $('<div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#trialAccordian">')
     cardBody = $('<div class="card-body">')
     cardBody.append("Description: ", desc, "<br>", "IRB: ", IRB, "<br>", "Participants Needed: ", part_needed, "<br>", "Participants Confirmed: ", part_confirmed, "<br>", "Hourly Pay in USD: ", pay)
-    var editBtn = $('<button type="button" class="btn btn-primary editTrial" onclick=editTrial(' + id +')>')
-    editBtn.append("Edit")
-    editBtn.attr('id', id)
-    cardBody.append(editBtn)
+
+    // var editBtn = $('<button type="button" class="btn btn-primary editTrial"')
+    // editBtn.append("Edit")
+    // editBtn.attr('id', id)
+    // cardBody.append(editBtn)
+    
     collapsableDiv.append(cardBody)
     card.append(collapsableDiv)
     $("#trialAccordian").append(card)
+    $(document).on('click','.editTrial', function(){
+        trial_id = this.id;
+        route = "/edit-trial-form/" + trial_id
+        window.location.href = route
+    });
 }
 
 function noTrials() {
@@ -138,12 +123,13 @@ function loadTrials(trialList) {
         var researcher = trial.researcher
         var desc = trial.desc
         var location = trial.location
-        var startDate = trial.start_date
-        var endDate = trial.end_date
+        var startDate = trial.start
+        var endDate = trial.end
         var pay = trial.pay
-        var IRB = trial.IRB
-        var part_needed = trial.part_needed
-        var part_confirmed = trial.part_confirmed
+        var IRB = trial.irb
+        var part_needed = trial.partNeeded
+        var part_confirmed = trial.partConfirmed
+        var criteria = trial.crit
         loadTrial(id, researcher, desc, location, startDate, endDate, pay, IRB, part_needed, part_confirmed)
     } 
   }

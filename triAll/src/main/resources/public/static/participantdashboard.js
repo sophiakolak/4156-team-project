@@ -86,7 +86,7 @@ function loadTrials(trialList) {
   if (trialList == "") {
     noTrials()
   } else {
-    var trials = JSON.parse(trialList)
+    var trials = trialList
     console.log("TRIALS: " + trials)
 
     for (index = 0; index < trials.length; index++) { 

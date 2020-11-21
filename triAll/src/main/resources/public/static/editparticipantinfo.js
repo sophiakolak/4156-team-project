@@ -1,3 +1,27 @@
+function signOut() {
+  var auth2 = gapi.auth2.getAuthInstance();
+  var profile = auth2.currentUser.get().getBasicProfile();
+  var email = profile.getEmail();
+  auth2.signOut().then(function () {
+    $.ajax({
+        type: "POST",
+        url: "/logout",                
+        dataType : "json",
+        contentType: "application/json; charset=utf-8",
+        data : JSON.stringify(email),
+        success: function(result){
+          window.location.href = "/"
+        },
+        error: function(request, status, error){
+            console.log("Error");
+            console.log(request)
+            console.log(status)
+            console.log(error)
+        }
+    });
+  });
+}
+
 $(document).ready(function(){
 
     $('.metric').hide(); 
@@ -52,81 +76,52 @@ $(document).ready(function(){
 // load in participant info
 function loadInfo(participantInfo) {
   console.log("participant: " + participantInfo)
-  var id = participantInfo.id
-  var first = participantInfo.first
-  var last = participantInfo.last
-  var location = participantInfo.location
-  var age = participantInfo.age
-  $(".first").val(first)
-  $(".last").val(last)
-  $(".location").val(location)
+  var criteria = participantInfo.criteria
+  $(".first").val(participantInfo.first)
+  $(".last").val(participantInfo.last)
   $(".age").val(age)
   // add other fields!
 
 }
 
-var placeSearch, autocomplete, lat, lon;
+// var placeSearch, autocomplete, lat, lon;
 
-function initAutocomplete() {
-  // Create the autocomplete object, restricting the search to geographical
-  // location types.
-  autocomplete = new google.maps.places.Autocomplete(
-    /** @type {!HTMLInputElement} */(document.getElementById('autocomplete')),
-    {types: ['geocode']});
+// function initAutocomplete() {
+//   // Create the autocomplete object, restricting the search to geographical
+//   // location types.
+//   autocomplete = new google.maps.places.Autocomplete(
+//     /** @type {!HTMLInputElement} */(document.getElementById('autocomplete')),
+//     {types: ['geocode']});
 
-  // When the user selects an address from the dropdown, populate the address
-  // fields in the form.
-  autocomplete.addListener('place_changed', setLatLon);
-}
+//   // When the user selects an address from the dropdown, populate the address
+//   // fields in the form.
+//   autocomplete.addListener('place_changed', setLatLon);
+// }
 
-function setLatLon() {
-    lat = autocomplete.getPlace().geometry.location.lat()
-    lon = autocomplete.getPlace().geometry.location.lng()
-    $("#lat").val(lat)
-    $("#lon").val(lon)
-}
+// function setLatLon() {
+//     lat = autocomplete.getPlace().geometry.location.lat()
+//     lon = autocomplete.getPlace().geometry.location.lng()
+//     $("#lat").val(lat)
+//     $("#lon").val(lon)
+// }
 
-// Bias the autocomplete object to the user's geographical location,
-// as supplied by the browser's 'navigator.geolocation' object.
-function geolocate() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(position) {
-      var geolocation = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-      };
-      var circle = new google.maps.Circle({
-        center: geolocation,
-        radius: position.coords.accuracy
-      });
-      autocomplete.setBounds(circle.getBounds());
-    });
-  }
-}
-
-function signOut() {
-  var auth2 = gapi.auth2.getAuthInstance();
-  var profile = auth2.currentUser.get().getBasicProfile();
-  var email = profile.getEmail();
-  auth2.signOut().then(function () {
-    $.ajax({
-        type: "POST",
-        url: "/logout",                
-        dataType : "json",
-        contentType: "application/json; charset=utf-8",
-        data : JSON.stringify(email),
-        success: function(result){
-          window.location.href = "/"
-        },
-        error: function(request, status, error){
-            console.log("Error");
-            console.log(request)
-            console.log(status)
-            console.log(error)
-        }
-    });
-  });
-}
+// // Bias the autocomplete object to the user's geographical location,
+// // as supplied by the browser's 'navigator.geolocation' object.
+// function geolocate() {
+//   if (navigator.geolocation) {
+//     navigator.geolocation.getCurrentPosition(function(position) {
+//       var geolocation = {
+//         lat: position.coords.latitude,
+//         lng: position.coords.longitude
+//       };
+//       var circle = new google.maps.Circle({
+//         center: geolocation,
+//         radius: position.coords.accuracy
+//       });
+//       autocomplete.setBounds(circle.getBounds());
+//     });
+//   }
+// }
 
 function save_changes(form_data){    
     // Convert height to height in inches
