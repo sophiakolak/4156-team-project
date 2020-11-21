@@ -31,4 +31,8 @@ public class Match {
 	return this.id;
   }
   
+  public Trial getTrial() {
+	  return trial;
+  }
+  
 }

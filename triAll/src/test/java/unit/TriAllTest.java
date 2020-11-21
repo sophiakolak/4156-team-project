@@ -41,14 +41,14 @@ public class TriAllTest {
 	HashMap<Integer, Trial> trials = new HashMap<Integer, Trial>();
 	LinkedList<Match> matches = new LinkedList<Match>();
 	
-	Criteria d = new Criteria(1, 1, 25, 1.2, 1.2, "male", "cool", "cool");
+	Criteria d = new Criteria(1, 1, 22, 28, 60, 70, 110, 180, "male", "cool", "cool");
 	User u = new User(1, 0, 0, "Shirish","Shirish", "shirishIsCool@gmail.com", false);
 	User r = new User(1, 0, 0, "Gail","Kaiser", "gailIsCool@gmail.com", true);
 	Trial t = new Trial(1, r, "cool trial", 0, 0, "Siberia", "2020-12-01", "2020-12-02", 12, 123, 100, 0, d);
 	
 	@Test 
 	public void testMatches() {
-		Criteria c = new Criteria(1, 1, 25, 1.2, 1.2, "male", "cool", "cool");
+		Criteria c = new Criteria(1, 1, 23, 23, 67, 67, 130, 130, "male", "cool", "cool");
 		boolean is_match = d.matches(c);
 		assertEquals(true, is_match);		
 	}

@@ -163,12 +163,16 @@ public class User {
   /**
    * Sort matches.
    */
-  public LinkedList<Match> sortedMatches(){
+  public LinkedList<Trial> sortedMatches(){
     if (isResearcher) {
       return null;
 	}
     matches.sort(distCompare);
-    return matches;
+    LinkedList<Trial> t = new LinkedList<>();
+    for(Match m : matches) {
+    	t.add(m.getTrial());
+    }
+    return t;
   }
   
   /**
