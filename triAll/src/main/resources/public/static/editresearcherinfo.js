@@ -64,6 +64,7 @@ function loadInfo(researcherInfo) {
   // var location = researcherInfo.location
   $(".first").val(researcherInfo.first)
   $(".last").val(researcherInfo.last)
+  $(".email").val(researcherInfo.email)
   // $(".location").val(location)
 }
 
@@ -115,7 +116,7 @@ function save_changes(form_data){
         contentType: "application/json; charset=utf-8",
         data : JSON.stringify(form_data),
         success: function(result){
-        	alert( "Saved Changes" );
+        	window.location.href = result
         },
         error: function(request, status, error){
             console.log("Error");

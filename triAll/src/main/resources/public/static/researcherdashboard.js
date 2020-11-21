@@ -65,7 +65,7 @@ function loadTrial(id, researcher, desc, lat, lon, start_date, end_date, pay, IR
     var cardHeader = $('<div class="card-header" id="headingOne">')
     var h2 = $('<h2 class="mb-0">')
     var expandBtn = $('<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">')
-    expandBtn.append("TEST TEST", start_date, "<br>", end_date, "<br>", location)
+    expandBtn.append("Start Date: ", start_date, "<br>", "End Date: ", end_date, "<br>", "Location: ", location)
     h2.append(expandBtn)
     cardHeader.append(h2)
     card.append(cardHeader)
