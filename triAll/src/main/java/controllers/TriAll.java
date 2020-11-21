@@ -160,8 +160,10 @@ class TriAll {
       } else {
         user = new User(partRow, lat, lon, first, last, email, false);
         int age = form.get(8).getAsJsonObject().get("value").getAsInt();
-        int height = form.get(13).getAsJsonObject().get("value").getAsInt();
-        int weight = form.get(16).getAsJsonObject().get("value").getAsInt();
+        //int height = form.get(13).getAsJsonObject().get("value").getAsInt();
+        //int weight = form.get(16).getAsJsonObject().get("value").getAsInt();
+        int height  = 0;
+        int weight = 0;
         String gender = form.get(7).getAsJsonObject().get("value").getAsString();
         String race = form.get(17).getAsJsonObject().get("value").getAsString();
         String nationality = form.get(18).getAsJsonObject().get("value").getAsString();
@@ -179,7 +181,7 @@ class TriAll {
     });
 
     app.post("/new-res-submit", ctx -> {
-      System.out.println("Submit endpoint");
+      System.out.println(ctx.body());
       JsonArray form = gson.fromJson(ctx.body(), JsonArray.class);
       double lat = form.get(5).getAsJsonObject().get("value").getAsDouble();
       double lon = form.get(6).getAsJsonObject().get("value").getAsDouble();

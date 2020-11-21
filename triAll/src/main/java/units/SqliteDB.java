@@ -314,7 +314,7 @@ public class SqliteDB {
     int id = 0;
     try {
       String command = "INSERT INTO %s (Lat, Long, First, Last, Email) VALUES ("
-    		  + "?, ?, ?, ?, ?;";
+    		  + "?, ?, ?, ?, ?);";
       command = String.format(command, table);
       st = conn.prepareStatement(command);
       st.setDouble(1, lat);
@@ -465,7 +465,7 @@ public class SqliteDB {
     int id = 0;
     PreparedStatement st = null;
     try {
-      String command = "REPLACE INTO %s VALUES (?, ?, ' ? ', ?"
+      String command = "REPLACE INTO %s VALUES (?, ?, ?, ?"
               + ", ?, ?, ?, ?, ?, ?, ?, ?);";
       command = String.format(command, table);
       st = conn.prepareStatement(command);
@@ -517,7 +517,7 @@ public class SqliteDB {
     int id = 0;
     PreparedStatement st  = null;
     try {
-      String command = "INSERT INTO %s VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?;";
+      String command = "INSERT INTO %s VALUES (null, ?, ?, ?, ?, ?, ?, ?);";
       command = String.format(command, table);
       st = conn.prepareStatement(command);
       st.setInt(1, parent);
@@ -534,6 +534,7 @@ public class SqliteDB {
       id = rs.getInt("num");
       rs.close();
     } catch (Exception e) {
+    	System.err.println(e.getClass().getName() + ": " + e.getMessage());
     	try {
             if (st != null) {
               st.close();
@@ -564,7 +565,7 @@ public class SqliteDB {
     int id = 0;
     PreparedStatement st = null;
     try {
-    	String command = "INSERT INTO %s VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?;";
+    	String command = "INSERT INTO %s VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
     	command = String.format(command, table);
     	st = conn.prepareStatement(command);
         st.setInt(1, row);
@@ -607,7 +608,7 @@ public class SqliteDB {
     int id = 0;
     PreparedStatement st = null;
     try {
-      String command = "INSERT INTO %s VALUES (null, ?, ?, ?, ?;";
+      String command = "INSERT INTO %s VALUES (null, ?, ?, ?, ?);";
       command = String.format(command, table);
       st = conn.prepareStatement(command);
       st.setInt(1,  trialID);
