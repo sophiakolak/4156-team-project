@@ -275,24 +275,27 @@ class TriAll {
 
     app.post("/edit-part-submit", ctx -> {
       if (user.isLoggedIn() && !user.isResearcher()) {
+        System.out.println(ctx.body());
         JsonArray form = gson.fromJson(ctx.body(), JsonArray.class);
-        double lat = form.get(5).getAsJsonObject().get("value").getAsDouble();
-        double lon = form.get(6).getAsJsonObject().get("value").getAsDouble();
-        String location = form.get(4).getAsJsonObject().get("value").getAsString();
+        //double lat = form.get(4).getAsJsonObject().get("value").getAsDouble();
+        //double lon = form.get(5).getAsJsonObject().get("value").getAsDouble();
+        double lat = user.getLat();
+        double lon = user.getLon();
+        String location = form.get(3).getAsJsonObject().get("value").getAsString();
         String first = form.get(1).getAsJsonObject().get("value").getAsString();
         String last = form.get(2).getAsJsonObject().get("value").getAsString();
-        String email = form.get(3).getAsJsonObject().get("value").getAsString(); 
+        String email = user.getEmail();
         int partId = db.updateUser("participants", user.getID(), lat, lon, location, first, last, email);
         if (partId == 0) {
           ctx.redirect("not_found.html");
         } else {
           user.update(lat, lon, first, last, email);
-          int age = form.get(8).getAsJsonObject().get("value").getAsInt();
-          int height = form.get(13).getAsJsonObject().get("value").getAsInt();
-          int weight = form.get(16).getAsJsonObject().get("value").getAsInt();
-          String gender = form.get(7).getAsJsonObject().get("value").getAsString();
-          String race = form.get(17).getAsJsonObject().get("value").getAsString();
-          String nationality = form.get(18).getAsJsonObject().get("value").getAsString();
+          int age = form.get(5).getAsJsonObject().get("value").getAsInt();
+          int height = form.get(10).getAsJsonObject().get("value").getAsInt();
+          int weight = form.get(13).getAsJsonObject().get("value").getAsInt();
+          String gender = form.get(4).getAsJsonObject().get("value").getAsString();
+          String race = form.get(14).getAsJsonObject().get("value").getAsString();
+          String nationality = form.get(15).getAsJsonObject().get("value").getAsString();
           int critRow = db.updateCriteria("participant_data", user.getData().getID(), partId, 
               age, age, height, height, weight, weight, gender, race, nationality);
           if (critRow == 0) {
@@ -304,8 +307,9 @@ class TriAll {
             ctx.result(gson.toJson("/participantdashboard.html"));  
           }
         }
-      } else {
+      } else { 
         //not allowed
+        System.out.println(ctx.body());
       }
     });
 

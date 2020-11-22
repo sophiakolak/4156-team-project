@@ -123,6 +123,14 @@ public class User {
   public Criteria getData() {
     return data;
   }
+  
+  public double getLat() {
+    return lat;
+  }
+  
+  public double getLon() {
+    return lon;
+  }
 
   /**
    * Add match.
