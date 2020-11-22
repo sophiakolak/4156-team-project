@@ -3,9 +3,12 @@ package models;
 public class Criteria {
 	private int id;
 	private int extID;
-	private int age;
-	private double height;
-	private double weight;
+	private int minAge;
+	private int maxAge;
+	private double minHeight;
+	private double maxHeight;
+	private double minWeight;
+	private double maxWeight;
 	private String gender;
 	private String race;
 	private String nationality;
@@ -13,13 +16,16 @@ public class Criteria {
 	  /**
 	   * Creates criteria object.
 	   */
-	public Criteria(int id, int extID, int age, double height, 
-			double weight, String gender, String race, String nationality) {
+	public Criteria(int id, int extID, int minAge, int maxAge, double minHeight, double maxHeight,
+			double minWeight, double maxWeight, String gender, String race, String nationality) {
 		this.id = id;
 		this.extID = extID;
-		this.age = age;
-		this.height = height;
-		this.weight = weight;
+		this.minAge = minAge;
+		this.maxAge = maxAge;
+		this.minHeight = minHeight;
+		this.maxHeight = maxHeight;
+		this.minWeight = minWeight;
+		this.maxWeight = maxWeight;
 		this.gender = gender;
 		this.race = race;
 		this.nationality = nationality;
@@ -30,15 +36,15 @@ public class Criteria {
 	}
 	
 	public int getAge() {
-		return age;
+		return minAge;
 	}
 	
 	public double getHeight() {
-		return height;
+		return minHeight;
 	}
 	
 	public double getWeight() {
-		return weight;
+		return minWeight;
 	}
 	
 	public String getGender() {
@@ -53,16 +59,17 @@ public class Criteria {
 		return nationality;
 	}
 	
-	  /**
-	   * Checks if criteria match.
-	   */
-	public boolean matches(Criteria c) {
-		if (c.getAge() == age && c.getHeight() == height && c.getWeight() == weight 
-				&& c.getGender().equals(gender) && c.getRace().equals(race) 
-				&& c.getNationality().equals(nationality)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+  /**
+    * Checks if criteria match.
+    */
+  public boolean matches(Criteria c) {
+    if (c.getAge() >= minAge && c.getAge() <= maxAge && c.getHeight() >= minHeight 
+        && c.getHeight() <= maxHeight && c.getWeight() >= minWeight && c.getWeight()
+        <= maxWeight && c.getGender().equals(gender) && c.getRace().equals(race) 
+        && c.getNationality().equals(nationality)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

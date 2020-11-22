@@ -136,6 +136,7 @@ public class SqliteDB {
       st.setInt(1, id);
       rs = st.executeQuery();
     } catch (Exception e) {
+      e.printStackTrace();
       if (st != null) {
         try {
           st.close();
@@ -176,6 +177,32 @@ public class SqliteDB {
       return rs;
     }
     return rs;
+  }
+  
+  public String fetchEmail(String table, String field, int id) {
+    PreparedStatement st = null;
+    String email = "";
+    try {
+      String command = "SELECT email FROM %s WHERE %s = ?;";
+      command = String.format(command, table, field);
+      st = conn.prepareStatement(command);
+      st.setInt(1, id);
+      ResultSet rs = st.executeQuery();
+      rs.next();
+      email = rs.getString(1);
+      st.close();
+    } catch (Exception e) {
+      e.printStackTrace();
+      if (st != null) {
+        try {
+          st.close();
+        } catch (SQLException e1) {
+          e1.printStackTrace();
+        }
+      }
+      return email;
+    }
+    return email;
   }
   
   /**
@@ -251,7 +278,7 @@ public class SqliteDB {
           break;
         case trialCriteria:
           create = "CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-              + " trial_ID INT NOT NULL, Age INT, Height_in_inches REAL, Weight_in_lbs REAL, Gender"
+              + " trial_ID INT NOT NULL, Min_Age INT, Max_Age INT, Min_height REAL, Max_height REAL, Min_Weight REAL, Max_weight REAL, Gender"
               + " TEXT, Race TEXT, Nationality TEXT);";
           create = String.format(create, table);
           st = conn.prepareStatement(create);
@@ -259,8 +286,8 @@ public class SqliteDB {
           break;
         case participantData:
         	create = "CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-              + " participant_ID INT NOT NULL, Age INT, Height_in_inches REAL, Weight_in_lbs REAL, "
-              + "Gender TEXT, Race TEXT, Nationality TEXT);";
+              + " participant_ID INT NOT NULL, minAge INT, maxAge INT, minHeight REAL, MaxHeight"
+              + " REAL, MinWeight REAL, maxWeight REAL, Gender TEXT, Race TEXT, Nationality TEXT);";
         	create = String.format(create, table);
             st = conn.prepareStatement(create);
             st.executeUpdate();
@@ -504,29 +531,35 @@ public class SqliteDB {
    * Inserts a new entry into a Criteria-style table.
    * @param table Name of the table.
    * @param parent Row of parent object in its table.
-   * @param age Age to be matched.
-   * @param height Height to be matched.
-   * @param weight Weight to be matched.
+   * @param minAge Minimum age to be matched.
+   * @param maxAge Maximum age to be matched.
+   * @param minHeight Minimum height to be matched.
+   * @param maxHeight maximum height to be matched.
+   * @param minWeight Minimum weight to be matched.
+   * @param maxWeight maximum weight to be matched.
    * @param gender Gender to be matched.
    * @param race Ethnicity to be matched.
    * @param nationality Nationality to be matched.
    * @return The row into which the new criteria was inserted - 0 upon failure.
    */
-  public int insertCriteria(String table, int parent, int age, int height, int weight, 
-      String gender, String race, String nationality) {
+  public int insertCriteria(String table, int parent, int minAge, int maxAge, int minHeight,
+      int maxHeight, int minWeight, int maxWeight, String gender, String race, String nationality) {
     int id = 0;
     PreparedStatement st  = null;
     try {
-      String command = "INSERT INTO %s VALUES (null, ?, ?, ?, ?, ?, ?, ?);";
+      String command = "INSERT INTO %s VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
       command = String.format(command, table);
       st = conn.prepareStatement(command);
       st.setInt(1, parent);
-      st.setInt(2,  age);
-      st.setInt(3, height);
-      st.setInt(4, weight);
-      st.setString(5, gender);
-      st.setString(6, race);
-      st.setString(7, nationality);
+      st.setInt(2,  minAge);
+      st.setInt(3,  maxAge);
+      st.setInt(4, minHeight);
+      st.setInt(5, maxHeight);
+      st.setInt(6, minWeight);
+      st.setInt(7, maxWeight);
+      st.setString(8, gender);
+      st.setString(9, race);
+      st.setString(10, nationality);
       st.executeUpdate();
       String check = "SELECT last_insert_rowid() AS num;";
       ResultSet rs = stmt.executeQuery(check);
@@ -552,30 +585,36 @@ public class SqliteDB {
    * @param table Name of the table.
    * @param row Row of the entry to update.
    * @param parent Row of parent object in its table.
-   * @param age Age to be matched.
-   * @param height Height to be matched.
-   * @param weight Weight to be matched.
+   * @param minAge Minimum age to be matched.
+   * @param maxAge Maximum age to be matched.
+   * @param minHeight Minimum height to be matched.
+   * @param maxHeight maximum height to be matched.
+   * @param minWeight Minimum weight to be matched.
+   * @param maxWeight maximum weight to be matched.
    * @param gender Gender to be matched.
    * @param race Ethnicity to be matched.
    * @param nationality Nationality to be matched.
    * @return The row which was updated - 0 upon failure.
    */
-  public int updateCriteria(String table, int row, int parent, int age, int height, int weight,
-      String gender, String race, String nationality) {
+  public int updateCriteria(String table, int row, int parent, int minAge, int maxAge, int minHeight,
+      int maxHeight, int minWeight, int maxWeight, String gender, String race, String nationality) {
     int id = 0;
     PreparedStatement st = null;
     try {
-    	String command = "INSERT INTO %s VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+    	String command = "INSERT INTO %s VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
     	command = String.format(command, table);
     	st = conn.prepareStatement(command);
         st.setInt(1, row);
         st.setInt(2, parent);
-        st.setInt(3,  age);
-        st.setInt(4, height);
-        st.setInt(5, weight);
-        st.setString(6, gender);
-        st.setString(7, race);
-        st.setString(8, nationality);
+        st.setInt(3, minAge);
+        st.setInt(4, maxAge);
+        st.setInt(5, minHeight);
+        st.setInt(6, maxHeight);
+        st.setInt(7, minWeight);
+        st.setInt(8, maxWeight);
+        st.setString(9, gender);
+        st.setString(10, race);
+        st.setString(11, nationality);
         st.executeUpdate();
       String check = "SELECT last_insert_rowid() AS num;";
       ResultSet rs = stmt.executeQuery(check);
