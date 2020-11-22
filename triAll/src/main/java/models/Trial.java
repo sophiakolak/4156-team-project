@@ -58,5 +58,13 @@ public class Trial {
 		return start;
 	}
 	
+	public int getPartConf() {
+		return partConfirmed;
+	}
+	
+	public void confirmOne() {
+		partConfirmed++;
+	}
+	
 	
 }
