@@ -48,11 +48,11 @@ function loadTrial(id, name, desc, location, startDate, endDate, pay, IRB, partN
     cardBody = $('<div class="card-body">')
     cardBody.append("Description: ", desc, "<br>", "IRB: ", IRB, "<br>", "Participants Needed: ", partNeeded, "<br>", "Participants Confirmed: ", partConfirmed, "<br>", "Hourly Pay in USD: ", pay)
 
-    var acceptBtn = $('<button type="button" onclick="window.location.href=\'/accept-match/\'' + id + '" class="btn btn-primary acceptTrial">')
+    var acceptBtn = $('<button type="button" onclick="acceptMatch(' + id + ')" class="btn btn-primary acceptTrial">')
     acceptBtn.append("Accept")
     acceptBtn.attr('id', id)
 
-    var rejectBtn = $('<button type="button" onclick="window.location.href=\'/reject-match/\'' + id + '" class="btn btn-danger rejectTrial">')
+    var rejectBtn = $('<button type="button" onclick="rejectMatch(' + id + ')" class="btn btn-danger rejectTrial">')
     rejectBtn.append("Reject")
     rejectBtn.attr('id', id)
 
@@ -108,6 +108,45 @@ function loadTrials(trialList) {
     } 
   }
 }
+
+function acceptMatch(trialId){
+  $.ajax({
+        type: "POST",
+        url: "/acceptMatch",                
+        dataType : "json",
+        contentType: "application/json; charset=utf-8",
+        data : JSON.stringify(trialId),
+        success: function(result){
+          window.location.href = result
+        },
+        error: function(request, status, error){
+            console.log("Error");
+            console.log(request)
+            console.log(status)
+            console.log(error)
+        }
+  });
+}
+
+function rejectMatch(trialId){
+  $.ajax({
+        type: "POST",
+        url: "/rejectMatch",                
+        dataType : "json",
+        contentType: "application/json; charset=utf-8",
+        data : JSON.stringify(trialId),
+        success: function(result){
+          window.location.href = result
+        },
+        error: function(request, status, error){
+            console.log("Error");
+            console.log(request)
+            console.log(status)
+            console.log(error)
+        }
+  });
+}
+
 
 $(document).ready(function(){
 
