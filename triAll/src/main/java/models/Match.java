@@ -35,4 +35,8 @@ public class Match {
 	  return trial;
   }
   
+  public void setStatus(String status) {
+	  this.status = status;
+  }
+  
 }
