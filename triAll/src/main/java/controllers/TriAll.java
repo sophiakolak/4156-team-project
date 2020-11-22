@@ -79,8 +79,8 @@ class TriAll {
             ctx.result(gson.toJson("/signup"));
           } else {
             //is researcher
-            user = new User(rs.getInt(1), rs.getDouble(2), rs.getDouble(3), rs.getString(4), 
-              rs.getString(5), rs.getString(6), true);
+            user = new User(rs.getInt(1), rs.getDouble(2), rs.getDouble(3), rs.getString(5), 
+              rs.getString(6), rs.getString(7), true);
             ResultSet trialRS = db.fetchInt("trials", "researcher_ID", user.getID());
             System.out.println(trialRS.getString(7));
             while (trialRS.next()) {
@@ -102,8 +102,8 @@ class TriAll {
           }
         } else {
           //is participant
-          user = new User(rs.getInt(1), rs.getDouble(2), rs.getDouble(3), rs.getString(4), rs
-            .getString(5), rs.getString(6), false);
+          user = new User(rs.getInt(1), rs.getDouble(2), rs.getDouble(3), rs.getString(5), rs
+            .getString(6), rs.getString(7), false);
           ResultSet data = db.fetchInt("participant_data", "participant_ID", user.getID());
           if (!data.next()) {
             //there is no data
@@ -408,11 +408,26 @@ class TriAll {
     //If we don't need them please just delete them
     app.post("/accept-match/:trialId/", ctx -> {
       // change trial status to accepted
-      // increment participants_confirmed 
+      // increment participants_confirmed
+    	int trialID = ctx.pathParam("trialId", Integer.class).get();
+    	int confs = user.acceptMatch(trialID);
+    	if(confs >= 0) {
+    		db.acceptMatch("trial_matches", trialID);
+    		db.incTrial("trials", trialID, confs);
+    	 ctx.result(gson.toJson("/participantdashboard"));
+    	} else {
+    	  ctx.redirect("not_found.html");
+    	}
     });
         
     app.post("/reject-match/:trialId/", ctx -> {
-      // change trial status to rejected
+    	int trialID = ctx.pathParam("trialId", Integer.class).get();
+    	if (user.rejectMatch(trialID)) {
+    		 db.rejectMatch("trial_matches", trialID);
+    		 ctx.result(gson.toJson("/participantdashboard"));
+    	} else {
+    	  ctx.redirect("not_found.html");
+    	}
     });
         
     app.get("/researcher-dashboard", ctx -> {
