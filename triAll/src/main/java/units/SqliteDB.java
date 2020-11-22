@@ -672,6 +672,66 @@ public class SqliteDB {
     }
     return id;
   }
+  
+  public void acceptMatch(String table, int id) {
+    PreparedStatement st = null;
+    try {
+      String command = "UPDATE %s SET status = 'accepted' WHERE trial_ID = ?";
+      command = String.format(command, table);
+      st = conn.prepareStatement(command);
+      st.setInt(1,  id);
+      st.executeUpdate();
+      st.close();
+    } catch (Exception e) {
+      try {
+        if (st != null) {
+          st.close();
+        }
+      } catch (SQLException e1) {
+        e1.printStackTrace();
+      }
+    }
+  }
+  
+  public void rejectMatch(String table, int id) {
+    PreparedStatement st = null;
+    try {
+      String command = "UPDATE %s SET status = 'rejected' WHERE trial_ID = ?";
+      command = String.format(command, table);
+      st = conn.prepareStatement(command);
+      st.setInt(1,  id);
+      st.executeUpdate();
+      st.close();
+    } catch (Exception e) {
+      try {
+        if (st != null) {
+          st.close();
+        }
+      } catch (SQLException e1) {
+        e1.printStackTrace();
+      }
+    }
+  }
+  
+  public void incTrial(String table, int id, int confs) {
+    PreparedStatement st = null;
+    try {
+      String command = "UPDATE %s SET status = 'accepted' WHERE trial_ID = ?";
+      command = String.format(command, table);
+      st = conn.prepareStatement(command);
+      st.setInt(1, id);
+      st.executeUpdate();
+      st.close();
+    } catch (Exception e) {
+      try {
+        if (st != null) {
+          st.close();          
+        }
+      } catch (SQLException e1) {
+        e1.printStackTrace();
+      }
+    }
+  }
     
   /**
    * Closes connection to the database.
