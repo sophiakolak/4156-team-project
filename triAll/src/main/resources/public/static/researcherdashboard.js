@@ -10,12 +10,11 @@ gapi.load('auth2', function() {
 });
 
 
-// sign out finction
+// sign out function
 function signOut() {
     var auth2 = gapi.auth2.getAuthInstance();
     var profile = auth2.currentUser.get().getBasicProfile();
     var email = profile.getEmail();
-    alert(email)
     auth2.signOut().then(function () {
       $.ajax({
           type: "POST",
@@ -24,7 +23,7 @@ function signOut() {
           contentType: "application/json; charset=utf-8",
           data : JSON.stringify(email),
           success: function(result){
-            alert( "Logged out!" );
+            window.location.href = result
           },
           error: function(request, status, error){
               console.log("Error");
@@ -34,45 +33,22 @@ function signOut() {
           }
       });
     });
-  }
-
-// Add function to load in trials
-              // <div class="card">
-              //   <div class="card-header" id="headingOne">
-              //     <h2 class="mb-0">
-              //       <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-              //         1. Death Trial - Tuesday, September 58th, 2020 - 2 miles away
-              //       </button>
-              //     </h2>
-              //   </div>
-
-              //   <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#trialAccordian">
-              //     <div class="card-body">
-              //       University of Something <br>
-              //       Trial Description <br>
-              //       OTher stuff <br>
-              //       text teest <br>
-              //       i love code <br>
-
-              //       <button type="button" class="btn btn-primary editTrial">Edit</button>
-              //     </div>
-              //   </div>
-              // </div>
+}
 
 
-function loadTrial(id, researcher, desc, lat, lon, start_date, end_date, pay, IRB, part_needed, part_confirmed){
+function loadTrial(id, name, desc, location, startDate, endDate, pay, IRB, partNeeded, partConfirmed){
     var card = $("<div class = 'card_container'>")
     var cardHeader = $('<div class="card-header" id="headingOne">')
     var h2 = $('<h2 class="mb-0">')
     var expandBtn = $('<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">')
-    expandBtn.append("Start Date: ", start_date, ",", "End Date: ", end_date, ",", "Location: ", location)
+    expandBtn.append("Start Date: ", startDate, ", ", "End Date: ", endDate, ", ", "Location: ", location)
     h2.append(expandBtn)
     cardHeader.append(h2)
     card.append(cardHeader)
 
     var collapsableDiv = $('<div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#trialAccordian">')
     cardBody = $('<div class="card-body">')
-    cardBody.append("Description: ", desc, "<br>", "IRB: ", IRB, "<br>", "Participants Needed: ", part_needed, "<br>", "Participants Confirmed: ", part_confirmed, "<br>", "Hourly Pay in USD: ", pay)
+    cardBody.append("Description: ", desc, "<br>", "IRB: ", IRB, "<br>", "Participants Needed: ", partNeeded, "<br>", "Participants Confirmed: ", partConfirmed, "<br>", "Hourly Pay in USD: ", pay)
 
     // var editBtn = $('<button type="button" class="btn btn-primary editTrial"')
     // editBtn.append("Edit")
@@ -120,7 +96,6 @@ function loadTrials(trialList) {
         trial = trials[index]
         console.log("trial: " + trial)
         var id = trial.id
-        var researcher = trial.researcher
         var desc = trial.desc
         var location = trial.location
         var startDate = trial.start
@@ -130,7 +105,7 @@ function loadTrials(trialList) {
         var part_needed = trial.partNeeded
         var part_confirmed = trial.partConfirmed
         var criteria = trial.crit
-        loadTrial(id, researcher, desc, location, startDate, endDate, pay, IRB, part_needed, part_confirmed)
+        loadTrial(id, name, desc, location, startDate, endDate, pay, IRB, part_needed, part_confirmed)
     } 
   }
 }
