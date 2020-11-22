@@ -12,7 +12,7 @@ public class EmailService {
 	private Mailer mailer;
 	
 	public EmailService() {
-		mailer = MailerBuilder.withSMTPServer("smtp.aol.com", 587, "clinicaltriall", "thzbyorvaoauajzs").withTransportStrategy(TransportStrategy.SMTP_TLS).buildMailer();
+		mailer = MailerBuilder.withSMTPServer("smtp.gmail.com", 587, "triallclinical@gmail.com", "MontagueCapulet").withTransportStrategy(TransportStrategy.SMTP_TLS).buildMailer();
 	}
 	
 	public void sendEmails(Notification n) {
