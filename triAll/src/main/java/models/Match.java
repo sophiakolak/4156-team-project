@@ -26,17 +26,17 @@ public class Match {
   public double getDistance() {
     return distance;
   }
-  
+
   public int getID() {
-	return this.id;
+    return this.id;
   }
-  
+
   public Trial getTrial() {
-	  return trial;
+    return trial;
   }
-  
+
   public void setStatus(String status) {
-	  this.status = status;
+    this.status = status;
   }
-  
+
 }

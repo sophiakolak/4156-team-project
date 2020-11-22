@@ -80,7 +80,7 @@ class TriAll {
           } else {
             //is researcher
             user = new User(rs.getInt(1), rs.getDouble(2), rs.getDouble(3), rs.getString(5), 
-              rs.getString(6), rs.getString(7), true);
+                rs.getString(6), rs.getString(7), true);
             ResultSet trialRS = db.fetchInt("trials", "researcher_ID", user.getID());
             System.out.println(trialRS.getString(7));
             while (trialRS.next()) {
@@ -103,7 +103,7 @@ class TriAll {
         } else {
           //is participant
           user = new User(rs.getInt(1), rs.getDouble(2), rs.getDouble(3), rs.getString(5), rs
-            .getString(6), rs.getString(7), false);
+              .getString(6), rs.getString(7), false);
           ResultSet data = db.fetchInt("participant_data", "participant_ID", user.getID());
           if (!data.next()) {
             //there is no data
@@ -125,13 +125,13 @@ class TriAll {
                   c = new Criteria(critRS.getInt(1), critRS.getInt(2), critRS.getInt(3), critRS
                       .getInt(4), critRS.getDouble(5), critRS.getDouble(6), critRS
                       .getDouble(7), critRS.getDouble(8), critRS.getString(9), critRS.getString(
-                      10), critRS.getString(11));
+                          10), critRS.getString(11));
                 }
                 user.addMatch(matchRS.getInt(1), new Trial(matchRS.getInt(2), new User(matchRS
                     .getInt(3), resRS.getDouble(2), resRS.getDouble(4), resRS.getString(5), resRS
                     .getString(6), resRS.getString(7), true), trialRS.getString(3), trialRS
                     .getDouble(4), trialRS.getDouble(5), trialRS.getString(6), trialRS.getString(
-                    7), trialRS.getString(8), trialRS.getDouble(9), trialRS.getInt(10), trialRS
+                        7), trialRS.getString(8), trialRS.getDouble(9), trialRS.getInt(10), trialRS
                     .getInt(11), trialRS.getInt(12), c));
               }
             }
@@ -202,7 +202,7 @@ class TriAll {
     app.get("/new-trial-form", ctx -> {
       ctx.redirect("newtrial.html");
     });
-        
+
     app.post("/new-trial-submit", ctx -> {
       if (user.isLoggedIn() && user.isResearcher()) {
         int resRow = user.getID();
@@ -240,7 +240,7 @@ class TriAll {
           } else {
             Trial t = new Trial(trialRow, user, desc, lat, lon, location, start, end,
                 pay, irb, needed, confirmed, new Criteria(critRow, trialRow, minAge, maxAge, 
-                minHeight, maxHeight, minWeight, maxWeight, gender, race, nationality));
+                    minHeight, maxHeight, minWeight, maxWeight, gender, race, nationality));
             user.addTrial(trialRow, t);
             checkMatches(t);
             ctx.result(gson.toJson("/researcherdashboard.html"));
@@ -250,7 +250,7 @@ class TriAll {
         //not allowed to make a trial
       }
     });
-        
+
     app.get("/edit-part-form", ctx -> {
       if (!user.isLoggedIn()) {
         ctx.result(gson.toJson("/"));
@@ -346,7 +346,7 @@ class TriAll {
 
 
     });
-        
+
     app.post("/edit-trial-submit/:trialId/", ctx -> {
       int trialID = ctx.pathParam("trialId", Integer.class).get();
       if (user.isLoggedIn() && user.containsTrial(trialID)) {
@@ -385,7 +385,7 @@ class TriAll {
           } else {
             Trial t = new Trial(trialRow, user, desc, lat, lon, location, start, end,
                 pay, irb, needed, confirmed, new Criteria(critRow, trialRow, minAge, maxAge, 
-                minHeight, maxHeight, minWeight, maxWeight, gender, race, nationality));
+                    minHeight, maxHeight, minWeight, maxWeight, gender, race, nationality));
             checkMatches(t); 
             user.addTrial(trialRow, t);
           }
@@ -395,41 +395,39 @@ class TriAll {
       }
 
     });        
-        
-        
+
+
     app.post("/logout", ctx -> {
       //ctx.body() contains email of user to be logged out
       user.logOut();
       System.out.println("Logging out user");
       ctx.result(gson.toJson("/"));
     });
-        
+
     //Routes added by sarah that we might need
     //If we don't need them please just delete them
-    app.post("/accept-match/:trialId/", ctx -> {
-      // change trial status to accepted
-      // increment participants_confirmed
-    	int trialID = ctx.pathParam("trialId", Integer.class).get();
-    	int confs = user.acceptMatch(trialID);
-    	if(confs >= 0) {
-    		db.acceptMatch("trial_matches", trialID);
-    		db.incTrial("trials", trialID, confs);
-    	 ctx.result(gson.toJson("/participantdashboard"));
-    	} else {
-    	  ctx.redirect("not_found.html");
-    	}
+    app.post("/accept-match/", ctx -> {
+      int trialID = Integer.parseInt(ctx.body());
+      int confs = user.acceptMatch(trialID);
+      if (confs >= 0) {
+        db.acceptMatch("trial_matches", trialID);
+        db.incTrial("trials", trialID, confs);
+        ctx.result(gson.toJson("/participantdashboard.html"));
+      } else {
+        ctx.redirect("not_found.html");
+      }
     });
-        
-    app.post("/reject-match/:trialId/", ctx -> {
-    	int trialID = ctx.pathParam("trialId", Integer.class).get();
-    	if (user.rejectMatch(trialID)) {
-    		 db.rejectMatch("trial_matches", trialID);
-    		 ctx.result(gson.toJson("/participantdashboard"));
-    	} else {
-    	  ctx.redirect("not_found.html");
-    	}
+
+    app.post("/reject-match/", ctx -> {
+      int trialID = Integer.parseInt(ctx.body());
+      if (user.rejectMatch(trialID)) {
+        db.rejectMatch("trial_matches", trialID);
+        ctx.result(gson.toJson("/participantdashboard.html"));
+      } else {
+        ctx.redirect("not_found.html");
+      }
     });
-        
+
     app.get("/researcher-dashboard", ctx -> {
       if (user.isLoggedIn() && user.isResearcher()) {
         LinkedList<Trial> trials = user.sortedTrials();
@@ -441,7 +439,7 @@ class TriAll {
         ctx.redirect("/");
       }
     });
- 
+
     app.get("/participant-dashboard", ctx -> {
       if (user.isLoggedIn() && !user.isResearcher()) {
         String matchesJson = gson.toJson(user.sortedMatches());
@@ -469,9 +467,9 @@ class TriAll {
               int row = db.insertMatch("trial_matches", trial.getInt(1), trial.getInt(2), 
                   user.getID(), "pending");
               user.addMatch(row, new Trial(trial.getInt(1), null, trial.getString(3), trial
-                      .getDouble(4), trial.getDouble(5), trial.getString(6), trial.getString(7), 
-                      trial.getString(8), trial.getDouble(9), trial.getInt(10), trial.getInt(11),
-                      trial.getInt(12), c));
+                  .getDouble(4), trial.getDouble(5), trial.getString(6), trial.getString(7), 
+                  trial.getString(8), trial.getDouble(9), trial.getInt(10), trial.getInt(11),
+                  trial.getInt(12), c));
               String email = db.fetchEmail("researchers", "ID", trials.getInt(2));
               Notification n = new Notification(user.getEmail(), email);
               n.notifyUsers();
@@ -525,20 +523,20 @@ class TriAll {
       return parts[0];
     }
   }
-  
+
   public static boolean authenticate(String body, String email) {
     String[] parts = body.split(":");
     if (parts.length > 2) {
       String[] token = parts[2].split("\"");
       System.out.println(token[1]);
       GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(),
-              new JacksonFactory())
-              // Specify the CLIENT_ID of the app that accesses the backend:
-              .setAudience(Collections.singletonList(
+          new JacksonFactory())
+          // Specify the CLIENT_ID of the app that accesses the backend:
+          .setAudience(Collections.singletonList(
               "46819195782-rhbp0ull70okmgsid0rrd2p8cdub7fpn.apps.googleusercontent.com"))
-              // Or, if multiple clients access the backend:
-              //.setAudience(Arrays.asList(CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3))
-              .build();
+          // Or, if multiple clients access the backend:
+          //.setAudience(Arrays.asList(CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3))
+          .build();
       try {
         GoogleIdToken idToken = verifier.verify(token[1]);
         if (idToken != null) {
