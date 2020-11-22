@@ -77,58 +77,86 @@ $(document).ready(function(){
 function loadInfo(participantInfo) {
   console.log("participant: " + participantInfo)
   var criteria = participantInfo.data
+  console.log("criteria: " + criteria)
+  console.log("first: " + participantInfo.first)
+  console.log("last: " + participantInfo.last)
+  console.log("age: " + criteria.age)
+  console.log("ethnicity: " + criteria.race)
+  console.log("nationality: " + criteria.nationality)
   $(".first").val(participantInfo.first)
   $(".last").val(participantInfo.last)
   $(".email").val(participantInfo.email)
+  $(".location").val(participantInfo.location)
   $(".age").val(criteria.age)
-  $(".race").val(criteria.race)
+  $(".ethnicity").val(criteria.race)
   $(".nationality").val(criteria.nationality)
 
   var heightInInches = criteria.height
   var weightInPounds = criteria.weight
 
+  var weightInKilos = weightInLbs / 2.205
+  var heightInCm = heightInInches * 2.54
+
+  var feet = Math.floor(heightInInches / 12)
+  var inches = heightInInches % 12
+
+
+
+  if ($('#metricButton:checked').length > 0) {
+      // metric
+      weightInLbs = $('#kilograms').val() * 2.205
+      heightInInches = $('#centimeters').val() * (1/2.54)
+    } else {
+      // imperial
+      weightInLbs = $('#pounds').val()
+      heightInInches = (12 * $('#feet').val()) + Number($('#inches').val())
+    }
+
+    $("#heightInInches").val(heightInInches)
+    $("#weightInLbs").val(weightInLbs)
+
   // add other fields!
 
 }
 
-// var placeSearch, autocomplete, lat, lon;
+var placeSearch, autocomplete, lat, lon;
 
-// function initAutocomplete() {
-//   // Create the autocomplete object, restricting the search to geographical
-//   // location types.
-//   autocomplete = new google.maps.places.Autocomplete(
-//     /** @type {!HTMLInputElement} */(document.getElementById('autocomplete')),
-//     {types: ['geocode']});
+function initAutocomplete() {
+  // Create the autocomplete object, restricting the search to geographical
+  // location types.
+  autocomplete = new google.maps.places.Autocomplete(
+    /** @type {!HTMLInputElement} */(document.getElementById('autocomplete')),
+    {types: ['geocode']});
 
-//   // When the user selects an address from the dropdown, populate the address
-//   // fields in the form.
-//   autocomplete.addListener('place_changed', setLatLon);
-// }
+  // When the user selects an address from the dropdown, populate the address
+  // fields in the form.
+  autocomplete.addListener('place_changed', setLatLon);
+}
 
-// function setLatLon() {
-//     lat = autocomplete.getPlace().geometry.location.lat()
-//     lon = autocomplete.getPlace().geometry.location.lng()
-//     $("#lat").val(lat)
-//     $("#lon").val(lon)
-// }
+function setLatLon() {
+    lat = autocomplete.getPlace().geometry.location.lat()
+    lon = autocomplete.getPlace().geometry.location.lng()
+    $("#lat").val(lat)
+    $("#lon").val(lon)
+}
 
-// // Bias the autocomplete object to the user's geographical location,
-// // as supplied by the browser's 'navigator.geolocation' object.
-// function geolocate() {
-//   if (navigator.geolocation) {
-//     navigator.geolocation.getCurrentPosition(function(position) {
-//       var geolocation = {
-//         lat: position.coords.latitude,
-//         lng: position.coords.longitude
-//       };
-//       var circle = new google.maps.Circle({
-//         center: geolocation,
-//         radius: position.coords.accuracy
-//       });
-//       autocomplete.setBounds(circle.getBounds());
-//     });
-//   }
-// }
+// Bias the autocomplete object to the user's geographical location,
+// as supplied by the browser's 'navigator.geolocation' object.
+function geolocate() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var geolocation = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+      var circle = new google.maps.Circle({
+        center: geolocation,
+        radius: position.coords.accuracy
+      });
+      autocomplete.setBounds(circle.getBounds());
+    });
+  }
+}
 
 function save_changes(form_data){    
     // Convert height to height in inches
