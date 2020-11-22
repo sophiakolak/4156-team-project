@@ -34,7 +34,7 @@ function signOut() {
 }
 
 
-function loadTrial(id, name, desc, location, startDate, endDate, pay, IRB, partNeeded, partConfirmed){
+function loadTrial(id, name, desc, location, startDate, endDate, pay, IRB, partNeeded, partConfirmed, status){
     var card = $("<div class = 'card_container'>")
     var cardHeader = $('<div class="card-header" id="headingOne">')
     var h2 = $('<h2 class="mb-0">')
@@ -48,18 +48,26 @@ function loadTrial(id, name, desc, location, startDate, endDate, pay, IRB, partN
     cardBody = $('<div class="card-body">')
     cardBody.append("Description: ", desc, "<br>", "IRB: ", IRB, "<br>", "Participants Needed: ", partNeeded, "<br>", "Participants Confirmed: ", partConfirmed, "<br>", "Hourly Pay in USD: ", pay)
 
-    var acceptBtn = $('<button type="button" onclick="acceptMatch(' + id + ')" class="btn btn-primary acceptTrial">')
-    acceptBtn.append("Accept")
-    acceptBtn.attr('id', id)
+    if (status == "pending") {
+      var acceptBtn = $('<button type="button" onclick="acceptMatch(' + id + ')" class="btn btn-primary acceptTrial">')
+      acceptBtn.append("Accept")
+      acceptBtn.attr('id', id)
 
-    var rejectBtn = $('<button type="button" onclick="rejectMatch(' + id + ')" class="btn btn-danger rejectTrial">')
-    rejectBtn.append("Reject")
-    rejectBtn.attr('id', id)
+      var rejectBtn = $('<button type="button" onclick="rejectMatch(' + id + ')" class="btn btn-danger rejectTrial">')
+      rejectBtn.append("Reject")
+      rejectBtn.attr('id', id)
 
-    cardBody.append("<br>", acceptBtn, "   ", rejectBtn)
-    collapsableDiv.append(cardBody)
-    card.append(collapsableDiv)
-    $("#trialAccordian").append(card)
+      cardBody.append("<br>", acceptBtn, "   ", rejectBtn) 
+      collapsableDiv.append(cardBody)
+      card.append(collapsableDiv)
+      $("#trialAccordian").append(card)
+    } else if (status == "accepted") {
+      cardBody.append("<br>", "You have accepted this match. Please wait for a researcher to contact you with more details.")
+      collapsableDiv.append(cardBody)
+      card.append(collapsableDiv)
+      $("#trialAccordian").append(card)
+    }
+    
 }
 
 // Load html for when user has no matches
@@ -84,16 +92,16 @@ function noTrials() {
 }
 
 // function to dynamically load in trials
-function loadTrials(trialList) {
-  if (trialList == "") {
+function loadTrials(matchList) {
+  if (matchList == "") {
     noTrials()
   } else {
-    var trials = trialList
-    console.log("TRIALS: " + trials)
+    var matches = matchList
 
-    for (index = 0; index < trials.length; index++) { 
-        trial = trials[index]
-        console.log("trial: " + trial)
+    for (index = 0; index < matches.length; index++) { 
+        match = matches[index]
+        var trial = match.trial
+        var status = match.status
         var id = trial.id
         var desc = trial.desc
         var location = trial.location
@@ -104,20 +112,21 @@ function loadTrials(trialList) {
         var part_needed = trial.partNeeded
         var part_confirmed = trial.partConfirmed
         var criteria = trial.crit
-        loadTrial(id, name, desc, location, startDate, endDate, pay, IRB, part_needed, part_confirmed)
+        loadTrial(id, name, desc, location, startDate, endDate, pay, IRB, part_needed, part_confirmed, status)
     } 
   }
 }
 
 function acceptMatch(trialId){
+  alert(trialId)
   $.ajax({
         type: "POST",
-        url: "/acceptMatch",                
+        url: "/accept-match",                
         dataType : "json",
         contentType: "application/json; charset=utf-8",
         data : JSON.stringify(trialId),
         success: function(result){
-          window.location.href = result
+          location.reload();
         },
         error: function(request, status, error){
             console.log("Error");
@@ -131,12 +140,12 @@ function acceptMatch(trialId){
 function rejectMatch(trialId){
   $.ajax({
         type: "POST",
-        url: "/rejectMatch",                
+        url: "/reject-match",                
         dataType : "json",
         contentType: "application/json; charset=utf-8",
         data : JSON.stringify(trialId),
         success: function(result){
-          window.location.href = result
+          location.reload();
         },
         error: function(request, status, error){
             console.log("Error");

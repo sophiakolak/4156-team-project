@@ -64,7 +64,7 @@ function loadInfo(researcherInfo) {
   $(".first").val(researcherInfo.first)
   $(".last").val(researcherInfo.last)
   $(".email").val(researcherInfo.email)
-  $(".location").val(researcherInfo.email)
+  $(".location").val(researcherInfo.location)
 }
 
 var placeSearch, autocomplete, lat, lon;

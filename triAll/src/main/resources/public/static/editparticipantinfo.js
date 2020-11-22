@@ -56,6 +56,22 @@ $(document).ready(function(){
     });
 
     $("#saveChanges").submit(function( event ) {
+      // Convert height to height in inches
+      // Convert weight to weight in pounds
+      var heightInInches;
+      var weightInLbs
+      if ($('#metricButton:checked').length > 0) {
+        // metric
+        weightInLbs = $('#kilograms').val() * 2.205
+        heightInInches = $('#centimeters').val() * (1/2.54)
+      } else {
+        // imperial
+        weightInLbs = $('#pounds').val()
+        heightInInches = (12 * $('#feet').val()) + Number($('#inches').val())
+      }
+
+      $("#heightInInches").val(heightInInches)
+      $("#weightInLbs").val(weightInLbs)
     	save_changes($( this ).serializeArray())
         event.preventDefault();
     });
@@ -77,45 +93,36 @@ $(document).ready(function(){
 function loadInfo(participantInfo) {
   console.log("participant: " + participantInfo)
   var criteria = participantInfo.data
-  console.log("criteria: " + criteria)
-  console.log("first: " + participantInfo.first)
-  console.log("last: " + participantInfo.last)
-  console.log("age: " + criteria.age)
-  console.log("ethnicity: " + criteria.race)
-  console.log("nationality: " + criteria.nationality)
   $(".first").val(participantInfo.first)
   $(".last").val(participantInfo.last)
   $(".email").val(participantInfo.email)
   $(".location").val(participantInfo.location)
-  $(".age").val(criteria.age)
+  $(".age").val(criteria.minAge)
+  var gender = criteria.gender
+  if (gender == "Female") {
+    $('#Female').attr('checked', 'checked');
+  } else if (gender == "Male") {
+    $('#Male').attr('checked', 'checked');
+  } else if (gender == "Other") {
+    $('#Other').attr('checked', 'checked');
+  }
   $(".ethnicity").val(criteria.race)
   $(".nationality").val(criteria.nationality)
 
-  var heightInInches = criteria.height
-  var weightInPounds = criteria.weight
+  var heightInInches = criteria.minHeight
+  var weightInLbs = criteria.minWeight
+  console.log(weightInLbs)
 
   var weightInKilos = weightInLbs / 2.205
+  $("#kilograms").val(weightInKilos)
   var heightInCm = heightInInches * 2.54
+  $("#centimeters").val(heightInCm)
 
   var feet = Math.floor(heightInInches / 12)
+  $("#feet").val(feet)
   var inches = heightInInches % 12
-
-
-
-  if ($('#metricButton:checked').length > 0) {
-      // metric
-      weightInLbs = $('#kilograms').val() * 2.205
-      heightInInches = $('#centimeters').val() * (1/2.54)
-    } else {
-      // imperial
-      weightInLbs = $('#pounds').val()
-      heightInInches = (12 * $('#feet').val()) + Number($('#inches').val())
-    }
-
-    $("#heightInInches").val(heightInInches)
-    $("#weightInLbs").val(weightInLbs)
-
-  // add other fields!
+  $("#inches").val(inches)
+  $("#pounds").val(weightInLbs)
 
 }
 
@@ -159,22 +166,6 @@ function geolocate() {
 }
 
 function save_changes(form_data){    
-    // Convert height to height in inches
-    // Convert weight to weight in pounds
-    var heightInInches;
-    var weightInLbs
-    if ($('#metricButton:checked').length > 0) {
-      // metric
-      weightInLbs = $('#kilograms').val() * 2.205
-      heightInInches = $('#centimeters').val() * (1/2.54)
-    } else {
-      // imperial
-      weightInLbs = $('#pounds').val()
-      heightInInches = (12 * $('#feet').val()) + Number($('#inches').val())
-    }
-
-    $("#heightInInches").val(heightInInches)
-    $("#weightInLbs").val(weightInLbs)
 
     $.ajax({
         type: "POST",
@@ -183,7 +174,7 @@ function save_changes(form_data){
         contentType: "application/json; charset=utf-8",
         data : JSON.stringify(form_data),
         success: function(result){
-        	alert( "Saved Changes" );
+        	window.location.href = result
         },
         error: function(request, status, error){
             console.log("Error");
