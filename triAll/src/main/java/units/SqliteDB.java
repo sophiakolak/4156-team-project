@@ -261,62 +261,62 @@ public class SqliteDB {
     try {
       String create;
       switch (type) {
-      case researcher:
-        create = "CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + " Lat REAL, Long REAL, Location TEXT, First TEXT, Last TEXT, Email TEXT);";
-        create = String.format(create, table);
-        st = conn.prepareStatement(create);
-        st.executeUpdate();
-        break;
-      case participant:
-        create = "CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + " Lat REAL, Long REAL, Location TEXT, First TEXT, Last TEXT, Email TEXT);";
-        create = String.format(create, table);
-        st = conn.prepareStatement(create);
-        st.executeUpdate();
-        break;
-      case trial:
-        create = "CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY "
-            + "AUTOINCREMENT, researcher_ID INT NOT NULL, description TEXT,"
-            + " lat REAL, long REAL, location TEXT, start_date TEXT, end_date TEXT, pay REAL,"
-            + " IRB INT, participants_needed INT, participants_confirmed INT);";
-        create = String.format(create, table);
-        st = conn.prepareStatement(create);
-        st.executeUpdate();
-        break;
-      case trialCriteria:
-        create = "CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + " trial_ID INT NOT NULL, Min_Age INT, Max_Age INT, Min_height REAL, Max_height REAL, Min_Weight REAL, Max_weight REAL, Gender"
-            + " TEXT, Race TEXT, Nationality TEXT);";
-        create = String.format(create, table);
-        st = conn.prepareStatement(create);
-        st.executeUpdate();
-        break;
-      case participantData:
-        create = "CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + " participant_ID INT NOT NULL, minAge INT, maxAge INT, minHeight REAL, MaxHeight"
-            + " REAL, MinWeight REAL, maxWeight REAL, Gender TEXT, Race TEXT, Nationality TEXT);";
-        create = String.format(create, table);
-        st = conn.prepareStatement(create);
-        st.executeUpdate();
-        break;
-      case trialMatch:
-        create = "CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + " trial_ID INT NOT NULL, researcher_ID INT NOT NULL, participant_ID INT NOT NULL, " + "status TEXT);";
-        create = String.format(create, table);
-        st = conn.prepareStatement(create);
-        st.executeUpdate();
-        break;
-      case email:
-        create = "CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + " trial_ID INT, researcher_ID INT, participant_ID INT, type TEXT, time_sent TEXT,"
-            + " delivery_success INT);";
-        create = String.format(create, table);
-        st = conn.prepareStatement(create);
-        st.executeUpdate();
-        break;
-      default:
-        return false;
+        case researcher:
+          create = "CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+              + " Lat REAL, Long REAL, Location TEXT, First TEXT, Last TEXT, Email TEXT);";
+          create = String.format(create, table);
+          st = conn.prepareStatement(create);
+          st.executeUpdate();
+          break;
+        case participant:
+          create = "CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+              + " Lat REAL, Long REAL, Location TEXT, First TEXT, Last TEXT, Email TEXT);";
+          create = String.format(create, table);
+          st = conn.prepareStatement(create);
+          st.executeUpdate();
+          break;
+        case trial:
+          create = "CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY "
+              + "AUTOINCREMENT, researcher_ID INT NOT NULL, description TEXT,"
+              + " lat REAL, long REAL, location TEXT, start_date TEXT, end_date TEXT, pay REAL,"
+              + " IRB INT, participants_needed INT, participants_confirmed INT);";
+          create = String.format(create, table);
+          st = conn.prepareStatement(create);
+          st.executeUpdate();
+          break;
+        case trialCriteria:
+          create = "CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+              + " trial_ID INT NOT NULL, Min_Age INT, Max_Age INT, Min_height REAL, Max_height REAL, Min_Weight REAL, Max_weight REAL, Gender"
+              + " TEXT, Race TEXT, Nationality TEXT);";
+          create = String.format(create, table);
+          st = conn.prepareStatement(create);
+          st.executeUpdate();
+          break;
+        case participantData:
+          create = "CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+              + " participant_ID INT NOT NULL, minAge INT, maxAge INT, minHeight REAL, MaxHeight"
+              + " REAL, MinWeight REAL, maxWeight REAL, Gender TEXT, Race TEXT, Nationality TEXT);";
+          create = String.format(create, table);
+          st = conn.prepareStatement(create);
+          st.executeUpdate();
+          break;
+        case trialMatch:
+          create = "CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+              + " trial_ID INT NOT NULL, researcher_ID INT NOT NULL, participant_ID INT NOT NULL, " + "status TEXT);";
+          create = String.format(create, table);
+          st = conn.prepareStatement(create);
+          st.executeUpdate();
+          break;
+        case email:
+          create = "CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+              + " trial_ID INT, researcher_ID INT, participant_ID INT, type TEXT, time_sent TEXT,"
+              + " delivery_success INT);";
+          create = String.format(create, table);
+          st = conn.prepareStatement(create);
+          st.executeUpdate();
+          break;
+        default:
+          return false;
       }
     } catch (Exception e) {
       System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -343,18 +343,19 @@ public class SqliteDB {
    * @param email Email address.
    * @return The row into which the new user was inserted - 0 upon failure.
    */
-  public int insertUser(String table, double lat, double lon, String first, String last, String email) {
+  public int insertUser(String table, double lat, double lon, String location, String first, String last, String email) {
     PreparedStatement st = null;
     int id = 0;
     try {
-      String command = "INSERT INTO %s (Lat, Long, First, Last, Email) VALUES (" + "?, ?, ?, ?, ?);";
+      String command = "INSERT INTO %s (Lat, Long, Location, First, Last, Email) VALUES (?, ?, ?, ?, ?, ?);";
       command = String.format(command, table);
       st = conn.prepareStatement(command);
       st.setDouble(1, lat);
       st.setDouble(2, lon);
-      st.setString(3, first);
-      st.setString(4, last);
-      st.setString(5, email);
+      st.setString(3, location);
+      st.setString(4, first);
+      st.setString(5, last);
+      st.setString(6, email);
       st.executeUpdate();
       String check = "SELECT last_insert_rowid() AS num;";
       ResultSet rs = stmt.executeQuery(check);
@@ -388,19 +389,20 @@ public class SqliteDB {
    * @param email Email address.
    * @return The row which was updated - 0 upon failure.
    */
-  public int updateUser(String table, int id, double lat, double lon, String first, String last, String email) {
+  public int updateUser(String table, int id, double lat, double lon, String location, String first, String last, String email) {
     int row = 0;
     PreparedStatement st = null;
     try {
-      String command = "REPLACE INTO %s VALUES ( ?" + "?, ?, ?, ?, ?);";
+      String command = "REPLACE INTO %s VALUES (?, ?, ?, ?, ?, ?, ?);";
       command = String.format(command, table);
       st = conn.prepareStatement(command);
       st.setInt(1, id);
       st.setDouble(2, lat);
       st.setDouble(3, lon);
-      st.setString(4, first);
-      st.setString(5, last);
-      st.setString(6, email);
+      st.setString(4, location);
+      st.setString(5, first);
+      st.setString(6, last);
+      st.setString(7, email);
       st.executeUpdate();
       String check = "SELECT last_insert_rowid() AS num;";
       ResultSet rs = stmt.executeQuery(check);

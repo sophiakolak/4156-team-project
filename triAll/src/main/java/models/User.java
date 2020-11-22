@@ -11,6 +11,7 @@ public class User {
   private int id;
   private double lat;
   private double lon;
+  private String location;
   private String first;
   private String last;
   private String email;
@@ -47,11 +48,12 @@ public class User {
   /**
    * Creating user.
    */
-  public User(int id, double lat, double lon, String first, 
+  public User(int id, double lat, double lon, String location, String first, 
       String last, String email, boolean isR) {
     this.id = id;
     this.lat = lat;
     this.lon = lon;
+    this.location = location;
     this.first = first;
     this.last = last;
     this.email = email;
@@ -184,7 +186,7 @@ public class User {
   /**
    * Sort matches.
    */
-  public LinkedList<Match> sortedMatches(){
+  public LinkedList<Match> sortedMatches() {
     if (isResearcher) {
       return null;
     }

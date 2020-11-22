@@ -79,8 +79,8 @@ class TriAll {
             ctx.result(gson.toJson("/signup"));
           } else {
             //is researcher
-            user = new User(rs.getInt(1), rs.getDouble(2), rs.getDouble(3), rs.getString(5), 
-                rs.getString(6), rs.getString(7), true);
+            user = new User(rs.getInt(1), rs.getDouble(2), rs.getDouble(3), rs.getString(4), 
+                rs.getString(5), rs.getString(6), rs.getString(7), true);
             ResultSet trialRS = db.fetchInt("trials", "researcher_ID", user.getID());
             System.out.println(trialRS.getString(7));
             while (trialRS.next()) {
@@ -102,8 +102,8 @@ class TriAll {
           }
         } else {
           //is participant
-          user = new User(rs.getInt(1), rs.getDouble(2), rs.getDouble(3), rs.getString(5), rs
-              .getString(6), rs.getString(7), false);
+          user = new User(rs.getInt(1), rs.getDouble(2), rs.getDouble(3), rs.getString(4), rs
+              .getString(5), rs.getString(6), rs.getString(7), false);
           ResultSet data = db.fetchInt("participant_data", "participant_ID", user.getID());
           if (!data.next()) {
             //there is no data
@@ -128,11 +128,11 @@ class TriAll {
                           10), critRS.getString(11));
                 }
                 user.addMatch(matchRS.getInt(1), new Trial(matchRS.getInt(2), new User(matchRS
-                    .getInt(3), resRS.getDouble(2), resRS.getDouble(4), resRS.getString(5), resRS
-                    .getString(6), resRS.getString(7), true), trialRS.getString(3), trialRS
-                    .getDouble(4), trialRS.getDouble(5), trialRS.getString(6), trialRS.getString(
-                        7), trialRS.getString(8), trialRS.getDouble(9), trialRS.getInt(10), trialRS
-                    .getInt(11), trialRS.getInt(12), c));
+                    .getInt(3), resRS.getDouble(2), resRS.getDouble(3), resRS.getString(4), resRS
+                    .getString(5), resRS.getString(6), resRS.getString(7), true), trialRS
+                    .getString(3), trialRS.getDouble(4), trialRS.getDouble(5), trialRS
+                    .getString(6), trialRS.getString(7), trialRS.getString(8), trialRS
+                    .getDouble(9), trialRS.getInt(10), trialRS.getInt(11), trialRS.getInt(12), c));
               }
             }
           }
@@ -152,16 +152,16 @@ class TriAll {
       JsonArray form = gson.fromJson(ctx.body(), JsonArray.class);
       double lat = form.get(5).getAsJsonObject().get("value").getAsDouble();
       double lon = form.get(6).getAsJsonObject().get("value").getAsDouble();
-      // location will also be passed in as a form param - can we store that too?
+      String location = form.get(4).getAsJsonObject().get("value").getAsString();
       String first = form.get(1).getAsJsonObject().get("value").getAsString();
       String last = form.get(2).getAsJsonObject().get("value").getAsString();
       String email = form.get(3).getAsJsonObject().get("value").getAsString();
-      int partRow = db.insertUser("participants", lat, lon, first, last, email);
+      int partRow = db.insertUser("participants", lat, lon, location, first, last, email);
       System.out.println(partRow);
       if (partRow == 0) {
         ctx.redirect("not_found.html");
       } else {
-        user = new User(partRow, lat, lon, first, last, email, false);
+        user = new User(partRow, lat, lon, location, first, last, email, false);
         int age = form.get(8).getAsJsonObject().get("value").getAsInt();
         int height = form.get(13).getAsJsonObject().get("value").getAsInt();
         int weight = form.get(16).getAsJsonObject().get("value").getAsInt();
@@ -186,15 +186,15 @@ class TriAll {
       JsonArray form = gson.fromJson(ctx.body(), JsonArray.class);
       double lat = form.get(5).getAsJsonObject().get("value").getAsDouble();
       double lon = form.get(6).getAsJsonObject().get("value").getAsDouble();
-      // location will also be passed in as a form param - can we store that too?
+      String location = form.get(4).getAsJsonObject().get("value").getAsString();
       String first = form.get(1).getAsJsonObject().get("value").getAsString();
       String last = form.get(2).getAsJsonObject().get("value").getAsString();
       String email = form.get(3).getAsJsonObject().get("value").getAsString();
-      int id = db.insertUser("researchers", lat, lon, first,  last, email);
+      int id = db.insertUser("researchers", lat, lon, location, first,  last, email);
       if (id == 0) {
         ctx.redirect("not_found.html");
       } else {
-        user = new User(id, lat, lon, first, last, email, true);
+        user = new User(id, lat, lon, location, first, last, email, true);
         ctx.result(gson.toJson("/researcherdashboard.html"));
       }
     });
@@ -278,11 +278,11 @@ class TriAll {
         JsonArray form = gson.fromJson(ctx.body(), JsonArray.class);
         double lat = form.get(5).getAsJsonObject().get("value").getAsDouble();
         double lon = form.get(6).getAsJsonObject().get("value").getAsDouble();
-        // location will also be passed in as a form param - can we store that too?
+        String location = form.get(4).getAsJsonObject().get("value").getAsString();
         String first = form.get(1).getAsJsonObject().get("value").getAsString();
         String last = form.get(2).getAsJsonObject().get("value").getAsString();
         String email = form.get(3).getAsJsonObject().get("value").getAsString(); 
-        int partId = db.updateUser("participants", user.getID(), lat, lon, first,  last, email);
+        int partId = db.updateUser("participants", user.getID(), lat, lon, location, first, last, email);
         if (partId == 0) {
           ctx.redirect("not_found.html");
         } else {
@@ -301,7 +301,7 @@ class TriAll {
             user.setData(new Criteria(critRow, partId, age, age, height, height, weight, weight, 
                 gender, race, nationality));
             checkMatches(user);
-            ctx.result(gson.toJson("/participantdashboard"));  
+            ctx.result(gson.toJson("/participantdashboard.html"));  
           }
         }
       } else {
@@ -314,15 +314,15 @@ class TriAll {
         JsonArray form = gson.fromJson(ctx.body(), JsonArray.class);
         double lat = form.get(5).getAsJsonObject().get("value").getAsDouble();
         double lon = form.get(6).getAsJsonObject().get("value").getAsDouble();
-        // location will also be passed in as a form param - can we store that too?
+        String location = form.get(4).getAsJsonObject().get("value").getAsString();
         String first = form.get(1).getAsJsonObject().get("value").getAsString();
         String last = form.get(2).getAsJsonObject().get("value").getAsString();
         String email = form.get(3).getAsJsonObject().get("value").getAsString();        
-        int id = db.updateUser("researchers", user.getID(), lat, lon, first,  last, email);
+        int id = db.updateUser("researchers", user.getID(), lat, lon, location, first, last, email);
         if (id == 0) {
           ctx.redirect("not_found.html");
         } else {
-          user = new User(id, lat, lon, first, last, email, true);
+          user = new User(id, lat, lon, location, first, last, email, true);
           ctx.result(gson.toJson("/researcherdashboard.html"));
         }
       } else {

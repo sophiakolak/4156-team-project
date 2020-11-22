@@ -42,8 +42,8 @@ public class TriAllTest {
 	LinkedList<Match> matches = new LinkedList<Match>();
 	
 	Criteria d = new Criteria(1, 1, 22, 28, 60, 70, 110, 180, "male", "cool", "cool");
-	User u = new User(1, 0, 0, "Shirish","Shirish", "shirishIsCool@gmail.com", false);
-	User r = new User(1, 0, 0, "Gail","Kaiser", "gailIsCool@gmail.com", true);
+	User u = new User(1, 0, 0, "Columbia", "Shirish","Shirish", "shirishIsCool@gmail.com", false);
+	User r = new User(1, 0, 0, "Columbia", "Gail","Kaiser", "gailIsCool@gmail.com", true);
 	Trial t = new Trial(1, r, "cool trial", 0, 0, "Siberia", "2020-12-01", "2020-12-02", 12, 123, 100, 0, d);
 	
 	@Test 
