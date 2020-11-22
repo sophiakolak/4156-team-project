@@ -277,39 +277,64 @@ class TriAll {
       if (user.isLoggedIn() && !user.isResearcher()) {
         System.out.println(ctx.body());
         JsonArray form = gson.fromJson(ctx.body(), JsonArray.class);
-        //double lat = form.get(4).getAsJsonObject().get("value").getAsDouble();
-        //double lon = form.get(5).getAsJsonObject().get("value").getAsDouble();
-        double lat = user.getLat();
-        double lon = user.getLon();
+        double lat = form.get(4).getAsJsonObject().get("value").getAsDouble();
+        System.out.println(lat);
+        double lon = form.get(5).getAsJsonObject().get("value").getAsDouble();
+        System.out.println(lon);
+        
+//        double lat = user.getLat();
+//        double lon = user.getLon();
         String location = form.get(3).getAsJsonObject().get("value").getAsString();
-        String first = form.get(1).getAsJsonObject().get("value").getAsString();
-        String last = form.get(2).getAsJsonObject().get("value").getAsString();
-        String email = user.getEmail();
+        String first = form.get(0).getAsJsonObject().get("value").getAsString();
+        String last = form.get(1).getAsJsonObject().get("value").getAsString();
+        System.out.println(first + " " + last);
+//        String email = user.getEmail();
+        String email = form.get(2).getAsJsonObject().get("value").getAsString();
+        System.out.println(email);
         int partId = db.updateUser("participants", user.getID(), lat, lon, location, first, last, email);
         if (partId == 0) {
+          System.out.println("Not found");
           ctx.redirect("not_found.html");
         } else {
           user.update(lat, lon, first, last, email);
-          int age = form.get(5).getAsJsonObject().get("value").getAsInt();
-          int height = form.get(10).getAsJsonObject().get("value").getAsInt();
-          int weight = form.get(13).getAsJsonObject().get("value").getAsInt();
-          String gender = form.get(4).getAsJsonObject().get("value").getAsString();
-          String race = form.get(14).getAsJsonObject().get("value").getAsString();
-          String nationality = form.get(15).getAsJsonObject().get("value").getAsString();
-          int critRow = db.updateCriteria("participant_data", user.getData().getID(), partId, 
+          int age = form.get(7).getAsJsonObject().get("value").getAsInt();
+          System.out.println("Age: " + age);
+          int height = form.get(12).getAsJsonObject().get("value").getAsInt();
+          System.out.println("Height" + height);
+          int weight = form.get(15).getAsJsonObject().get("value").getAsInt();
+          System.out.println("Weight" + weight);
+          String gender = form.get(6).getAsJsonObject().get("value").getAsString();
+          String race = form.get(16).getAsJsonObject().get("value").getAsString();
+          String nationality = form.get(17).getAsJsonObject().get("value").getAsString();
+          int userId = user.getData().getID();
+          System.out.println(userId);
+          
+          // this line does not work (critRow == 0)
+          int critRow = db.updateCriteria("participant_data", userId, partId, 
               age, age, height, height, weight, weight, gender, race, nationality);
-          if (critRow == 0) {
-            ctx.redirect("not_found.html");
-          } else {
-            user.setData(new Criteria(critRow, partId, age, age, height, height, weight, weight, 
-                gender, race, nationality));
-            checkMatches(user);
-            ctx.result(gson.toJson("/participantdashboard.html"));  
-          }
+          
+          user.setData(new Criteria(critRow, partId, age, age, height, height, weight, weight, 
+              gender, race, nationality));
+          checkMatches(user);
+          System.out.println("redirect to dashboard");
+          ctx.result(gson.toJson("/participantdashboard.html")); 
+          
+//          if (critRow == 0) {
+//            ctx.result(gson.toJson("participantdashboard.html"));
+//            System.out.println("Not found c");
+////            ctx.redirect("not_found.html");
+//          } else {
+//            user.setData(new Criteria(critRow, partId, age, age, height, height, weight, weight, 
+//                gender, race, nationality));
+//            checkMatches(user);
+//            System.out.println("redirect to dashboard");
+//            ctx.result(gson.toJson("/participantdashboard.html"));  
+//          }
         }
       } else { 
         //not allowed
         System.out.println(ctx.body());
+        System.out.println("Not allowed");
       }
     });
 

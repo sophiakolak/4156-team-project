@@ -97,6 +97,8 @@ function loadInfo(participantInfo) {
   $(".last").val(participantInfo.last)
   $(".email").val(participantInfo.email)
   $(".location").val(participantInfo.location)
+  $("#lat").val(participantInfo.lat)
+  $("#lon").val(participantInfo.lon)
   $(".age").val(criteria.minAge)
   var gender = criteria.gender
   if (gender == "Female") {
