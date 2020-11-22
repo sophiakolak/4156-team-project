@@ -58,11 +58,11 @@ function loadTrial(id, name, desc, location, startDate, endDate, pay, IRB, partN
     collapsableDiv.append(cardBody)
     card.append(collapsableDiv)
     $("#trialAccordian").append(card)
-    $(document).on('click','.editTrial', function(){
-        trial_id = this.id;
-        route = "/edit-trial-form/" + trial_id
-        window.location.href = route
-    });
+    // $(document).on('click','.editTrial', function(){
+    //     trial_id = this.id;
+    //     route = "/edit-trial-form/" + trial_id
+    //     window.location.href = route
+    // });
 }
 
 function noTrials() {

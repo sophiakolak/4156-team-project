@@ -1,3 +1,27 @@
+function signOut() {
+  var auth2 = gapi.auth2.getAuthInstance();
+  var profile = auth2.currentUser.get().getBasicProfile();
+  var email = profile.getEmail();
+  auth2.signOut().then(function () {
+    $.ajax({
+        type: "POST",
+        url: "/logout",                
+        dataType : "json",
+        contentType: "application/json; charset=utf-8",
+        data : JSON.stringify(email),
+        success: function(result){
+          window.location.href = result
+        },
+        error: function(request, status, error){
+            console.log("Error");
+            console.log(request)
+            console.log(status)
+            console.log(error)
+        }
+    });
+  });
+}
+
 $(document).ready(function(){
     $('.metric').hide(); 
     $('.imperial').show();
@@ -97,31 +121,6 @@ function geolocate() {
   }
 }
 
-function signOut() {
-  var auth2 = gapi.auth2.getAuthInstance();
-  var profile = auth2.currentUser.get().getBasicProfile();
-  var email = profile.getEmail();
-  alert(email)
-  auth2.signOut().then(function () {
-    alert("making post request")
-    $.ajax({
-        type: "POST",
-        url: "/logout",                
-        dataType : "json",
-        contentType: "application/json; charset=utf-8",
-        data : JSON.stringify(email),
-        success: function(result){
-          alert( "Logged out!" );
-        },
-        error: function(request, status, error){
-            console.log("Error");
-            console.log(request);
-            console.log(status);
-            console.log(error);
-        }
-    });
-  });
-}
 
 function save_changes(form_data){   
 
