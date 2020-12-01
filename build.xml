@@ -3,7 +3,7 @@
               Any modifications will be overwritten.
               To include a user specific buildfile here, simply create one in the same
               directory with the processing instruction <?eclipse.ant.import?>
-              as the first entry and export the buildfile again. --><project basedir="." default="build" name="hw1">
+              as the first entry and export the buildfile again. --><project basedir="." default="build" name="triAll">
     <property environment="env"/>
     <property name="junit.output.dir" value="junit"/>
     <property name="debuglevel" value="source,lines,vars"/>
@@ -81,7 +81,7 @@
         <pathelement location="../../../../../snap/eclipse/48/plugins/org.junit_4.12.0.v201504281640/junit.jar"/>
         <pathelement location="../../../../../snap/eclipse/48/plugins/org.hamcrest.core_1.3.0.v20180420-1519.jar"/>
     </path>
-    <path id="hw1.classpath">
+    <path id="triAll.classpath">
         <pathelement location="target/classes"/>
         <pathelement location="target/test-classes"/>
         <path refid="Maven Dependencies.libraryclasspath"/>
@@ -89,27 +89,27 @@
         <pathelement location="../../../Downloads/junit-4.13.jar"/>
     </path>
     <path id="run.TrialTest2.classpath">
-        <path refid="hw1.classpath"/>
+        <path refid="triAll.classpath"/>
         <path refid="Maven Dependencies.libraryclasspath"/>
     </path>
     <path id="run.TrialTest.classpath">
-        <path refid="hw1.classpath"/>
+        <path refid="triAll.classpath"/>
         <path refid="Maven Dependencies.libraryclasspath"/>
     </path>
     <path id="run.TriAllTestTest.classpath">
-        <path refid="hw1.classpath"/>
+        <path refid="triAll.classpath"/>
         <path refid="Maven Dependencies.libraryclasspath"/>
     </path>
     <path id="run.TriAll.classpath">
-        <path refid="hw1.classpath"/>
+        <path refid="triAll.classpath"/>
         <path refid="Maven Dependencies.libraryclasspath"/>
     </path>
     <path id="run.unit.classpath">
-        <path refid="hw1.classpath"/>
+        <path refid="triAll.classpath"/>
         <path refid="Maven Dependencies.libraryclasspath"/>
     </path>
     <path id="run.TriAllTest.classpath">
-        <path refid="hw1.classpath"/>
+        <path refid="triAll.classpath"/>
         <path refid="Maven Dependencies.libraryclasspath"/>
     </path>
     <target name="init">
@@ -151,13 +151,13 @@
             <src path="src/main/java"/>
             <src path="src/main/resources"/>
             <exclude name="**"/>
-            <classpath refid="hw1.classpath"/>
+            <classpath refid="triAll.classpath"/>
         </javac>
         <javac debug="true" debuglevel="${debuglevel}" destdir="target/test-classes" includeantruntime="false" source="${source}" target="${target}">
             <src path="src/test/java"/>
             <src path="src/test/resources"/>
             <exclude name="**"/>
-            <classpath refid="hw1.classpath"/>
+            <classpath refid="triAll.classpath"/>
         </javac>
     </target>
     <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
