@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. --><project basedir="." default="build" name="triAll">
+    <property environment="env"/>
+    <property name="junit.output.dir" value="junit"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="11"/>
+    <property name="source" value="11"/>
+    <path id="Maven Dependencies.libraryclasspath">
+        <pathelement location="../../../.m2/repository/io/javalin/javalin/3.9.1/javalin-3.9.1.jar"/>
+        <pathelement location="../../../.m2/repository/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar"/>
+        <pathelement location="../../../.m2/repository/org/eclipse/jetty/jetty-server/9.4.30.v20200611/jetty-server-9.4.30.v20200611.jar"/>
+        <pathelement location="../../../.m2/repository/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0.jar"/>
+        <pathelement location="../../../.m2/repository/org/eclipse/jetty/jetty-http/9.4.30.v20200611/jetty-http-9.4.30.v20200611.jar"/>
+        <pathelement location="../../../.m2/repository/org/eclipse/jetty/jetty-util/9.4.30.v20200611/jetty-util-9.4.30.v20200611.jar"/>
+        <pathelement location="../../../.m2/repository/org/eclipse/jetty/jetty-io/9.4.30.v20200611/jetty-io-9.4.30.v20200611.jar"/>
+        <pathelement location="../../../.m2/repository/org/eclipse/jetty/jetty-webapp/9.4.30.v20200611/jetty-webapp-9.4.30.v20200611.jar"/>
+        <pathelement location="../../../.m2/repository/org/eclipse/jetty/jetty-xml/9.4.30.v20200611/jetty-xml-9.4.30.v20200611.jar"/>
+        <pathelement location="../../../.m2/repository/org/eclipse/jetty/jetty-servlet/9.4.30.v20200611/jetty-servlet-9.4.30.v20200611.jar"/>
+        <pathelement location="../../../.m2/repository/org/eclipse/jetty/jetty-security/9.4.30.v20200611/jetty-security-9.4.30.v20200611.jar"/>
+        <pathelement location="../../../.m2/repository/org/eclipse/jetty/websocket/websocket-server/9.4.30.v20200611/websocket-server-9.4.30.v20200611.jar"/>
+        <pathelement location="../../../.m2/repository/org/eclipse/jetty/websocket/websocket-common/9.4.30.v20200611/websocket-common-9.4.30.v20200611.jar"/>
+        <pathelement location="../../../.m2/repository/org/eclipse/jetty/websocket/websocket-api/9.4.30.v20200611/websocket-api-9.4.30.v20200611.jar"/>
+        <pathelement location="../../../.m2/repository/org/eclipse/jetty/websocket/websocket-client/9.4.30.v20200611/websocket-client-9.4.30.v20200611.jar"/>
+        <pathelement location="../../../.m2/repository/org/eclipse/jetty/jetty-client/9.4.30.v20200611/jetty-client-9.4.30.v20200611.jar"/>
+        <pathelement location="../../../.m2/repository/org/eclipse/jetty/websocket/websocket-servlet/9.4.30.v20200611/websocket-servlet-9.4.30.v20200611.jar"/>
+        <pathelement location="../../../.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-jdk8/1.3.71/kotlin-stdlib-jdk8-1.3.71.jar"/>
+        <pathelement location="../../../.m2/repository/org/jetbrains/kotlin/kotlin-stdlib/1.3.71/kotlin-stdlib-1.3.71.jar"/>
+        <pathelement location="../../../.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-common/1.3.71/kotlin-stdlib-common-1.3.71.jar"/>
+        <pathelement location="../../../.m2/repository/org/jetbrains/annotations/13.0/annotations-13.0.jar"/>
+        <pathelement location="../../../.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-jdk7/1.3.71/kotlin-stdlib-jdk7-1.3.71.jar"/>
+        <pathelement location="../../../.m2/repository/org/slf4j/slf4j-simple/1.7.30/slf4j-simple-1.7.30.jar"/>
+        <pathelement location="../../../.m2/repository/com/google/code/gson/gson/2.8.5/gson-2.8.5.jar"/>
+        <pathelement location="../../../.m2/repository/org/mockito/mockito-core/3.2.4/mockito-core-3.2.4.jar"/>
+        <pathelement location="../../../.m2/repository/net/bytebuddy/byte-buddy/1.10.5/byte-buddy-1.10.5.jar"/>
+        <pathelement location="../../../.m2/repository/net/bytebuddy/byte-buddy-agent/1.10.5/byte-buddy-agent-1.10.5.jar"/>
+        <pathelement location="../../../.m2/repository/org/objenesis/objenesis/2.6/objenesis-2.6.jar"/>
+        <pathelement location="../../../.m2/repository/org/junit/jupiter/junit-jupiter-api/5.6.2/junit-jupiter-api-5.6.2.jar"/>
+        <pathelement location="../../../.m2/repository/org/apiguardian/apiguardian-api/1.1.0/apiguardian-api-1.1.0.jar"/>
+        <pathelement location="../../../.m2/repository/org/opentest4j/opentest4j/1.2.0/opentest4j-1.2.0.jar"/>
+        <pathelement location="../../../.m2/repository/org/junit/platform/junit-platform-commons/1.6.2/junit-platform-commons-1.6.2.jar"/>
+        <pathelement location="../../../.m2/repository/org/xerial/sqlite-jdbc/3.32.3.2/sqlite-jdbc-3.32.3.2.jar"/>
+        <pathelement location="../../../.m2/repository/org/simplejavamail/simple-java-mail/6.4.4/simple-java-mail-6.4.4.jar"/>
+        <pathelement location="../../../.m2/repository/org/simplejavamail/core-module/6.4.4/core-module-6.4.4.jar"/>
+        <pathelement location="../../../.m2/repository/com/sun/mail/jakarta.mail/1.6.5/jakarta.mail-1.6.5.jar"/>
+        <pathelement location="../../../.m2/repository/com/sun/activation/jakarta.activation/1.2.1/jakarta.activation-1.2.1.jar"/>
+        <pathelement location="../../../.m2/repository/jakarta/xml/bind/jakarta.xml.bind-api/2.3.2/jakarta.xml.bind-api-2.3.2.jar"/>
+        <pathelement location="../../../.m2/repository/jakarta/activation/jakarta.activation-api/1.2.1/jakarta.activation-api-1.2.1.jar"/>
+        <pathelement location="../../../.m2/repository/jakarta/annotation/jakarta.annotation-api/1.3.5/jakarta.annotation-api-1.3.5.jar"/>
+        <pathelement location="../../../.m2/repository/com/github/bbottema/emailaddress-rfc2822/2.2.0/emailaddress-rfc2822-2.2.0.jar"/>
+        <pathelement location="../../../.m2/repository/com/github/bbottema/jetbrains-runtime-annotations/1.0.0/jetbrains-runtime-annotations-1.0.0.jar"/>
+        <pathelement location="../../../.m2/repository/com/google/api-client/google-api-client/1.30.10/google-api-client-1.30.10.jar"/>
+        <pathelement location="../../../.m2/repository/com/google/oauth-client/google-oauth-client/1.31.0/google-oauth-client-1.31.0.jar"/>
+        <pathelement location="../../../.m2/repository/com/google/http-client/google-http-client/1.35.0/google-http-client-1.35.0.jar"/>
+        <pathelement location="../../../.m2/repository/io/opencensus/opencensus-api/0.24.0/opencensus-api-0.24.0.jar"/>
+        <pathelement location="../../../.m2/repository/io/grpc/grpc-context/1.22.1/grpc-context-1.22.1.jar"/>
+        <pathelement location="../../../.m2/repository/io/opencensus/opencensus-contrib-http-util/0.24.0/opencensus-contrib-http-util-0.24.0.jar"/>
+        <pathelement location="../../../.m2/repository/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar"/>
+        <pathelement location="../../../.m2/repository/com/google/http-client/google-http-client-jackson2/1.36.0/google-http-client-jackson2-1.36.0.jar"/>
+        <pathelement location="../../../.m2/repository/com/fasterxml/jackson/core/jackson-core/2.11.1/jackson-core-2.11.1.jar"/>
+        <pathelement location="../../../.m2/repository/com/google/guava/guava/29.0-android/guava-29.0-android.jar"/>
+        <pathelement location="../../../.m2/repository/com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1.jar"/>
+        <pathelement location="../../../.m2/repository/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar"/>
+        <pathelement location="../../../.m2/repository/org/checkerframework/checker-compat-qual/2.5.5/checker-compat-qual-2.5.5.jar"/>
+        <pathelement location="../../../.m2/repository/com/google/errorprone/error_prone_annotations/2.3.4/error_prone_annotations-2.3.4.jar"/>
+        <pathelement location="../../../.m2/repository/com/google/j2objc/j2objc-annotations/1.3/j2objc-annotations-1.3.jar"/>
+        <pathelement location="../../../.m2/repository/com/konghq/unirest-java/3.4.00/unirest-java-3.4.00.jar"/>
+        <pathelement location="../../../.m2/repository/org/apache/httpcomponents/httpclient/4.5.9/httpclient-4.5.9.jar"/>
+        <pathelement location="../../../.m2/repository/org/apache/httpcomponents/httpcore/4.4.11/httpcore-4.4.11.jar"/>
+        <pathelement location="../../../.m2/repository/commons-logging/commons-logging/1.2/commons-logging-1.2.jar"/>
+        <pathelement location="../../../.m2/repository/commons-codec/commons-codec/1.11/commons-codec-1.11.jar"/>
+        <pathelement location="../../../.m2/repository/org/apache/httpcomponents/httpmime/4.5.9/httpmime-4.5.9.jar"/>
+        <pathelement location="../../../.m2/repository/org/apache/httpcomponents/httpcore-nio/4.4.11/httpcore-nio-4.4.11.jar"/>
+        <pathelement location="../../../.m2/repository/org/apache/httpcomponents/httpasyncclient/4.1.4/httpasyncclient-4.1.4.jar"/>
+        <pathelement location="../../../.m2/repository/org/assertj/assertj-core/3.11.1/assertj-core-3.11.1.jar"/>
+    </path>
+    <path id="JUnit 4.libraryclasspath">
+        <pathelement location="../../../../../snap/eclipse/48/plugins/org.junit_4.12.0.v201504281640/junit.jar"/>
+        <pathelement location="../../../../../snap/eclipse/48/plugins/org.hamcrest.core_1.3.0.v20180420-1519.jar"/>
+    </path>
+    <path id="triAll.classpath">
+        <pathelement location="target/classes"/>
+        <pathelement location="target/test-classes"/>
+        <path refid="Maven Dependencies.libraryclasspath"/>
+        <path refid="JUnit 4.libraryclasspath"/>
+        <pathelement location="../../../Downloads/junit-4.13.jar"/>
+    </path>
+    <path id="run.TrialTest2.classpath">
+        <path refid="triAll.classpath"/>
+        <path refid="Maven Dependencies.libraryclasspath"/>
+    </path>
+    <path id="run.TrialTest.classpath">
+        <path refid="triAll.classpath"/>
+        <path refid="Maven Dependencies.libraryclasspath"/>
+    </path>
+    <path id="run.TriAllTestTest.classpath">
+        <path refid="triAll.classpath"/>
+        <path refid="Maven Dependencies.libraryclasspath"/>
+    </path>
+    <path id="run.TriAll.classpath">
+        <path refid="triAll.classpath"/>
+        <path refid="Maven Dependencies.libraryclasspath"/>
+    </path>
+    <path id="run.unit.classpath">
+        <path refid="triAll.classpath"/>
+        <path refid="Maven Dependencies.libraryclasspath"/>
+    </path>
+    <path id="run.TriAllTest.classpath">
+        <path refid="triAll.classpath"/>
+        <path refid="Maven Dependencies.libraryclasspath"/>
+    </path>
+    <target name="init">
+        <mkdir dir="target/classes"/>
+        <mkdir dir="target/test-classes"/>
+        <copy includeemptydirs="false" todir="target/classes">
+            <fileset dir="src/main/java">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="target/classes">
+            <fileset dir="src/main/resources">
+                <exclude name="**/*.java"/>
+                <exclude name="**"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="target/test-classes">
+            <fileset dir="src/test/java">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="target/test-classes">
+            <fileset dir="src/test/resources">
+                <exclude name="**/*.java"/>
+                <exclude name="**"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="target/classes"/>
+        <delete dir="target/test-classes"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="target/classes" includeantruntime="false" source="${source}" target="${target}">
+            <src path="src/main/java"/>
+            <src path="src/main/resources"/>
+            <exclude name="**"/>
+            <classpath refid="triAll.classpath"/>
+        </javac>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="target/test-classes" includeantruntime="false" source="${source}" target="${target}">
+            <src path="src/test/java"/>
+            <src path="src/test/resources"/>
+            <exclude name="**"/>
+            <classpath refid="triAll.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+    <target name="TrialTest2">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="models.TrialTest2" todir="${junit.output.dir}"/>
+            <jvmarg line="-ea"/>
+            <classpath refid="run.TrialTest2.classpath"/>
+        </junit>
+    </target>
+    <target name="TrialTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="models.TrialTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-ea"/>
+            <classpath refid="run.TrialTest.classpath"/>
+        </junit>
+    </target>
+    <target name="TriAllTestTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="unit.TriAllTestTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-ea"/>
+            <classpath refid="run.TriAllTestTest.classpath"/>
+        </junit>
+    </target>
+    <target name="TriAll">
+        <java classname="controllers.TriAll" failonerror="true" fork="yes">
+            <classpath refid="run.TriAll.classpath"/>
+        </java>
+    </target>
+    <target name="unit">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <jvmarg line="-ea"/>
+            <classpath refid="run.unit.classpath"/>
+        </junit>
+    </target>
+    <target name="TriAllTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="unit.TriAllTest" todir="${junit.output.dir}"/>
+            <jvmarg line="-ea"/>
+            <classpath refid="run.TriAllTest.classpath"/>
+        </junit>
+    </target>
+    <target name="junitreport">
+        <junitreport todir="${junit.output.dir}">
+            <fileset dir="${junit.output.dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${junit.output.dir}"/>
+        </junitreport>
+    </target>
+</project>
