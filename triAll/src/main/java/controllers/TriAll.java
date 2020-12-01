@@ -18,7 +18,7 @@ import models.Trial;
 import models.User;
 import units.SqliteDB;
 
-class TriAll {
+public class TriAll {
 
   //Sign in with google is currently only authorized to use port 8000 but we can add more
   private static final int PORT_NUMBER = 8000;
