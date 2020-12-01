@@ -116,31 +116,31 @@
         <mkdir dir="target/classes"/>
         <mkdir dir="target/test-classes"/>
         <copy includeemptydirs="false" todir="target/classes">
-            <fileset dir="src/main/java">
+		<fileset dir="triAll/src/main/java">
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
         <copy includeemptydirs="false" todir="target/classes">
-            <fileset dir="src/main/resources">
+		<fileset dir="triAll/src/main/resources">
                 <exclude name="**/*.java"/>
                 <exclude name="**"/>
             </fileset>
         </copy>
         <copy includeemptydirs="false" todir="target/test-classes">
-            <fileset dir="src/test/java">
+		<fileset dir="triAll/src/test/java">
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
         <copy includeemptydirs="false" todir="target/test-classes">
-            <fileset dir="src/test/resources">
+		<fileset dir="triAll/src/test/resources">
                 <exclude name="**/*.java"/>
                 <exclude name="**"/>
             </fileset>
         </copy>
     </target>
     <target name="clean">
-        <delete dir="target/classes"/>
-        <delete dir="target/test-classes"/>
+	    <delete dir="triAll/target/classes"/>
+	    <delete dir="triAll/target/test-classes"/>
     </target>
     <target depends="clean" name="cleanall"/>
     <target depends="build-subprojects,build-project" name="build"/>
@@ -148,14 +148,14 @@
     <target depends="init" name="build-project">
         <echo message="${ant.project.name}: ${ant.file}"/>
         <javac debug="true" debuglevel="${debuglevel}" destdir="target/classes" includeantruntime="false" source="${source}" target="${target}">
-            <src path="src/main/java"/>
-            <src path="src/main/resources"/>
+		<src path="triAll/src/main/java"/>
+		<src path="triAll/src/main/resources"/>
             <exclude name="**"/>
             <classpath refid="triAll.classpath"/>
         </javac>
         <javac debug="true" debuglevel="${debuglevel}" destdir="target/test-classes" includeantruntime="false" source="${source}" target="${target}">
-            <src path="src/test/java"/>
-            <src path="src/test/resources"/>
+		<src path="triAll/src/test/java"/>
+		<src path="triAll/src/test/resources"/>
             <exclude name="**"/>
             <classpath refid="triAll.classpath"/>
         </javac>
