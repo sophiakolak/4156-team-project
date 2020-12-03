@@ -51,9 +51,9 @@ public class TriAll {
     app.get("/", ctx -> {
       if (user.isLoggedIn()) {
         if (user.isResearcher()) {
-          ctx.result(gson.toJson("/researcherdashboard.html"));
+          ctx.redirect("/researcherdashboard.html");
         } else {
-          ctx.result(gson.toJson("/participantdashboard.html"));
+          ctx.redirect("/participantdashboard.html");
         }
       } else {
         ctx.redirect("/login.html");

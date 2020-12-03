@@ -35,34 +35,33 @@ function signOut() {
     });
 }
 
-
 function loadTrial(id, name, desc, location, startDate, endDate, pay, IRB, partNeeded, partConfirmed){
+    var totalPart = partNeeded + partConfirmed
+    var progressWidth = partConfirmed/partNeeded
     var card = $("<div class = 'card_container'>")
     var cardHeader = $('<div class="card-header" id="headingOne">')
     var h2 = $('<h2 class="mb-0">')
-    var expandBtn = $('<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">')
+    var expandBtn = $('<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse'+id+'" aria-expanded="false" aria-controls="collapse'+id+'">')
     expandBtn.append("Start Date: ", startDate, ", ", "End Date: ", endDate, ", ", "Location: ", location)
     h2.append(expandBtn)
     cardHeader.append(h2)
     card.append(cardHeader)
 
-    var collapsableDiv = $('<div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#trialAccordian">')
+    var collapsableDiv = $('<div id="collapse'+id+'" class="collapse" aria-labelledby="heading'+id+'" data-parent="#trialAccordian">')
     cardBody = $('<div class="card-body">')
-    cardBody.append("Description: ", desc, "<br>", "IRB: ", IRB, "<br>", "Participants Needed: ", partNeeded, "<br>", "Participants Confirmed: ", partConfirmed, "<br>", "Hourly Pay in USD: ", pay)
-
-    // var editBtn = $('<button type="button" class="btn btn-primary editTrial"')
-    // editBtn.append("Edit")
-    // editBtn.attr('id', id)
-    // cardBody.append(editBtn)
-    
+    cardBody.append("<div class = 'description'>Description: " +desc + "</div>", "<div class = 'irb'>IRB: "+  IRB,+ "</div>", "<div class = 'pay'>Hourly Pay in USD: "+ pay+"</div>")
+    var progressContainer = $('<div class="progressContainer">')
+    progressContainer.append("Participants Confirmed: "+partConfirmed+"<br>")
+    progressContainer.append("Participants Needed: "+partNeeded+"<br>")
+    var progress = $('<div class="progress">')
+    var progressBody = $('<div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow='+partConfirmed+' aria-valuemin="0" aria-valuemax='+totalPart+' style="width:'+progressWidth+'%">')
+    progress.append(progressBody)
+    progressContainer.append(progress)
+    cardBody.append(progressContainer)
     collapsableDiv.append(cardBody)
     card.append(collapsableDiv)
     $("#trialAccordian").append(card)
-    // $(document).on('click','.editTrial', function(){
-    //     trial_id = this.id;
-    //     route = "/edit-trial-form/" + trial_id
-    //     window.location.href = route
-    // });
+
 }
 
 function noTrials() {
