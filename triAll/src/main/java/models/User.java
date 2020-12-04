@@ -1,11 +1,14 @@
 package models;
 
+import com.google.gson.JsonArray;
+import java.sql.ResultSet;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
+import units.SqliteDB;
 
 public class User {
   private int id;
@@ -44,6 +47,7 @@ public class User {
   public User() {
     loggedIn = false;
   }
+  
 
   /**
    * Creating user.
@@ -65,6 +69,23 @@ public class User {
       matches = new LinkedList<>();
     }
   }
+  
+  public void restart(User u) {
+    this.id = u.id;
+    this.lat = u.lat;
+    this.lon = u.lon;
+    this.location = u.location;
+    this.first = u.first;
+    this.last = u.last;
+    this.email = u.email;
+    isResearcher = u.isResearcher;
+    loggedIn = true;
+    if (isResearcher) {
+      trials = new HashMap<>();
+    } else {
+      matches = new LinkedList<>();
+    }
+  }
 
   /**
    * Update info.
@@ -75,6 +96,39 @@ public class User {
     this.first = first;
     this.last = last;
     this.email = email;
+  }
+  
+  public boolean updatePart(SqliteDB db, JsonArray form) {
+    if (!loggedIn || isResearcher) {
+      return false;
+    }
+    lat = form.get(4).getAsJsonObject().get("value").getAsDouble();
+    lon = form.get(5).getAsJsonObject().get("value").getAsDouble();
+    location = form.get(3).getAsJsonObject().get("value").getAsString();
+    first = form.get(0).getAsJsonObject().get("value").getAsString();
+    last = form.get(1).getAsJsonObject().get("value").getAsString();
+    email = form.get(2).getAsJsonObject().get("value").getAsString();
+    if (db.updateUser("participants", this) == 0) {
+      return false;
+    }
+    data.updateData(db, form);
+    return true;
+  }
+  
+  public boolean updateRes(SqliteDB db, JsonArray form) {
+    if(!loggedIn || !isResearcher) {
+      return false;
+    }
+    lat = form.get(5).getAsJsonObject().get("value").getAsDouble();
+    lon = form.get(6).getAsJsonObject().get("value").getAsDouble();
+    location = form.get(4).getAsJsonObject().get("value").getAsString();
+    first = form.get(1).getAsJsonObject().get("value").getAsString();
+    last = form.get(2).getAsJsonObject().get("value").getAsString();
+    email = form.get(3).getAsJsonObject().get("value").getAsString();
+    if(db.updateUser("researchers", this) == 0) {
+      return false;
+    }
+    return true;
   }
 
   public int getID() {
@@ -94,7 +148,7 @@ public class User {
    * Add trial.
    */
   public void addTrial(int id, Trial t) {
-    if (isResearcher) {
+    if (loggedIn && isResearcher) {
       trials.put(id, t);
     }
   }
@@ -103,11 +157,18 @@ public class User {
    * Get trial.
    */
   public Trial getTrial(int trialID) {
-    if (isResearcher) {
+    if (loggedIn && isResearcher) {
       return trials.get(trialID);
     } else {
       return null;
     }
+  }
+  
+  public boolean updateTrial(int trialID, SqliteDB db, JsonArray form) {
+    if(!loggedIn || !isResearcher) {
+      return false;
+    }
+    return trials.get(trialID).update(db, form);
   }
 
   /**
@@ -131,6 +192,68 @@ public class User {
   public double getLon() {
     return lon;
   }
+  
+  public String getLocation() {
+    return location;
+  }
+  
+  public String getFirst() {
+    return first;
+  }
+  
+  public String getLast() {
+    return last;
+  }
+  
+  public int logIn(SqliteDB db, String email) {
+    int type = checkType(db, email);
+    switch (type) {
+      case 1:
+        retrievePart(db, email);
+        break;
+      case 0:
+        retrieveRes(db, email);
+        break;
+      case -1:
+        break;
+      default:
+        break;
+    }
+    return type;
+  }
+  
+  /**
+   * Determine what kind of user account exists for this email, if any.
+   * @param db Database containing the user tables.
+   * @param email Email address to check.
+   * @return Whether or not the user is a participant; or -1 if no user exists.
+   */
+  public int checkType(SqliteDB db, String email) {
+    if (db.inTable("participants", "email", email)) {
+      return 1;
+    } else if (db.inTable("researchers", "email", email)) {
+      return 0;
+    } else {
+      return -1;
+    }
+  }
+  
+  public void retrieveRes(SqliteDB db, String email) {
+    restart(db.loadRes(email));
+    for (int trial : db.trialSet(id)) {
+      Trial t = db.loadTrial(trial);
+      addTrial(t.getID(), t);
+    }
+    
+  }
+  
+  public void retrievePart(SqliteDB db, String email) {
+    restart(db.loadPart(email));
+    setData(db.loadData(id));
+    for (int match : db.matchSet(id)) {
+      addMatch(db.loadMatch(match));
+    }
+  }
 
   /**
    * Add match.
@@ -141,26 +264,75 @@ public class User {
     Match m = new Match(id, t, distance, "pending");
     this.matches.add(m);
   }
-
-  public int acceptMatch(int id) {
-    for (Match m : matches) {
-      if (m.getTrial().getID() == id) {
-        m.setStatus("accepted");
-        m.getTrial().confirmOne();
-        return m.getTrial().getPartConf();
-      }
-    }
-    return -1;
+  
+  public void addMatch(Match m) {
+    Trial t = m.getTrial();
+    double distance = distance(t.getLat(), t.getLong(), this.lat, this.lon, "M");
+    m.setDistance(distance);
+    this.matches.add(m);
   }
 
-  public boolean rejectMatch(int id) {
+  public boolean acceptMatch(int id, SqliteDB db) {
     for (Match m : matches) {
       if (m.getTrial().getID() == id) {
-        m.setStatus("rejected");
+        return m.accept(db);
+      }
+    }
+    return false;
+  }
+
+  public boolean rejectMatch(int id, SqliteDB db) {
+    for (Match m : matches) {
+      if (m.getTrial().getID() == id) {
+        m.reject(db);
         return true;
       }
     }
     return false;
+  }
+  
+  public boolean signUpPart(SqliteDB db, JsonArray form) {
+    lat = form.get(5).getAsJsonObject().get("value").getAsDouble();
+    lon = form.get(6).getAsJsonObject().get("value").getAsDouble();
+    location = form.get(4).getAsJsonObject().get("value").getAsString();
+    first = form.get(1).getAsJsonObject().get("value").getAsString();
+    last = form.get(2).getAsJsonObject().get("value").getAsString();
+    email = form.get(3).getAsJsonObject().get("value").getAsString();
+    isResearcher = false;
+    id = db.insertUser("participants", this);
+    if (id == 0) {
+      return false;
+    }
+    loggedIn = true;
+    setData(new Criteria(db, form, id, "participant_data"));
+    return true;
+  }
+  
+  public boolean signUpRes(SqliteDB db, JsonArray form) {
+    lat = form.get(5).getAsJsonObject().get("value").getAsDouble();
+    lon = form.get(6).getAsJsonObject().get("value").getAsDouble();
+    location = form.get(4).getAsJsonObject().get("value").getAsString();
+    first = form.get(1).getAsJsonObject().get("value").getAsString();
+    last = form.get(2).getAsJsonObject().get("value").getAsString();
+    email = form.get(3).getAsJsonObject().get("value").getAsString();
+    isResearcher = true;
+    id = db.insertUser("participants", this);
+    if (id == 0) {
+      return false;
+    }
+    loggedIn = true;
+    return true;
+  }
+  
+  public void checkMatches(SqliteDB db) {
+    for (int t : db.openTrials()) {
+      Trial trial = db.loadTrial(t);
+      if (trial.getCriteria().matches(data) && !db.matchExists(id, trial.getID())) {
+        Match m = new Match(this, trial, db);
+        addMatch(m);
+        //send emails
+      }
+    }
   }
 
   public boolean isResearcher() {

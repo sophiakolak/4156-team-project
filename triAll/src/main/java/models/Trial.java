@@ -1,9 +1,13 @@
 package models;
 
+import com.google.gson.JsonArray;
+
+import units.SqliteDB;
+
 public class Trial {
 
   private int id;
-  //private User researcher;
+  private int resID;
   private String desc;
   private double lat;
   private double lon;
@@ -37,13 +41,70 @@ public class Trial {
     this.partConfirmed = pc;
     this.crit = crit;
   }
+  
+  /**
+   * Creates trial object.
+   */
+  public Trial(SqliteDB db, JsonArray form, int parent) {
+    desc = form.get(0).getAsJsonObject().get("value").getAsString();
+    location = form.get(1).getAsJsonObject().get("value").getAsString();
+    lat = form.get(2).getAsJsonObject().get("value").getAsDouble();
+    lon = form.get(3).getAsJsonObject().get("value").getAsDouble();
+    start = form.get(4).getAsJsonObject().get("value").getAsString();
+    end = form.get(5).getAsJsonObject().get("value").getAsString();
+    pay = form.get(6).getAsJsonObject().get("value").getAsDouble();
+    irb = form.get(7).getAsJsonObject().get("value").getAsInt();
+    partNeeded = form.get(8).getAsJsonObject().get("value").getAsInt();
+    partConfirmed = 0;
+    resID = parent;
+    id = db.insertTrial(this);
+    crit = new Criteria(db, form, id, "trial_criteria");
+  }
+  
+  public boolean update(SqliteDB db, JsonArray form) {
+    desc = form.get(1).getAsJsonObject().get("value").getAsString();
+    location = form.get(2).getAsJsonObject().get("value").getAsString();
+    lat = form.get(3).getAsJsonObject().get("value").getAsDouble();
+    lon = form.get(4).getAsJsonObject().get("value").getAsDouble();
+    start = form.get(5).getAsJsonObject().get("value").getAsString();
+    end = form.get(6).getAsJsonObject().get("value").getAsString();
+    pay = form.get(7).getAsJsonObject().get("value").getAsDouble();
+    irb = form.get(8).getAsJsonObject().get("value").getAsInt();
+    partNeeded = form.get(9).getAsJsonObject().get("value").getAsInt();
+    if (db.updateTrial(this) == 0) {
+      return false;
+    }
+    crit.updateCrit(db, form);
+    return true;
+  }
+  
+  public void checkMatches(SqliteDB db) {
+    if (partNeeded == partConfirmed) {
+      return;
+    }
+    for (String email : db.partSet()) {
+      User user = db.loadPart(email);
+      if (crit.matches(user.getData()) && !db.matchExists(user.getID(), id)) {
+        new Match(user, this, db);
+        //send emails
+      }
+    }
+  }
 
   public int getID() {
     return id;
   }
+  
+  public int getRes() {
+    return resID;
+  }
 
   public Criteria getCriteria() {
     return crit;
+  }
+  
+  public String getDesc() {
+    return desc;
   }
 
   public double getLat() {
@@ -53,17 +114,44 @@ public class Trial {
   public double getLong() {
     return this.lon;
   }
+  
+  public String getLocation() {
+    return location;
+  }
 
   public String getStart() {
     return start;
+  }
+  
+  public String getEnd() {
+    return end;
+  }
+  
+  public int getIrb() {
+    return irb;
+  }
+  
+  public double getPay() {
+    return pay;
+  }
+  
+  public int getPartNeeded() {
+    return partNeeded;
   }
 
   public int getPartConf() {
     return partConfirmed;
   }
 
-  public void confirmOne() {
+  public boolean confirmOne(SqliteDB db) {
+    if (partConfirmed == partNeeded) {
+      return false;
+    }
     partConfirmed++;
+    if (db.updateTrial(this) == 0) {
+      return false;
+    }
+    return true;
   }
 
 

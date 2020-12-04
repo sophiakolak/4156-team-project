@@ -1,5 +1,7 @@
 package models;
 
+import units.SqliteDB;
+
 public class Match {
 
   private int id;
@@ -22,9 +24,34 @@ public class Match {
     distance = d;
     status = s;
   }
+  
+  public Match(User u, Trial t, SqliteDB db) {
+    trial = t;
+    id = db.insertMatch(u, t);
+    status = "pending";
+  }
+  
+  public boolean accept(SqliteDB db) {
+    if (!trial.confirmOne(db)) {
+      return false;
+    }
+    status = "accept";
+    db.acceptMatch(trial.getID());
+    return true;
+  }
+  
+  public boolean reject(SqliteDB db) {
+    status = "reject";
+    db.rejectMatch(trial.getID());
+    return true;
+  }
 
   public double getDistance() {
     return distance;
+  }
+  
+  public void setDistance(double d) {
+    distance = d;
   }
 
   public int getID() {
@@ -37,6 +64,10 @@ public class Match {
 
   public void setStatus(String status) {
     this.status = status;
+  }
+  
+  public String getStatus() {
+    return status;
   }
 
 }
