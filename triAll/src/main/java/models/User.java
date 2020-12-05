@@ -238,7 +238,7 @@ public class User {
     }
   }
   
-  public void retrieveRes(SqliteDB db, String email) {
+  private void retrieveRes(SqliteDB db, String email) {
     restart(db.loadRes(email));
     for (int trial : db.trialSet(id)) {
       Trial t = db.loadTrial(trial);
@@ -247,7 +247,7 @@ public class User {
     
   }
   
-  public void retrievePart(SqliteDB db, String email) {
+  private void retrievePart(SqliteDB db, String email) {
     restart(db.loadPart(email));
     setData(db.loadData(id));
     for (int match : db.matchSet(id)) {
@@ -303,6 +303,7 @@ public class User {
     if (id == 0) {
       return false;
     }
+    matches = new LinkedList<Match>();
     loggedIn = true;
     setData(new Criteria(db, form, id, "participant_data"));
     return true;
@@ -320,11 +321,12 @@ public class User {
     if (id == 0) {
       return false;
     }
+    trials = new HashMap<Integer, Trial>();
     loggedIn = true;
     return true;
   }
   
-  public void checkMatches(SqliteDB db) {
+  private void checkMatches(SqliteDB db) {
     for (int t : db.openTrials()) {
       Trial trial = db.loadTrial(t);
       if (trial.getCriteria().matches(data) && !db.matchExists(id, trial.getID())) {
@@ -355,7 +357,7 @@ public class User {
    * Sort trials.
    */
   public LinkedList<Trial> sortedTrials() {
-    if (!isResearcher) {
+    if (!isResearcher || trials == null) {
       return null;
     }
     LinkedList<Trial> list = new LinkedList<>(trials.values());

@@ -68,7 +68,7 @@ public class TriAll {
         } else if (result == 1) {
           ctx.result(gson.toJson("/participantdashboard.html"));
         } else {
-          ctx.result(gson.toJson("/not_found.html"));
+          ctx.result(gson.toJson("/signup"));
         }
       }
     });

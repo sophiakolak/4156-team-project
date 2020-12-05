@@ -207,7 +207,7 @@ public class SqliteDB {
       st.setString(1, id);
       rs = st.executeQuery();
       rs.next();
-      if (rs.getInt("total") == 1) {
+      if (rs.getInt(1) == 1) {
         st.close();
         return true;
       } else {
