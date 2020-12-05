@@ -1,7 +1,6 @@
 package models;
 
 import com.google.gson.JsonArray;
-
 import units.SqliteDB;
 
 public class Trial {
@@ -59,8 +58,15 @@ public class Trial {
     resID = parent;
     id = db.insertTrial(this);
     crit = new Criteria(db, form, id, "trial_criteria");
+    checkMatches(db);
   }
   
+  /**
+   * Update trial after edits to information.
+   * @param db Database.
+   * @param form Form information to parse.
+   * @return Whether the operation succeeds.
+   */
   public boolean update(SqliteDB db, JsonArray form) {
     desc = form.get(1).getAsJsonObject().get("value").getAsString();
     location = form.get(2).getAsJsonObject().get("value").getAsString();
@@ -75,10 +81,15 @@ public class Trial {
       return false;
     }
     crit.updateCrit(db, form);
+    checkMatches(db);
     return true;
   }
   
-  public void checkMatches(SqliteDB db) {
+  /**
+   * Checks for new matches.
+   * @param db Database.
+   */
+  private void checkMatches(SqliteDB db) {
     if (partNeeded == partConfirmed) {
       return;
     }
@@ -143,6 +154,11 @@ public class Trial {
     return partConfirmed;
   }
 
+  /**
+   * Records a confirmed participant.
+   * @param db Database.
+   * @return Whether the trial could confirm the participant.
+   */
   public boolean confirmOne(SqliteDB db) {
     if (partConfirmed == partNeeded) {
       return false;

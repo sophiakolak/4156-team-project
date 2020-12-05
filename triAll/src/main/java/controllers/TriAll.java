@@ -281,9 +281,11 @@ public class TriAll {
             return false;
           }
         } else {
-          System.out.println("This is not avalid token");
+          System.out.println("This is not a valid token");
           return false;
         }
+      } catch (RuntimeException e2) {
+        return false;
       } catch (Exception e) {
         return false;
       }

@@ -87,8 +87,8 @@ public class SqliteDB {
           break;
         case trialCriteria:
           create = "CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-              + " trial_ID INT NOT NULL, Min_Age INT, Max_Age INT, Min_height REAL, Max_height REAL, Min_Weight REAL, Max_weight REAL, Gender"
-              + " TEXT, Race TEXT, Nationality TEXT);";
+              + " trial_ID INT NOT NULL, Min_Age INT, Max_Age INT, Min_height REAL, Max_height REAL"
+              + ", Min_Weight REAL, Max_weight REAL, Gender TEXT, Race TEXT, Nationality TEXT);";
           create = String.format(create, table);
           st = conn.prepareStatement(create);
           st.executeUpdate();
@@ -105,7 +105,8 @@ public class SqliteDB {
           break;
         case trialMatch:
           create = "CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-              + " trial_ID INT NOT NULL, researcher_ID INT NOT NULL, participant_ID INT NOT NULL, " + "status TEXT);";
+              + " trial_ID INT NOT NULL, researcher_ID INT NOT NULL, participant_ID INT NOT NULL, " 
+              + "status TEXT);";
           create = String.format(create, table);
           st = conn.prepareStatement(create);
           st.executeUpdate();
@@ -144,28 +145,23 @@ public class SqliteDB {
    * @return Whether table is in the database.
    */
   public boolean isTable(String table) {
-    PreparedStatement st = null;
-    try {
-      st = conn.prepareStatement("SELECT COUNT(name) AS total FROM sqlite_master WHERE type='table' AND name=?;");
+    
+    try (
+        PreparedStatement st = conn.prepareStatement("SELECT COUNT(name) AS total FROM "
+            + "sqlite_master WHERE type='table' AND name=?;");
+    ) {
       st.setString(1, table);
-      ResultSet rs = st.executeQuery();
-      rs.next();
-      if (rs.getInt("total") == 1) {
-        rs.close();
-        st.close();
-        return true;
-      } else {
-        rs.close();
-        st.close();
+      try (
+          ResultSet rs = st.executeQuery();
+      ) {
+        rs.next();
+        if (rs.getInt("total") == 1) {
+          return true;
+        }
+      } catch (Exception e) {
+        return false;
       }
     } catch (Exception e) {
-      if (st != null) {
-        try {
-          st.close();
-        } catch (SQLException e1) {
-          e1.printStackTrace();
-        }
-      }
       return false;
     }
     return false;
@@ -197,110 +193,152 @@ public class SqliteDB {
     return true;
   }
   
+  /**
+   * Checks whether an record is in a certain table.
+   * @param table Table to search.
+   * @param field Where to look for matches.
+   * @param id Value to match against.
+   * @return Whether such a record is present.
+   */
   public boolean inTable(String table, String field, String id) {
-    ResultSet rs = null;
-    PreparedStatement st = null;
-    try {
-      String command = "SELECT COUNT(*) FROM %s WHERE %s = ?;";
-      command = String.format(command, table, field);
-      st = conn.prepareStatement(command);
+    String command = "SELECT COUNT(*) FROM %s WHERE %s = ?;";
+    command = String.format(command, table, field);
+    try (
+        PreparedStatement st = conn.prepareStatement(command);
+    ) {
       st.setString(1, id);
-      rs = st.executeQuery();
-      rs.next();
-      if (rs.getInt(1) == 1) {
-        st.close();
-        return true;
-      } else {
-        st.close();
+      try (
+          ResultSet rs = st.executeQuery();
+      ) {
+        rs.next();
+        if (rs.getInt(1) == 1) {
+          return true;
+        }
+      } catch (Exception e) {
+        return false;
       }
     } catch (Exception e) {
       e.printStackTrace();
-      if (st != null) {
-        try {
-          st.close();
-        } catch (SQLException e1) {
-          e1.printStackTrace();
-        }
-      }
       return false;
     }
     return false;
   }
   
+  /**
+   * Load a particular researcher from the database.
+   * @param email Email address of the sought researcher.
+   * @return User object for the researcher; null if not found.
+   */
   public User loadRes(String email) {
-    ResultSet rs = null;
     User u = null;
     String command = "SELECT * FROM participants WHERE email = ?;";
     try (
         PreparedStatement st = conn.prepareStatement(command);
     ) {
       st.setString(1,  email);
-      rs = st.executeQuery();
-      rs.next();
-      u = new User(rs.getInt(1), rs.getDouble(2), rs.getDouble(3), rs.getString(4), 
-          rs.getString(5), rs.getString(6), rs.getString(7), true);
+      try (
+          ResultSet rs = st.executeQuery();
+      ) {
+        rs.next();
+        u = new User(rs.getInt(1), rs.getDouble(2), rs.getDouble(3), rs.getString(4), 
+            rs.getString(5), rs.getString(6), rs.getString(7), true);
+      } catch (Exception e) {
+        return u;
+      }
     } catch (Exception e) {
       return u;
     } 
     return u;
   }
   
+  /**
+   * Load a particular participant from the database.
+   * @param email Email address of the sought participant.
+   * @return User object for the participant; null if not found.
+   */
   public User loadPart(String email) {
-    ResultSet rs = null;
     User u = null;
     String command = "SELECT * FROM participants WHERE email = ?;";
     try (
         PreparedStatement st = conn.prepareStatement(command);
     ) {
       st.setString(1,  email);
-      rs = st.executeQuery();
-      rs.next();
-      u = new User(rs.getInt(1), rs.getDouble(2), rs.getDouble(3), rs.getString(4), rs
-          .getString(5), rs.getString(6), rs.getString(7), false);
+      try (
+          ResultSet rs = st.executeQuery();
+      ) {
+        rs.next();
+        u = new User(rs.getInt(1), rs.getDouble(2), rs.getDouble(3), rs.getString(4), rs
+            .getString(5), rs.getString(6), rs.getString(7), false);
+      } catch (Exception e) {
+        return u;
+      }
     } catch (Exception e) {
       return u;
     } 
     return u;
   }
   
+  /**
+   * Load a particular set of trial criteria from the database.
+   * @param id Table row of the criteria record.
+   * @return Criteria object for this information; null if not found.
+   */
   public Criteria loadCrit(int id) {
-    ResultSet rs = null;
     Criteria crit = null;
     String command = "SELECT * FROM trial_criteria WHERE trial_ID = ?;";
     try (
         PreparedStatement st = conn.prepareStatement(command);
     ) {
       st.setInt(1,  id);
-      rs = st.executeQuery();
-      rs.next();
-      crit = new Criteria(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs
-                .getInt(4), rs.getDouble(5), rs.getDouble(6), rs.getDouble(7), rs
-                .getDouble(8), rs.getString(9), rs.getString(10), rs.getString(11));
+      try (
+          ResultSet rs = st.executeQuery();
+      ) {
+        rs.next();
+        crit = new Criteria(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs
+                  .getInt(4), rs.getDouble(5), rs.getDouble(6), rs.getDouble(7), rs
+                  .getDouble(8), rs.getString(9), rs.getString(10), rs.getString(11));
+      } catch (Exception e) {
+        return crit;
+      }
     } catch (Exception e) {
       return crit;
     }
     return crit;
   }
   
+  /**
+   * Load a particular set of user data from the database.
+   * @param id Table row of the data record.
+   * @return Criteria object for this data; null if not found.
+   */
   public Criteria loadData(int id) {
-    ResultSet rs = null;
     Criteria data = null;
     String command = "SELECT * FROM participant_data WHERE participant_ID = ?;";
     try (
         PreparedStatement st = conn.prepareStatement(command);
     ) {
       st.setInt(1,  id);
-      rs = st.executeQuery();
-      rs.next();
-      data = new Criteria(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs
-                .getInt(4), rs.getDouble(5), rs.getDouble(6), rs.getDouble(7), rs
-                .getDouble(8), rs.getString(9), rs.getString(10), rs.getString(11));
+      try (
+          ResultSet rs = st.executeQuery();
+      ) {
+        rs.next();
+        data = new Criteria(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs
+                  .getInt(4), rs.getDouble(5), rs.getDouble(6), rs.getDouble(7), rs
+                  .getDouble(8), rs.getString(9), rs.getString(10), rs.getString(11));
+      } catch (Exception e) {
+        return data;
+      }
     } catch (Exception e) {
       return data;
     }
     return data;
   }
   
+  /**
+   * Collects the row numbers of matches for a particular participant.
+   * @param id Row ID of the participant.
+   * @return LinkedList of the match rows.
+   */
   public LinkedList<Integer> matchSet(int id) {
     ResultSet rs = null;
     LinkedList<Integer> matchSet = new LinkedList<>();
@@ -321,6 +359,11 @@ public class SqliteDB {
     return matchSet;
   }
   
+  /**
+   * Collects the row numbers of trials for a particular researcher.
+   * @param id Row ID of the researcher.
+   * @return LinkedList of the trial rows.
+   */
   public LinkedList<Integer> trialSet(int id) {
     ResultSet rs = null;
     LinkedList<Integer> trialSet = new LinkedList<>();
@@ -341,6 +384,10 @@ public class SqliteDB {
     return trialSet;
   }
   
+  /**
+   * Collects the row numbers of all participant accounts.
+   * @return LinkedList of the participant rows.
+   */
   public LinkedList<String> partSet() {
     ResultSet rs = null;
     LinkedList<String> trialSet = new LinkedList<>();
@@ -360,6 +407,10 @@ public class SqliteDB {
     return trialSet;
   }
   
+  /**
+   * Collects the row numbers of all trials.
+   * @return LinkedList of the trial rows.
+   */
   public LinkedList<Integer> openTrials() {
     ResultSet rs = null;
     LinkedList<Integer> trialSet = new LinkedList<>();
@@ -371,46 +422,65 @@ public class SqliteDB {
       while (rs.next()) {
         trialSet.add(rs.getInt(1));
       }
+      rs.close();
     } catch (Exception e) {
       return trialSet;
     }
     return trialSet;
   }
   
+  /**
+   * Load a particular trial from the database.
+   * @param id Table row of the trial.
+   * @return Trial object if found; null if not.
+   */
   public Trial loadTrial(int id) {
-    ResultSet rs = null;
     Trial t = null;
-    String command= "SELECT * FROM trials WHERE ID = ?;";
+    String command = "SELECT * FROM trials WHERE ID = ?;";
     try (
         PreparedStatement st = conn.prepareStatement(command);
     ) {
       st.setInt(1,  id);
-      rs = st.executeQuery();
-      rs.next();
-      Criteria c = loadCrit(id);
-      t = new Trial(rs.getInt(1), null, rs
-          .getString(3), rs.getDouble(4), rs.getDouble(5), rs
-          .getString(6), rs.getString(7), rs.getString(8), rs
-          .getDouble(9), rs.getInt(10), rs.getInt(11), rs.getInt(12), c);
+      try (
+          ResultSet rs = st.executeQuery();
+      ) {
+        rs.next();
+        Criteria c = loadCrit(id);
+        t = new Trial(rs.getInt(1), null, rs
+            .getString(3), rs.getDouble(4), rs.getDouble(5), rs
+            .getString(6), rs.getString(7), rs.getString(8), rs
+            .getDouble(9), rs.getInt(10), rs.getInt(11), rs.getInt(12), c);
+      } catch (Exception e) {
+        return t;
+      }
     } catch (Exception e) {
       return t;
     }
     return t;
   }
   
+  /**
+   * Load a particular match from the database.
+   * @param id Table row of the match.
+   * @return Match object if found; null if not.
+   */
   public Match loadMatch(int id) {
-    ResultSet rs = null;
     Match m = null;
     String command = "SELECT * FROM trial_matches WHERE ID = ?;";
     try (
         PreparedStatement st = conn.prepareStatement(command);
     ) {
       st.setInt(1,  id);
-      rs = st.executeQuery();
-      rs.next();
-      Trial t = loadTrial(rs.getInt(2));
-      m = new Match(id, t, 0, rs.getString(5));
-    } catch(Exception e) {
+      try (
+          ResultSet rs = st.executeQuery();
+      ) {
+        rs.next();
+        Trial t = loadTrial(rs.getInt(2));
+        m = new Match(id, t, 0, rs.getString(5));
+      } catch (Exception e) {
+        return m;
+      }
+    } catch (Exception e) {
       return m;
     }
     return m;
@@ -420,16 +490,13 @@ public class SqliteDB {
    * Inserts an entry into an User-style table.
    * 
    * @param table Name of the table.
-   * @param lat   Latitude coordinate.
-   * @param lon   Longitude coordinate.
-   * @param first First name.
-   * @param last  Last name.
-   * @param email Email address.
+   * @param u User to be inserted.
    * @return The row into which the new user was inserted - 0 upon failure.
    */
   public int insertUser(String table, User u) {
     int id = 0;
-    String command = "INSERT INTO %s (Lat, Long, Location, First, Last, Email) VALUES (?, ?, ?, ?, ?, ?);";
+    String command = "INSERT INTO %s (Lat, Long, Location, First, Last, Email) "
+        + "VALUES (?, ?, ?, ?, ?, ?);";
     command = String.format(command, table);
     try (
         PreparedStatement st = conn.prepareStatement(command);
@@ -458,12 +525,7 @@ public class SqliteDB {
    * Updates entry in an User-style table.
    * 
    * @param table Name of the table.
-   * @param id    Row of the entry to be updated.
-   * @param lat   Latitude coordinate.
-   * @param lon   Longitude coordinate.
-   * @param first First name.
-   * @param last  Last name.
-   * @param email Email address.
+   * @param u User with updated information.
    * @return The row which was updated - 0 upon failure.
    */
   public int updateUser(String table, User u) {
@@ -505,7 +567,7 @@ public class SqliteDB {
     command = String.format(command, table);
     try (
         PreparedStatement st = conn.prepareStatement(command);
-    ){
+    ) {
       st.setInt(1, crit.getParent());
       st.setInt(2, crit.getMinAge());
       st.setInt(3, crit.getMaxAge());
@@ -538,11 +600,11 @@ public class SqliteDB {
    */
   public int updateCriteria(String table, Criteria crit) {
     int id = 0;
-    PreparedStatement st = null;
-    try {
-      String command = "REPLACE INTO %s VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-      command = String.format(command, table);
-      st = conn.prepareStatement(command);
+    String command = "REPLACE INTO %s VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+    command = String.format(command, table);
+    try (
+        PreparedStatement st = conn.prepareStatement(command);
+    ) {
       st.setInt(1, crit.getID());
       st.setInt(2, crit.getParent());
       st.setInt(3, crit.getMinAge());
@@ -561,13 +623,6 @@ public class SqliteDB {
       id = rs.getInt("num");
       rs.close();
     } catch (Exception e) {
-      try {
-        if (st != null) {
-          st.close();
-        }
-      } catch (SQLException e1) {
-        e1.printStackTrace();
-      }
       return 0;
     }
     return id;
@@ -575,18 +630,7 @@ public class SqliteDB {
   
   /**
    * Inserts a new trial into the database.
-   * 
-   * @param table     Name of the table
-   * @param resId     Row of researcher in their table.
-   * @param desc      Description of trial.
-   * @param lat       Latitude coordinate.
-   * @param lon       Longitude coordinate.
-   * @param start     Start date.
-   * @param end       End date.
-   * @param pay       Hourly payment in dollars.
-   * @param irb       Institutional Review Board number.
-   * @param needed    Participants needed for trial.
-   * @param confirmed Participants confirmed so far.
+   * @param t Trial to be inserted.
    * @return The row into which the new trial was inserted - 0 upon failure.
    */
   public int insertTrial(Trial t) {
@@ -622,18 +666,7 @@ public class SqliteDB {
   /**
    * Updates a trial in the database.
    * 
-   * @param table     Name of the table
-   * @param row       Row of the trial to be updated.
-   * @param resId     Row of researcher in their table.
-   * @param desc      Description of trial.
-   * @param lat       Latitude coordinate.
-   * @param lon       Longitude coordinate.
-   * @param start     Start date.
-   * @param end       End date.
-   * @param pay       Hourly payment in dollars.
-   * @param irb       Institutional Review Board number.
-   * @param needed    Participants needed for trial.
-   * @param confirmed Participants confirmed so far.
+   * @param t Trial with updated information.
    * @return The row which was updated - 0 upon failure.
    */
   public int updateTrial(Trial t) {
@@ -666,6 +699,10 @@ public class SqliteDB {
     return id;
   }
 
+  /**
+   * Records a match as accepted.
+   * @param id Table row of the match.
+   */
   public void acceptMatch(int id) {
     String command = "UPDATE trial_matches SET status = 'accepted' WHERE trial_ID = ?";
     try (
@@ -678,6 +715,10 @@ public class SqliteDB {
     }
   }
   
+  /**
+   * Records a match as rejected.
+   * @param id Table row of the match.
+   */
   public void rejectMatch(int id) {
     String command = "UPDATE trial_matches SET status = 'rejected' WHERE trial_ID = ?";
     try (
@@ -690,6 +731,12 @@ public class SqliteDB {
     }
   }
 
+  /**
+   * Checks whether a match exists.
+   * @param partID Table row of the participant.
+   * @param trialID Table row of the trial.
+   * @return Whether the match was present.
+   */
   public boolean matchExists(int partID, int trialID) {
     String command = "SELECT COUNT(*) FROM trial_matches WHERE participant_ID = ? AND trial_ID = ?";
     boolean s = false;
@@ -698,24 +745,25 @@ public class SqliteDB {
     ) {
       st.setInt(1, partID);
       st.setInt(2,  partID);
-      ResultSet rs = st.executeQuery();
-      s = rs.getInt(1) > 0;
+      try (
+          ResultSet rs = st.executeQuery();
+      ) {
+        s = rs.getInt(1) > 0;
+      } catch (Exception e) {
+        return s;
+      }
     } catch (Exception e) {
       e.printStackTrace();
-      return false;
+      return s;
     }
     return s;
   }
   
   /**
-   * Inserts a new entry into a Criteria-style table.
-   * 
-   * @param table   Name of the table.
-   * @param trialID Row of trial.
-   * @param resID   Row of researcher.
-   * @param partID  Row of participant.
-   * @param status  Status of the match.
-   * @return The row into which the new criteria was inserted - 0 upon failure.
+   * Inserts a new match entry.
+   * @param u Participant associated with the match.
+   * @param t Trial associated with the match.
+   * @return The row into which the new match was inserted - 0 upon failure.
    */
   public int insertMatch(User u, Trial t) {
     int id = 0;

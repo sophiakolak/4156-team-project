@@ -1,7 +1,6 @@
 package models;
 
 import com.google.gson.JsonArray;
-import java.sql.ResultSet;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
@@ -70,6 +69,10 @@ public class User {
     }
   }
   
+  /**
+   * Reset this object's fields.
+   * @param u User object to copy into this.
+   */
   public void restart(User u) {
     this.id = u.id;
     this.lat = u.lat;
@@ -98,6 +101,12 @@ public class User {
     this.email = email;
   }
   
+  /**
+   * Update participant after edits to information.
+   * @param db Database.
+   * @param form Form information to parse.
+   * @return Whether the operation succeeds.
+   */
   public boolean updatePart(SqliteDB db, JsonArray form) {
     if (!loggedIn || isResearcher) {
       return false;
@@ -112,11 +121,18 @@ public class User {
       return false;
     }
     data.updateData(db, form);
+    checkMatches(db);
     return true;
   }
   
+  /**
+   * Update researcher after edits to information.
+   * @param db Database.
+   * @param form Form information to parse.
+   * @return Whether the operation succeeds.
+   */
   public boolean updateRes(SqliteDB db, JsonArray form) {
-    if(!loggedIn || !isResearcher) {
+    if (!loggedIn || !isResearcher) {
       return false;
     }
     lat = form.get(5).getAsJsonObject().get("value").getAsDouble();
@@ -125,7 +141,7 @@ public class User {
     first = form.get(1).getAsJsonObject().get("value").getAsString();
     last = form.get(2).getAsJsonObject().get("value").getAsString();
     email = form.get(3).getAsJsonObject().get("value").getAsString();
-    if(db.updateUser("researchers", this) == 0) {
+    if (db.updateUser("researchers", this) == 0) {
       return false;
     }
     return true;
@@ -164,8 +180,15 @@ public class User {
     }
   }
   
+  /**
+   * Updates one of the user's trials.
+   * @param trialID Row number of the trial.
+   * @param db Database.
+   * @param form Form information to parse.
+   * @return Whether the trial could be updated by this user.
+   */
   public boolean updateTrial(int trialID, SqliteDB db, JsonArray form) {
-    if(!loggedIn || !isResearcher) {
+    if (!loggedIn || !isResearcher) {
       return false;
     }
     return trials.get(trialID).update(db, form);
@@ -205,6 +228,12 @@ public class User {
     return last;
   }
   
+  /**
+   * Logs a user into this object.
+   * @param db Database.
+   * @param email Email address of the user.
+   * @return Whether or not the user is a participant; or -1 if no user exists.
+   */
   public int logIn(SqliteDB db, String email) {
     int type = checkType(db, email);
     switch (type) {
@@ -238,6 +267,11 @@ public class User {
     }
   }
   
+  /**
+   * Retrieves the researcher's data into this object.
+   * @param db Database.
+   * @param email Email address of the researcher.
+   */
   private void retrieveRes(SqliteDB db, String email) {
     restart(db.loadRes(email));
     for (int trial : db.trialSet(id)) {
@@ -247,6 +281,11 @@ public class User {
     
   }
   
+  /**
+   * Retrieves the participants's data into this object.
+   * @param db Database.
+   * @param email Email address of the participant.
+   */
   private void retrievePart(SqliteDB db, String email) {
     restart(db.loadPart(email));
     setData(db.loadData(id));
@@ -256,7 +295,9 @@ public class User {
   }
 
   /**
-   * Add match.
+   * Adds a match to this user's records.
+   * @param id Row number of the match.
+   * @param t Trial associated with the match.
    */
   public void addMatch(int id, Trial t) {
     //calculate distance to this User
@@ -265,6 +306,10 @@ public class User {
     this.matches.add(m);
   }
   
+  /**
+   * Adds a match to this user's records.
+   * @param m Match to add.
+   */
   public void addMatch(Match m) {
     Trial t = m.getTrial();
     double distance = distance(t.getLat(), t.getLong(), this.lat, this.lon, "M");
@@ -272,6 +317,12 @@ public class User {
     this.matches.add(m);
   }
 
+  /**
+   * Accept a particular match.
+   * @param id Row number of the match.
+   * @param db Database.
+   * @return Whether the match could be accepted by this user.
+   */
   public boolean acceptMatch(int id, SqliteDB db) {
     for (Match m : matches) {
       if (m.getTrial().getID() == id) {
@@ -281,6 +332,12 @@ public class User {
     return false;
   }
 
+  /**
+   * Reject a particular match.
+   * @param id Row number of the match.
+   * @param db Database.
+   * @return Whether the match could be rejected by this user.
+   */
   public boolean rejectMatch(int id, SqliteDB db) {
     for (Match m : matches) {
       if (m.getTrial().getID() == id) {
@@ -291,6 +348,12 @@ public class User {
     return false;
   }
   
+  /**
+   * Creates a new participant.
+   * @param db Database.
+   * @param form Form information to parse.
+   * @return Whether or not creation succeeded.
+   */
   public boolean signUpPart(SqliteDB db, JsonArray form) {
     lat = form.get(5).getAsJsonObject().get("value").getAsDouble();
     lon = form.get(6).getAsJsonObject().get("value").getAsDouble();
@@ -306,9 +369,16 @@ public class User {
     matches = new LinkedList<Match>();
     loggedIn = true;
     setData(new Criteria(db, form, id, "participant_data"));
+    checkMatches(db);
     return true;
   }
   
+  /**
+   * Creates a new researcher.
+   * @param db Database.
+   * @param form Form information to parse.
+   * @return Whether or not creation succeeded.
+   */
   public boolean signUpRes(SqliteDB db, JsonArray form) {
     lat = form.get(5).getAsJsonObject().get("value").getAsDouble();
     lon = form.get(6).getAsJsonObject().get("value").getAsDouble();
@@ -326,6 +396,10 @@ public class User {
     return true;
   }
   
+  /**
+   * Checks for new matches.
+   * @param db Database to check.
+   */
   private void checkMatches(SqliteDB db) {
     for (int t : db.openTrials()) {
       Trial trial = db.loadTrial(t);
@@ -379,7 +453,7 @@ public class User {
   /**
    * Calculate distance.
    */
-  public static double distance(double lat1, double lon1, 
+  public double distance(double lat1, double lon1, 
       double lat2, double lon2, String unit) {
     if ((lat1 == lat2) && (lon1 == lon2)) {
       return 0;

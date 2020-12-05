@@ -8,25 +8,34 @@ import org.simplejavamail.email.EmailBuilder;
 import org.simplejavamail.mailer.MailerBuilder;
 
 public class EmailService {
-	
-	private Mailer mailer;
-	
-	public EmailService() {
-		mailer = MailerBuilder.withSMTPServer("smtp.gmail.com", 587, "triallclinical@gmail.com", "MontagueCapulet").withTransportStrategy(TransportStrategy.SMTP_TLS).buildMailer();
-	}
-	
-	public void sendEmails(Notification n) {
-		Email e = EmailBuilder.startingBlank().from("clinicaltriall@aol.com").to(
-				n.getPartEmail()).withSubject("Clinical TriAll").withPlainText("You have a match.").buildEmail();
-		mailer.sendMail(e);
-		e = EmailBuilder.startingBlank().from("clinicaltriall@aol.com").to(
-				n.getResEmail()).withSubject("Clinical TriAll").withPlainText("You have a match.").buildEmail();
-		mailer.sendMail(e);
-	}
-	
-	public void genericSend(String to) {
-		Email e = EmailBuilder.startingBlank().from("clinicaltriall@aol.com").to(
-				to).withSubject("Clinical TriAll").withPlainText("You have a match.").buildEmail();
-		mailer.sendMail(e);
-	}
+
+  private Mailer mailer;
+
+  public EmailService() {
+    mailer = MailerBuilder.withSMTPServer("smtp.gmail.com", 587, "triallclinical@gmail.com", 
+        "MontagueCapulet").withTransportStrategy(TransportStrategy.SMTP_TLS).buildMailer();
+  }
+
+  /**
+   * Send emails to addresses stored in a notification pair.
+   * @param n Object storing addresses.
+   */
+  public void sendEmails(Notification n) {
+    Email e = EmailBuilder.startingBlank().from("triallclinical@gmail.com").to(n.getPartEmail())
+        .withSubject("Clinical TriAll").withPlainText("You have a match.").buildEmail();
+    mailer.sendMail(e);
+    e = EmailBuilder.startingBlank().from("triallclinical@gmail.com").to(n.getResEmail())
+        .withSubject("Clinical TriAll").withPlainText("You have a match.").buildEmail();
+    mailer.sendMail(e);
+  }
+
+  /**
+   * Sends a single generic email.
+   * @param to Recipient address of the email.
+   */
+  public void genericSend(String to) {
+    Email e = EmailBuilder.startingBlank().from("triallclinical@gmail.com").to(to)
+        .withSubject("Clinical TriAll").withPlainText("You have a match.").buildEmail();
+    mailer.sendMail(e);
+  }
 }

@@ -19,7 +19,8 @@ public class Criteria {
   /**
    * Creates criteria object.
    */
-  public Criteria(int id, int extID, int minAge, int maxAge, double minHeight, double maxHeight, double minWeight,
+  public Criteria(int id, int extID, int minAge, int maxAge, double minHeight, 
+      double maxHeight, double minWeight,
       double maxWeight, String gender, String race, String nationality) {
     this.id = id;
     this.extID = extID;
@@ -34,6 +35,13 @@ public class Criteria {
     this.nationality = nationality;
   }
   
+  /**
+   * Creates a new criteria object.
+   * @param db Database.
+   * @param form Form information to parse.
+   * @param parent Row number of the participant or trial owning this object.
+   * @param table Database table.
+   */
   public Criteria(SqliteDB db, JsonArray form, int parent, String table) {
     if (table.equals("participant_data")) {
       makeData(db, form, parent);
@@ -43,7 +51,13 @@ public class Criteria {
     
   }
   
-  public void makeData(SqliteDB db, JsonArray form, int parent) {
+  /**
+   * Makes participant data.
+   * @param db Database.
+   * @param form Form information to parse.
+   * @param parent Row number of the participant or trial owning this object.
+   */
+  private void makeData(SqliteDB db, JsonArray form, int parent) {
     minAge = form.get(8).getAsJsonObject().get("value").getAsInt();
     maxAge = minAge;
     minHeight = form.get(13).getAsJsonObject().get("value").getAsInt();
@@ -57,7 +71,13 @@ public class Criteria {
     id = db.insertCriteria("participant_data", this);
   }
   
-  public void makeCrit(SqliteDB db, JsonArray form, int parent) {
+  /**
+   * Makes trial criteria.
+   * @param db Database.
+   * @param form Form information to parse.
+   * @param parent Row number of the participant or trial owning this object.
+   */
+  private void makeCrit(SqliteDB db, JsonArray form, int parent) {
     minAge = form.get(10).getAsJsonObject().get("value").getAsInt();
     maxAge = form.get(11).getAsJsonObject().get("value").getAsInt();
     minHeight = form.get(16).getAsJsonObject().get("value").getAsInt();
@@ -71,6 +91,12 @@ public class Criteria {
     id = db.insertCriteria("trial_criteria", this);
   }
   
+  /**
+   * Update data after edits to information.
+   * @param db Database.
+   * @param form Form information to parse.
+   * @return Whether the operation was successful.
+   */
   public boolean updateData(SqliteDB db, JsonArray form) {
     minAge = form.get(7).getAsJsonObject().get("value").getAsInt();
     maxAge = form.get(7).getAsJsonObject().get("value").getAsInt();
@@ -87,6 +113,12 @@ public class Criteria {
     return true;
   }
   
+  /**
+   * Update criteria after edits to information.
+   * @param db Database.
+   * @param form Form information to parse.
+   * @return Whether the operation was successful.
+   */
   public boolean updateCrit(SqliteDB db, JsonArray form) {
     minAge = form.get(7).getAsJsonObject().get("value").getAsInt();
     maxAge = form.get(8).getAsJsonObject().get("value").getAsInt();
@@ -97,7 +129,7 @@ public class Criteria {
     gender = form.get(6).getAsJsonObject().get("value").getAsString();
     race = form.get(24).getAsJsonObject().get("value").getAsString();
     nationality = form.get(25).getAsJsonObject().get("value").getAsString();
-    if(db.updateCriteria("trial_criteria", this) == 0) {
+    if (db.updateCriteria("trial_criteria", this) == 0) {
       return false;
     }
     return true;
@@ -151,8 +183,9 @@ public class Criteria {
    * Checks if criteria match.
    */
   public boolean matches(Criteria c) {
-    if (c.getMinAge() >= minAge && c.getMinAge() <= maxAge && c.getMinHeight() >= minHeight && c.getMinHeight() <= maxHeight
-        && c.getMinWeight() >= minWeight && c.getMinWeight() <= maxWeight && c.getGender().equals(gender)
+    if (c.getMinAge() >= minAge && c.getMinAge() <= maxAge && c.getMinHeight() >= minHeight
+        && c.getMinHeight() <= maxHeight && c.getMinWeight() >= minWeight && c.getMinWeight()
+        <= maxWeight && c.getGender().equals(gender)
         && c.getRace().equals(race) && c.getNationality().equals(nationality)) {
       return true;
     } else {

@@ -25,12 +25,23 @@ public class Match {
     status = s;
   }
   
+  /**
+   * Creates a new Trial-Participant match object with specified properties.
+   * @param u User associated with the match.
+   * @param t Trial associated with the match.
+   * @param db Database.
+   */
   public Match(User u, Trial t, SqliteDB db) {
     trial = t;
     id = db.insertMatch(u, t);
     status = "pending";
   }
   
+  /**
+   * Accepts the match.
+   * @param db Database
+   * @return Whether the operation was successful.
+   */
   public boolean accept(SqliteDB db) {
     if (!trial.confirmOne(db)) {
       return false;
@@ -40,6 +51,11 @@ public class Match {
     return true;
   }
   
+  /**
+   * Rejects the match.
+   * @param db Database
+   * @return Whether the operation was successful.
+   */
   public boolean reject(SqliteDB db) {
     status = "reject";
     db.rejectMatch(trial.getID());
