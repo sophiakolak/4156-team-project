@@ -10,6 +10,7 @@ public class Match {
   //private User participant;
   private double distance;
   private String status;
+  private String email;
 
   /**
    * Creates a new Trial-Participant match object with specified properties.
@@ -35,6 +36,8 @@ public class Match {
     trial = t;
     id = db.insertMatch(u, t);
     status = "pending";
+    email = u.getEmail();
+    EmailService.newMatchSend(t, email);
   }
   
   /**
@@ -48,6 +51,7 @@ public class Match {
     }
     status = "accept";
     db.acceptMatch(trial.getID());
+    EmailService.acceptMatchSend(trial, db.loadRes(trial.getRes()).getEmail(), email);
     return true;
   }
   

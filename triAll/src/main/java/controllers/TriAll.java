@@ -184,14 +184,11 @@ public class TriAll {
 
 
     app.post("/logout", ctx -> {
-      //ctx.body() contains email of user to be logged out
       user.logOut();
       System.out.println("Logging out user");
       ctx.result(gson.toJson("/"));
     });
 
-    //Routes added by sarah that we might need
-    //If we don't need them please just delete them
     app.post("/accept-match/", ctx -> {
       int trialID = Integer.parseInt(ctx.body());
       if (user.acceptMatch(trialID, db)) {

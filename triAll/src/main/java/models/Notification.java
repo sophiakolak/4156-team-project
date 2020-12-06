@@ -1,39 +1,31 @@
 package models;
 
-import controllers.EmailService;
+import units.SqliteDB;
 
 public class Notification {
   private String time;
-  private String partEmail;
-  private String resEmail;
+  private String trialName;
+  private String message;
 
   /**
    * Create new notification.
    */
-  public Notification(String p, String r) {
-    partEmail = p;
-    resEmail = r;
-  }
-
-  public String getPartEmail() {
-    return partEmail;
-
-  }
-
-  public String getResEmail() {
-    return resEmail;
+  public Notification(SqliteDB db, int id, String time, String message) {
+    this.time = time;
+    trialName = db.loadTrial(id).getName();
+    this.time = time;
+    this.message = message;
   }
   
   public String getTime() {
     return time;
   }
-
-  /**
-   * Send notification to stored email addresses.
-   */
-  public void notifyUsers() {
-    EmailService e = new EmailService();
-    e.sendEmails(this);
-    time = java.time.LocalTime.now().toString();
+  
+  public String getTrial() {
+    return trialName;
+  }
+  
+  public String getMessage() {
+    return message;
   }
 }
