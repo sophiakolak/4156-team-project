@@ -10,6 +10,7 @@ import com.google.gson.JsonArray;
 import io.javalin.Javalin;
 import java.util.Collections;
 import java.util.LinkedList;
+import models.Notification;
 import models.Trial;
 import models.User;
 import units.SqliteDB;
@@ -180,7 +181,14 @@ public class TriAll {
         //does not have permission to access trial
       }
 
-    });        
+    });
+    
+    app.get("/notifications", ctx -> {
+      LinkedList<Notification> emails = user.sortedEmails(db);
+      String emailJson = gson.toJson(emails);
+      System.out.println(emailJson);
+      ctx.result(emailJson);
+    });
 
 
     app.post("/logout", ctx -> {

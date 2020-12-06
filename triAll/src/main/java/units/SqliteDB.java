@@ -873,8 +873,34 @@ public class SqliteDB {
     return n;
   }
   
-  public LinkedList<Integer> emailSet() {
-    return null;
+  /**
+   * Collects the row numbers of notifications sent to a particular user.
+   * @param id Row number of the user.
+   * @param isResearcher Whether the user is in the researcher or participant table.
+   * @return LinkedList of the notification rows.
+   */
+  public LinkedList<Integer> emailSet(int id, boolean isResearcher) {
+    ResultSet rs = null;
+    LinkedList<Integer> emailSet = new LinkedList<>();
+    String field = "participant_ID";
+    if (isResearcher) {
+      field = "researcher_ID";
+    }
+    String command = "SELECT ID FROM email WHERE " + field + " = ?;";
+    try (
+        PreparedStatement st = conn.prepareStatement(command);
+    ) {
+      st.setInt(1,  id);
+      rs = st.executeQuery();
+      
+      while (rs.next()) {
+        emailSet.add(rs.getInt(1));
+      }
+      rs.close();
+    } catch (Exception e) {
+      return emailSet;
+    }
+    return emailSet;
   }
   
   /**
