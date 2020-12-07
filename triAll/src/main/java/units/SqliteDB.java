@@ -232,7 +232,7 @@ public class SqliteDB {
    */
   public User loadRes(String email) {
     User u = null;
-    String command = "SELECT * FROM participants WHERE email = ?;";
+    String command = "SELECT * FROM researchers WHERE email = ?;";
     try (
         PreparedStatement st = conn.prepareStatement(command);
     ) {
@@ -244,9 +244,11 @@ public class SqliteDB {
         u = new User(rs.getInt(1), rs.getDouble(2), rs.getDouble(3), rs.getString(4), 
             rs.getString(5), rs.getString(6), rs.getString(7), true);
       } catch (Exception e) {
+        e.printStackTrace();
         return u;
       }
     } catch (Exception e) {
+      e.printStackTrace();
       return u;
     } 
     return u;
@@ -259,7 +261,7 @@ public class SqliteDB {
    */
   public User loadRes(int id) {
     User u = null;
-    String command = "SELECT * FROM participants WHERE ID = ?;";
+    String command = "SELECT * FROM researchers WHERE ID = ?;";
     try (
         PreparedStatement st = conn.prepareStatement(command);
     ) {
