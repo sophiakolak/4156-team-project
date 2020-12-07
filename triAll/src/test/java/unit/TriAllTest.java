@@ -131,10 +131,37 @@ public class TriAllTest {
     });
   }
   
-  //Criteria equiv class 0 
+  //Criteria equiv class 0 (correct behavior)
+  @Test
+  public void goodCriteria() {
+    String gender = crit.getGender();
+    assertEquals("male", gender);
+  }
+  
   //Criteria equiv class 1 
-  //Criteria equiv class 2 
+  @Test 
+  public void testJustBelowCriteria() {
+    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+      Criteria c = new Criteria(-1, -1, 17, 110, -10.0, -12.0, -100.0, -120.0, "female", "white", "american");
+    });
+  }
+  
+  ///Criteria equiv class 2 
+  @Test 
+  public void testJustAboveCriteria() {
+    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+      Criteria c = new Criteria(0, 0, 18, 121, 10.0, 12.0, 100.0, 120.0, "male", "white", "american");
+    });
+  }
+  
   //Criteria equiv class 3
+  @Test 
+  public void badStringCriteria() {
+    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+      Criteria c = new Criteria(0, 0, 18, 120, 10.0, 12.0, 100.0, 120.0, "", "", "");
+    });
+  }
+  
   
   //Match equiv. class 0 (correct behavior)
   @Test 

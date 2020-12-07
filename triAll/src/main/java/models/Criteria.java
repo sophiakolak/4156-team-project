@@ -22,15 +22,36 @@ public class Criteria {
   public Criteria(int id, int extID, int minAge, int maxAge, double minHeight, 
       double maxHeight, double minWeight,
       double maxWeight, String gender, String race, String nationality) {
+    if (id < 0 || extID < 0) {
+      throw new IllegalArgumentException("id and extID must be >= 0");
+    }
     this.id = id;
     this.extID = extID;
+    if (minAge < 18 || maxAge > 120) {
+      throw new IllegalArgumentException("min age must be > 18 and < 120");
+    }
     this.minAge = minAge;
+    if (maxAge > 120 || maxAge < 18) {
+      throw new IllegalArgumentException("max age must be < 120 and > 18");
+    }
     this.maxAge = maxAge;
+    if (minHeight < 0 || maxHeight < 0) {
+      throw new IllegalArgumentException("min and max height must be >= 0");
+    }
     this.minHeight = minHeight;
     this.maxHeight = maxHeight;
+    if (minWeight < 0 || maxWeight < 0) {
+      throw new IllegalArgumentException("min and max weight must be >= 0");
+    }
     this.minWeight = minWeight;
     this.maxWeight = maxWeight;
+    if (gender == "" || !(gender.equals("male") || gender.equals("female"))) {
+      throw new IllegalArgumentException("gender must not be empty, must be either male of female");
+    }
     this.gender = gender;
+    if (race == "" || nationality == "") {
+      throw new IllegalArgumentException("race and nationality must not be empty");
+    }
     this.race = race;
     this.nationality = nationality;
   }
