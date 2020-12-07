@@ -449,6 +449,17 @@ public class User {
     matches.sort(distCompare);
     return matches;
   }
+  
+  /**
+   * Sort emails.
+   */
+  public LinkedList<Notification> sortedEmails(SqliteDB db) {
+    LinkedList<Notification> emails = new LinkedList<>();
+    for (int em : db.emailSet(id, isResearcher)) {
+      emails.add(db.loadNotification(em));
+    }
+    return emails;
+  }
 
   /**
    * Calculate distance.

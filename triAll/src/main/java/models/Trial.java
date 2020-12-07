@@ -7,6 +7,7 @@ public class Trial {
 
   private int id;
   private int resID;
+  private String name;
   private String desc;
   private double lat;
   private double lon;
@@ -23,11 +24,11 @@ public class Trial {
   /**
    * Creates trial object.
    */
-  public Trial(int id, User r, String d, double lat, double lon, String location, String s, 
+  public Trial(int id, String n, String d, double lat, double lon, String location, String s, 
       String e, double p, int irb, int pn, int pc, Criteria crit) {
 
     this.id = id;
-    //this.researcher = r;
+    this.name = n;
     this.desc = d;
     this.lat = lat;
     this.lon = lon;
@@ -45,15 +46,16 @@ public class Trial {
    * Creates trial object.
    */
   public Trial(SqliteDB db, JsonArray form, int parent) {
-    desc = form.get(0).getAsJsonObject().get("value").getAsString();
-    location = form.get(1).getAsJsonObject().get("value").getAsString();
-    lat = form.get(2).getAsJsonObject().get("value").getAsDouble();
-    lon = form.get(3).getAsJsonObject().get("value").getAsDouble();
-    start = form.get(4).getAsJsonObject().get("value").getAsString();
-    end = form.get(5).getAsJsonObject().get("value").getAsString();
-    pay = form.get(6).getAsJsonObject().get("value").getAsDouble();
-    irb = form.get(7).getAsJsonObject().get("value").getAsInt();
-    partNeeded = form.get(8).getAsJsonObject().get("value").getAsInt();
+    name = form.get(0).getAsJsonObject().get("value").getAsString();
+    desc = form.get(1).getAsJsonObject().get("value").getAsString();
+    location = form.get(2).getAsJsonObject().get("value").getAsString();
+    lat = form.get(3).getAsJsonObject().get("value").getAsDouble();
+    lon = form.get(4).getAsJsonObject().get("value").getAsDouble();
+    start = form.get(5).getAsJsonObject().get("value").getAsString();
+    end = form.get(6).getAsJsonObject().get("value").getAsString();
+    pay = form.get(7).getAsJsonObject().get("value").getAsDouble();
+    irb = form.get(8).getAsJsonObject().get("value").getAsInt();
+    partNeeded = form.get(9).getAsJsonObject().get("value").getAsInt();
     partConfirmed = 0;
     resID = parent;
     id = db.insertTrial(this);
@@ -108,6 +110,10 @@ public class Trial {
   
   public int getRes() {
     return resID;
+  }
+  
+  public String getName() {
+    return name;
   }
 
   public Criteria getCriteria() {

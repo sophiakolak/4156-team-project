@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.util.LinkedList;
 import models.Criteria;
 import models.Match;
+import models.Notification;
 import models.Trial;
 import models.User;
 
@@ -77,7 +78,7 @@ public class SqliteDB {
           break;
         case trial:
           create = "CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY "
-              + "AUTOINCREMENT, researcher_ID INT NOT NULL, description TEXT,"
+              + "AUTOINCREMENT, researcher_ID INT NOT NULL, name TEXT, description TEXT,"
               + " lat REAL, long REAL, location TEXT, start_date TEXT, end_date TEXT, pay REAL,"
               + " IRB INT, participants_needed INT, participants_confirmed INT);";
           create = String.format(create, table);
@@ -115,7 +116,7 @@ public class SqliteDB {
         case email:
           create = "CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY AUTOINCREMENT,"
               + " trial_ID INT, researcher_ID INT, participant_ID INT, type TEXT, time_sent TEXT,"
-              + " delivery_success INT);";
+              + " message TEXT);";
           create = String.format(create, table);
           st = conn.prepareStatement(create);
           st.executeUpdate();
@@ -236,6 +237,33 @@ public class SqliteDB {
         PreparedStatement st = conn.prepareStatement(command);
     ) {
       st.setString(1,  email);
+      try (
+          ResultSet rs = st.executeQuery();
+      ) {
+        rs.next();
+        u = new User(rs.getInt(1), rs.getDouble(2), rs.getDouble(3), rs.getString(4), 
+            rs.getString(5), rs.getString(6), rs.getString(7), true);
+      } catch (Exception e) {
+        return u;
+      }
+    } catch (Exception e) {
+      return u;
+    } 
+    return u;
+  }
+  
+  /**
+   * Load a particular researcher from the database.
+   * @param id Row number of the researcher sought.
+   * @return User object for the researcher; null if not found.
+   */
+  public User loadRes(int id) {
+    User u = null;
+    String command = "SELECT * FROM participants WHERE ID = ?;";
+    try (
+        PreparedStatement st = conn.prepareStatement(command);
+    ) {
+      st.setInt(1,  id);
       try (
           ResultSet rs = st.executeQuery();
       ) {
@@ -446,10 +474,10 @@ public class SqliteDB {
       ) {
         rs.next();
         Criteria c = loadCrit(id);
-        t = new Trial(rs.getInt(1), null, rs
-            .getString(3), rs.getDouble(4), rs.getDouble(5), rs
-            .getString(6), rs.getString(7), rs.getString(8), rs
-            .getDouble(9), rs.getInt(10), rs.getInt(11), rs.getInt(12), c);
+        t = new Trial(rs.getInt(1), rs.getString(3), rs
+            .getString(4), rs.getDouble(5), rs.getDouble(6), rs
+            .getString(7), rs.getString(8), rs.getString(9), rs
+            .getDouble(10), rs.getInt(11), rs.getInt(12), rs.getInt(13), c);
       } catch (Exception e) {
         return t;
       }
@@ -784,6 +812,95 @@ public class SqliteDB {
       return 0;
     }
     return id;
+  }
+  
+  /**
+   * Inserts an notification entry.
+   * 
+   * @param trial Row number of the associated trial.
+   * @param res Row number of the associated researcher, if applicable - otherwise 0.
+   * @param part Row number of the associated participant, if applicable - otherwise 0.
+   * @param time Time the notification was sent.
+   * @param message Message sent to the recipient.
+   * @return The row into which the new entry was inserted - 0 upon failure.
+   */
+  public int insertNotification(int trial, int res, int part, String time, String message) {
+    int id = 0;
+    String command = "INSERT INTO email VALUES (null, ?, ?, ?, 'email', ?, ?);";
+    try (
+        PreparedStatement st = conn.prepareStatement(command);
+    ) {
+      st.setInt(1, trial);
+      st.setInt(2, res);
+      st.setInt(3, part);
+      st.setString(4, time);
+      st.setString(5, message);
+      st.executeUpdate();
+      String check = "SELECT last_insert_rowid() AS num;";
+      ResultSet rs = stmt.executeQuery(check);
+      rs.next();
+      id = rs.getInt("num");
+      rs.close();
+    } catch (Exception e) {
+      return 0;
+    }
+    return id;
+  }
+  
+  /**
+   * Load a particular notification from the database.
+   * @param id Table row of the notification.
+   * @return Notification object if found; null if not.
+   */
+  public Notification loadNotification(int id) {
+    Notification n = null;
+    String command = "SELECT * FROM participant_data WHERE ID = ?;";
+    try (
+        PreparedStatement st = conn.prepareStatement(command);
+    ) {
+      st.setInt(1,  id);
+      try (
+          ResultSet rs = st.executeQuery();
+      ) {
+        rs.next();
+        n = new Notification(this, rs.getInt(2), rs.getString("time"), rs.getString("message"));
+      } catch (Exception e) {
+        return n;
+      }
+    } catch (Exception e) {
+      return n;
+    }
+    return n;
+  }
+  
+  /**
+   * Collects the row numbers of notifications sent to a particular user.
+   * @param id Row number of the user.
+   * @param isResearcher Whether the user is in the researcher or participant table.
+   * @return LinkedList of the notification rows.
+   */
+  public LinkedList<Integer> emailSet(int id, boolean isResearcher) {
+    ResultSet rs = null;
+    LinkedList<Integer> emailSet = new LinkedList<>();
+    String field = "participant_ID";
+    if (isResearcher) {
+      field = "researcher_ID";
+    }
+    String command = "SELECT ID FROM email WHERE " + field + " = ?;";
+    try (
+        PreparedStatement st = conn.prepareStatement(command);
+    ) {
+      st.setInt(1,  id);
+      rs = st.executeQuery();
+      
+      while (rs.next()) {
+        emailSet.add(rs.getInt(1));
+      }
+      rs.close();
+    } catch (Exception e) {
+      return emailSet;
+    }
+    return emailSet;
   }
   
   /**
