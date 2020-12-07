@@ -1,10 +1,7 @@
 package models;
 
-import java.text.ParseException;
-import java.time.format.DateTimeFormatter;
-import java.time.*; 
+import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
-
 import units.SqliteDB;
 
 public class Notification {
@@ -42,13 +39,18 @@ public class Notification {
     return message;
   }
   
-  public boolean isValidIsoDateTime(String time) {
+  /**
+   * Checks whether the given time string is valid.
+   * @param time Time string.
+   * @return Whether it is valid.
+   */
+  private boolean isValidIsoDateTime(String time) {
     try {
-        LocalTime.parse(time);
-        return true;
+      LocalTime.parse(time);
+      return true;
     } catch (DateTimeParseException e) {
-        return false;
+      return false;
     }
-}
+  }
 
 }

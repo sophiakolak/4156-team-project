@@ -11,10 +11,9 @@ import models.Match;
 import models.Notification;
 import models.Trial;
 import models.User;
-import units.SqliteDB;
-
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import units.SqliteDB;
 
 public class TriAllTest {
 
@@ -83,10 +82,10 @@ public class TriAllTest {
   
   //Notification equiv. class 2
   @Test
-  public void badIDMessageNotification() {
+  public void badIdMessageNotification() {
     SqliteDB db = new SqliteDB("triall");
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-      Notification badIDMessage = new Notification(db, -1, "10:15:30", "");
+      Notification badIdMessage = new Notification(db, -1, "10:15:30", "");
     });
   }
   
