@@ -1,5 +1,12 @@
 package models;
 
+import java.time.format.DateTimeFormatter;
+import java.time.*; 
+import java.time.format.DateTimeParseException;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
+import java.util.regex.Pattern;
+
 import com.google.gson.JsonArray;
 import units.SqliteDB;
 
@@ -26,18 +33,53 @@ public class Trial {
    */
   public Trial(int id, String n, String d, double lat, double lon, String location, String s, 
       String e, double p, int irb, int pn, int pc, Criteria crit) {
-
+    if (id < 0) {
+      throw new IllegalArgumentException("id must not be less than 0");
+    }
     this.id = id;
+    if (n == "") {
+      throw new IllegalArgumentException("name cannot be empty");
+    }
     this.name = n;
+    if (d == "") {
+      throw new IllegalArgumentException("description must not be empty");
+    }
     this.desc = d;
+    if (lat < -90.0 || lat > 90.0) {
+      throw new IllegalArgumentException("latitude must be between -90.0 and 90.0");
+    }
     this.lat = lat;
+    if (lon < -180.0 || lon > 180.0) {
+      throw new IllegalArgumentException("longitude must be between -180.0 and 180.0");
+    }
     this.lon = lon;
+    if (location == "") {
+      throw new IllegalArgumentException("location must not be empty");
+    }
     this.location = location;
+    if (!isValidDate(s)) {
+      throw new IllegalArgumentException("start date is not valid");
+    }
     this.start = s;
+    if (!isValidDate(e)) {
+      throw new IllegalArgumentException("end date is not valid");
+    }
     this.end = e;
+    if (pay < 0) {
+      throw new IllegalArgumentException("pay must not be negative");
+    }
     this.pay = p;
+    if (Integer.toString(irb).length() < 4 || Integer.toString(irb).length() > 5) {
+      throw new IllegalArgumentException("IRB number not valid");
+    }
     this.irb = irb;
+    if (pn < 0) {
+      throw new IllegalArgumentException("participants needed must not be negative");
+    }
     this.partNeeded = pn;
+    if (pc < 0) {
+      throw new IllegalArgumentException("participants confirmed must not be negative");
+    }
     this.partConfirmed = pc;
     this.crit = crit;
   }
@@ -174,6 +216,15 @@ public class Trial {
       return false;
     }
     return true;
+  }
+  
+  public boolean isValidDate(String date) {
+    try {
+        DateTimeFormatter.ISO_DATE.parse(date);
+        return true;
+    } catch (DateTimeParseException e) {
+        return false;
+    }
   }
 
 

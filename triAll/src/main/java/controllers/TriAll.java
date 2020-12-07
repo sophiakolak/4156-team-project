@@ -35,8 +35,7 @@ public class TriAll {
     db = new SqliteDB("triall");
     gson = new Gson();
     user = new User();
-
-
+    
     app = Javalin.create(config -> {
       config.addStaticFiles("/public");
     }).start(PORT_NUMBER);

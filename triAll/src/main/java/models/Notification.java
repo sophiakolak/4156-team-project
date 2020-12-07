@@ -1,5 +1,10 @@
 package models;
 
+import java.text.ParseException;
+import java.time.format.DateTimeFormatter;
+import java.time.*; 
+import java.time.format.DateTimeParseException;
+
 import units.SqliteDB;
 
 public class Notification {
@@ -11,9 +16,17 @@ public class Notification {
    * Create new notification.
    */
   public Notification(SqliteDB db, int id, String time, String message) {
+    if (!isValidIsoDateTime(time)) {
+      throw new IllegalArgumentException("invalid date/time");
+    }
     this.time = time;
+    if (id < 0) {
+      throw new IllegalArgumentException("ID must be >= 0");
+    }
     trialName = db.loadTrial(id).getName();
-    this.time = time;
+    if (message == "") {
+      throw new IllegalArgumentException("Message must not be empty");
+    }
     this.message = message;
   }
   
@@ -28,4 +41,14 @@ public class Notification {
   public String getMessage() {
     return message;
   }
+  
+  public boolean isValidIsoDateTime(String time) {
+    try {
+        LocalTime.parse(time);
+        return true;
+    } catch (DateTimeParseException e) {
+        return false;
+    }
+}
+
 }

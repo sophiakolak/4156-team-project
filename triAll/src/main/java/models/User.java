@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.regex.Pattern;
 import units.SqliteDB;
 
 public class User {
@@ -53,12 +54,33 @@ public class User {
    */
   public User(int id, double lat, double lon, String location, String first, 
       String last, String email, boolean isR) {
+    if (id < 0) {
+        throw new IllegalArgumentException("id cannot be less than 0");
+    }
     this.id = id;
+    if (lat < -90.0 || lat > 90.0) {
+        throw new IllegalArgumentException("latitude must be between -90.0 and 90.0");
+    }
     this.lat = lat;
+    if (lon < -180.0 || lon > 180.0) {
+        throw new IllegalArgumentException("longitude must be between -180.0 and 180.0");
+    }
     this.lon = lon;
+    if (location == "") {
+      throw new IllegalArgumentException("location must not be empty");
+    }
     this.location = location;
+    if (!Pattern.matches("[a-zA-Z]+",first) || first == "") {
+      throw new IllegalArgumentException("first name must not be empty");
+    }
     this.first = first;
+    if (!Pattern.matches("[a-zA-Z]+",last) || last == "") {
+      throw new IllegalArgumentException("last name must not be empty");
+    }
     this.last = last;
+    if (!email.contains("@") || email == "") {
+      throw new IllegalArgumentException("email must not be empty and contain @ symbol");
+    }
     this.email = email;
     isResearcher = isR;
     loggedIn = true;
@@ -484,5 +506,7 @@ public class User {
       return (dist);
     }
   }
+  
+  
 
 }

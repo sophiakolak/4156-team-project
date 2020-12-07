@@ -20,9 +20,18 @@ public class Match {
    * @param s The status of the match (e.g. accepted, rejected)
    */
   public Match(int id, Trial t, double d, String s) {
+    if (id < 0) {
+      throw new IllegalArgumentException("Id must be >= 0");
+    }
     this.id = id;
     trial = t;
+    if (d < 0.0) {
+      throw new IllegalArgumentException("distance must be positive");
+    }
     distance = d;
+    if (s == "" || !(s.equals("accepted") || s.equals("rejected") || s.equals("pending")) ) {
+      throw new IllegalArgumentException("status must not be empty, must be either accepted, rejected, or pending");
+    }
     status = s;
   }
   
