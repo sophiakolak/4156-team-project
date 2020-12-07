@@ -669,7 +669,7 @@ public class SqliteDB {
     try (
         PreparedStatement st = conn.prepareStatement(command);
     ) {
-      st.setInt(1, t.getID());
+      st.setInt(1, t.getRes());
       st.setString(2, t.getName());
       st.setString(3, t.getDesc());
       st.setDouble(4, t.getLat());
