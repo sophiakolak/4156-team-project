@@ -1,13 +1,8 @@
 package models;
 
-import java.time.format.DateTimeFormatter;
-import java.time.*; 
-import java.time.format.DateTimeParseException;
-import java.time.LocalTime;
-import java.time.format.DateTimeParseException;
-import java.util.regex.Pattern;
-
 import com.google.gson.JsonArray;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import units.SqliteDB;
 
 public class Trial {
@@ -83,7 +78,7 @@ public class Trial {
     this.partConfirmed = pc;
     this.crit = crit;
   }
-  
+
   /**
    * Creates trial object.
    */
@@ -104,10 +99,11 @@ public class Trial {
     crit = new Criteria(db, form, id, "trial_criteria");
     checkMatches(db);
   }
-  
+
   /**
    * Update trial after edits to information.
-   * @param db Database.
+   * 
+   * @param db   Database.
    * @param form Form information to parse.
    * @return Whether the operation succeeds.
    */
@@ -128,9 +124,10 @@ public class Trial {
     checkMatches(db);
     return true;
   }
-  
+
   /**
    * Checks for new matches.
+   * 
    * @param db Database.
    */
   private void checkMatches(SqliteDB db) {
@@ -141,7 +138,8 @@ public class Trial {
       User user = db.loadPart(email);
       user.setData(db.loadData(user.getID()));
       if (crit.matches(user.getData()) && !db.matchExists(user.getID(), id)) {
-        new Match(user, this, db);
+        Match m = new Match(user, this, db);
+        System.out.println(m.getID());
       }
     }
   }
@@ -149,11 +147,11 @@ public class Trial {
   public int getID() {
     return id;
   }
-  
+
   public int getRes() {
     return resID;
   }
-  
+
   public String getName() {
     return name;
   }
@@ -161,7 +159,7 @@ public class Trial {
   public Criteria getCriteria() {
     return crit;
   }
-  
+
   public String getDesc() {
     return desc;
   }
@@ -173,7 +171,7 @@ public class Trial {
   public double getLong() {
     return this.lon;
   }
-  
+
   public String getLocation() {
     return location;
   }
@@ -181,19 +179,19 @@ public class Trial {
   public String getStart() {
     return start;
   }
-  
+
   public String getEnd() {
     return end;
   }
-  
+
   public int getIrb() {
     return irb;
   }
-  
+
   public double getPay() {
     return pay;
   }
-  
+
   public int getPartNeeded() {
     return partNeeded;
   }
@@ -204,6 +202,7 @@ public class Trial {
 
   /**
    * Records a confirmed participant.
+   * 
    * @param db Database.
    * @return Whether the trial could confirm the participant.
    */
@@ -217,15 +216,19 @@ public class Trial {
     }
     return true;
   }
-  
-  public boolean isValidDate(String date) {
+
+  /**
+   * Checks whether a date string is valid.
+   * @param date Date string.
+   * @return Whether it is valid.
+   */
+  private boolean isValidDate(String date) {
     try {
-        DateTimeFormatter.ISO_DATE.parse(date);
-        return true;
+      DateTimeFormatter.ISO_DATE.parse(date);
+      return true;
     } catch (DateTimeParseException e) {
-        return false;
+      return false;
     }
   }
-
 
 }

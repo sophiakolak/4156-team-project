@@ -29,8 +29,9 @@ public class Match {
       throw new IllegalArgumentException("distance must be positive");
     }
     distance = d;
-    if (s == "" || !(s.equals("accepted") || s.equals("rejected") || s.equals("pending")) ) {
-      throw new IllegalArgumentException("status must not be empty, must be either accepted, rejected, or pending");
+    if (s == "" || !(s.equals("accepted") || s.equals("rejected") || s.equals("pending"))) {
+      throw new IllegalArgumentException("status must not be empty, must be either accepted, "
+          + "rejected, or pending");
     }
     status = s;
   }
