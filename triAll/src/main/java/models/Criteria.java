@@ -45,7 +45,7 @@ public class Criteria {
     }
     this.minWeight = minWeight;
     this.maxWeight = maxWeight;
-    if (gender == "" || !(gender.equals("male") || gender.equals("female"))) {
+    if (gender == "" || !(gender.equals("Male") || gender.equals("Female"))) {
       throw new IllegalArgumentException("gender must not be empty, must be either male of female");
     }
     this.gender = gender;
