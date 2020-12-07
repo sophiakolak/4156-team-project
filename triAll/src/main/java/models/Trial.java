@@ -99,7 +99,6 @@ public class Trial {
       User user = db.loadPart(email);
       if (crit.matches(user.getData()) && !db.matchExists(user.getID(), id)) {
         new Match(user, this, db);
-        //send emails
       }
     }
   }

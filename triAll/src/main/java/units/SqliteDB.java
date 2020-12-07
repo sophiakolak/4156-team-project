@@ -663,21 +663,22 @@ public class SqliteDB {
    */
   public int insertTrial(Trial t) {
     int id = 0;
-    String command = "INSERT INTO trials VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+    String command = "INSERT INTO trials VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
     try (
         PreparedStatement st = conn.prepareStatement(command);
     ) {
       st.setInt(1, t.getID());
-      st.setString(2, t.getDesc());
-      st.setDouble(3, t.getLat());
-      st.setDouble(4, t.getLong());
-      st.setString(5, t.getLocation());
-      st.setString(6, t.getStart());
-      st.setString(7, t.getEnd());
-      st.setDouble(8, t.getPay());
-      st.setInt(9, t.getIrb());
-      st.setInt(10, t.getPartNeeded());
-      st.setInt(11, t.getPartConf());
+      st.setString(2, t.getName());
+      st.setString(3, t.getDesc());
+      st.setDouble(4, t.getLat());
+      st.setDouble(5, t.getLong());
+      st.setString(6, t.getLocation());
+      st.setString(7, t.getStart());
+      st.setString(8, t.getEnd());
+      st.setDouble(9, t.getPay());
+      st.setInt(10, t.getIrb());
+      st.setInt(11, t.getPartNeeded());
+      st.setInt(12, t.getPartConf());
       st.executeUpdate();
       String check = "SELECT last_insert_rowid() AS num;";
       ResultSet rs = stmt.executeQuery(check);
@@ -705,16 +706,17 @@ public class SqliteDB {
     ) {
       st.setInt(1, t.getID());
       st.setInt(2, t.getRes());
-      st.setString(3, t.getDesc());
-      st.setDouble(4, t.getLat());
-      st.setDouble(5, t.getLong());
-      st.setString(6, t.getLocation());
-      st.setString(7, t.getStart());
-      st.setString(8, t.getEnd());
-      st.setDouble(9, t.getPay());
-      st.setInt(10, t.getIrb());
-      st.setInt(11, t.getPartNeeded());
-      st.setInt(12, t.getPartConf());
+      st.setString(3, t.getName());
+      st.setString(4, t.getDesc());
+      st.setDouble(5, t.getLat());
+      st.setDouble(6, t.getLong());
+      st.setString(7, t.getLocation());
+      st.setString(8, t.getStart());
+      st.setString(9, t.getEnd());
+      st.setDouble(10, t.getPay());
+      st.setInt(11, t.getIrb());
+      st.setInt(12, t.getPartNeeded());
+      st.setInt(13, t.getPartConf());
       st.executeUpdate();
       String check = "SELECT last_insert_rowid() AS num;";
       ResultSet rs = stmt.executeQuery(check);
