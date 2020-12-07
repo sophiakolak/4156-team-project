@@ -88,19 +88,30 @@
         }
     </style>
     <meta charset="UTF-8">
-    <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
-    <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <!-- jQuery library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"/>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+    <script>
+      feather.replace()
+    </script>
 
     <!-- Google Sign In -->
     <script src="https://apis.google.com/js/platform.js"></script>
     <meta name="google-signin-client_id" content="46819195782-rhbp0ull70okmgsid0rrd2p8cdub7fpn.apps.googleusercontent.com">
 
     <!-- Google Maps API -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAYSwqY4yLII5q5a-fXGTdWy9uEBdBWPRo&libraries=places&callback=initAutocomplete" async defer></script>
 
     <!-- Custom JS -->
@@ -570,6 +581,9 @@
                 <input id = "saveChanges" class="btn btn-primary btn-block" type="submit" value="Submit"/>
             </div>
         </form>
+    </div>
+    <div class="panel panel-default">
+            <div id="modal"></div>
     </div>
 </body>
 </html>

@@ -10,9 +10,10 @@ function signOut() {
         contentType: "application/json; charset=utf-8",
         data : JSON.stringify(email),
         success: function(result){
-          window.location.href = result
+          newAlert("Success!", "You have succesfully signed out of TriAll.", result)
         },
         error: function(request, status, error){
+            newAlert("Oh no!", "Something went wrong. Please contact clinicaltriall@aol.com for more information.", "/participantdashboard.html")
             console.log("Error");
             console.log(request)
             console.log(status)
@@ -20,6 +21,26 @@ function signOut() {
         }
     });
   });
+}
+
+function newAlert(title, text, redirect){
+  var alert = $('<div class="modal fade" id="alert" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">')
+  var alert1 = $('<div class="modal-dialog modal-dialog-centered" role="document">')
+  var alert2 = $('<div class="modal-content">')
+  var alert3 = $('<div class="modal-header">')
+  var alert4 = $('<h5 class="modal-title" id="exampleModalLongTitle">')
+  alert4.append(title)
+  var alert5 = $('<div class="modal-body">')
+  alert5.append(text)
+  var alert6 = $('<div class="modal-footer">')
+  var alert7 = ('<button type="button" onclick=\"location.href=\''+redirect+'\'\" class="btn btn-primary">Continue</button>')
+  alert6.append(alert7)
+  alert3.append(alert4)
+  alert2.append(alert3, alert5, alert6)
+  alert1.append(alert2)
+  alert.append(alert1)
+  $("#modal").html(alert)
+  $('#alert').modal('toggle')
 }
 
 $(document).ready(function(){
@@ -37,6 +58,7 @@ $(document).ready(function(){
           loadInfo(result)
         },
         error: function(request, status, error){
+            newAlert("Oh no!", "Something went wrong when retrieving your information. Please contact clinicaltriall@aol.com for more information.", "/participantdashboard.html")
             console.log("Error");
             console.log(request)
             console.log(status)
@@ -176,9 +198,10 @@ function save_changes(form_data){
         contentType: "application/json; charset=utf-8",
         data : JSON.stringify(form_data),
         success: function(result){
-        	window.location.href = result
+          newAlert("Success", "You have successfully saved your changes.", result)
         },
         error: function(request, status, error){
+            newAlert("Oh no!", "Something went wrong when saving your changes. Please contact clinicaltriall@aol.com for more information.", "/participantdashboard.html")
             console.log("Error");
             console.log(request)
             console.log(status)
