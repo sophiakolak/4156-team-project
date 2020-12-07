@@ -76,7 +76,7 @@ function noMessages(){
 
 function loadMessage(msg){
   var time = msg.time
-  var content = msg.body
+  var content = msg.message
   var card = $("<div class = 'card_container'>")
   var cardHeader = $('<div class="card-header" id="headingOne">')
   var h2 = $('<h2 class="mb-0">')
@@ -110,17 +110,18 @@ $(document).ready(function(){
   // Get request
   $.ajax({
       type: "GET",
-      url: "/activity",                
+      url: "/notifications",                
       dataType : "json",
       contentType: "application/json; charset=utf-8",
       success: function(result){
         loadMessages(result)
       },
       error: function(request, status, error){
-          console.log("Error");
-          console.log(request)
-          console.log(status)
-          console.log(error)
+        newAlert("Oh no!", "Something went wrong when retrieving your latest activity. Please contact clinicaltriall@aol.com for more information.", "/")
+        console.log("Error");
+        console.log(request)
+        console.log(status)
+        console.log(error)
       }
     });
 })

@@ -25,7 +25,7 @@
     <meta name="google-signin-client_id" content="46819195782-rhbp0ull70okmgsid0rrd2p8cdub7fpn.apps.googleusercontent.com">
 
     <!-- Custom JS -->
-    <script type="text/javascript" src="./static/participantdashboard.js"></script>
+    <script type="text/javascript" src="./static/activity.js"></script>
 
 
    <style>
@@ -147,9 +147,9 @@
           <div class="sidebar-sticky">
             <ul class="nav flex-column">
               <li class="nav-item">
-                <a class="nav-link active" href="participantdashboard.html">
+                <a class="nav-link" href="participantdashboard.html">
                   <span data-feather="home"></span>
-                  Dashboard <span class="sr-only">(current)</span>
+                  Dashboard <span class="sr-only"></span>
                 </a>
               </li>
               <li class="nav-item">
@@ -157,6 +157,12 @@
                 <a class="nav-link" href="editparticipantinfo.html">
                   <span data-feather="users"></span>
                   Edit Information
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="activity.html">
+                  <span data-feather="activity">(current)</span>
+                  Activity
                 </a>
             </li>
             </ul>
@@ -169,9 +175,9 @@
             <div class="btn-toolbar mb-2 mb-md-0"></div>
           </div>
           <div class="panel panel-default">
-            <div class="panel-heading">
+<!--             <div class="panel-heading">
                 <h3 class="panel-title">Here's Your Most Recent Notifications</h3>
-            </div>   
+            </div>   --> 
             <div class="accordion" id="msgAccordian"></div>
           </div>
           <div class="panel panel-default">

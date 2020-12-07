@@ -55,21 +55,22 @@ function newAlert(title, text, redirect){
   $('#alert').modal('toggle')
 }
 
-function loadTrialUpcoming(id, name, desc, location, startDate, endDate, pay, IRB, partNeeded, partConfirmed, status, origin, destination){
-    var origin = origin.split(' ').join('+')
+function loadTrialUpcoming(id, name, desc, location, startDate, endDate, pay, IRB, partNeeded, partConfirmed, status, start, destination){
+    var start = start.split(' ').join('+')
     var destination = destination.split(' ').join('+')
-    var map = $("<iframe width='100%' height='100%'' frameborder='0' style='border:0' src='https://www.google.com/maps/embed/v1/directions?key=AIzaSyAYSwqY4yLII5q5a-fXGTdWy9uEBdBWPRo&origin="+origin+"&destination="+destination+">")
+    var map = $("<iframe width='100%' height='100%'' frameborder='0' style='border:0' src='https://www.google.com/maps/embed/v1/directions?key=AIzaSyAYSwqY4yLII5q5a-fXGTdWy9uEBdBWPRo&start="+start+"&destination="+destination+">")
     var card = $("<div class = 'card_container'>")
     var cardHeader = $('<div class="card-header" id="headingOne">')
     var h2 = $('<h2 class="mb-0">')
     var expandBtn = $('<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse'+id+'" aria-expanded="false" aria-controls="collapse'+id+'">')
-    expandBtn.append("Start Date: ", startDate, ", ", "End Date: ", endDate, ", ", "Location: ", location)
+    expandBtn.append(name)
     h2.append(expandBtn)
     cardHeader.append(h2)
     card.append(cardHeader)
 
     var collapsableDiv = $('<div id="collapse'+id+'" class="collapse" aria-labelledby="heading'+id+'" data-parent="#trialAccordianUpcoming">')
     cardBody = $('<div class="card-body">')
+    cardBody.append("Start Date: ", startDate, ", ", "End Date: ", endDate, ", ", "Location: ", location)
     cardBody.append("<div class = 'description'>Description: ", desc, "</div>", "<div class = 'irb'>IRB: ", IRB, "</div><br>", "<div class = 'pay'>Hourly Pay in USD: ", pay, "</div>")
 
     var acceptBtn = $('<button type="button" onclick="acceptMatch(' + id + ')" class="btn btn-primary acceptTrial">')
@@ -193,21 +194,15 @@ function noTrials() {
 
 // function to dynamically load in trials
 function loadTrials(matchList) {
-  if (matchList == "") {
-    noTrials()
-  } else {
-    var matches = matchList
-    var nPending = 0
-    var nAccepted = 0
-    // MAKE POST REQUEST TO GET ORIGIN
+  // MAKE POST REQUEST TO GET start
+  var start
     $.ajax({
       type: "GET",
       url: "/edit-part-form",                
       dataType : "json",
       contentType: "application/json; charset=utf-8",
       success: function(result){
-        var origin = result.location
-        console.log(origin)
+        start = result.location
       },
       error: function(request, status, error){
         newAlert("Oh no!", "Something went wrong. Please contact clinicaltriall@aol.com for more information.", "/participantdashboard.html")
@@ -218,11 +213,19 @@ function loadTrials(matchList) {
       }
     });
 
+  if (matchList == "") {
+    noTrials()
+  } else {
+    var matches = matchList
+    var nPending = 0
+    var nAccepted = 0
+
     for (index = 0; index < matches.length; index++) { 
         match = matches[index]
         var trial = match.trial
         var status = match.status
         var id = trial.id
+        var name = trial.name
         var desc = trial.desc
         var location = trial.location
         var startDate = trial.start
@@ -233,15 +236,15 @@ function loadTrials(matchList) {
         var part_confirmed = trial.partConfirmed
         var criteria = trial.crit
         if (status == "accepted") {
-          loadTrialUpcoming(id, name, desc, location, startDate, endDate, pay, IRB, part_needed, part_confirmed, status, origin, location)
+          loadTrialUpcoming(id, name, desc, location, startDate, endDate, pay, IRB, part_needed, part_confirmed, status, start, location)
           nAccepted++
         }
         else if (status == "rejected"){
           console.log("rejected trial " + id + " " + name)
         }
         else {
-          // loadTrialPending(id, name, desc, location, startDate, endDate, pay, IRB, part_needed, part_confirmed, status, origin, location)
-          loadTrialUpcoming(id, name, desc, location, startDate, endDate, pay, IRB, part_needed, part_confirmed, status, origin, location)
+          // loadTrialPending(id, name, desc, location, startDate, endDate, pay, IRB, part_needed, part_confirmed, status, start, location)
+          loadTrialUpcoming(id, name, desc, location, startDate, endDate, pay, IRB, part_needed, part_confirmed, status, start, location)
           nPending++
         }
         
