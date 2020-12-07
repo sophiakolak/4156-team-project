@@ -139,9 +139,9 @@ public class Trial {
     }
     for (String email : db.partSet()) {
       User user = db.loadPart(email);
+      user.setData(db.loadData(user.getID()));
       if (crit.matches(user.getData()) && !db.matchExists(user.getID(), id)) {
         new Match(user, this, db);
-        //send emails
       }
     }
   }

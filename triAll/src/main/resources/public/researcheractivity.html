@@ -25,7 +25,7 @@
     <meta name="google-signin-client_id" content="46819195782-rhbp0ull70okmgsid0rrd2p8cdub7fpn.apps.googleusercontent.com">
 
     <!-- Custom JS -->
-    <script type="text/javascript" src="./static/participantdashboard.js"></script>
+    <script type="text/javascript" src="./static/activity.js"></script>
 
 
    <style>
@@ -147,48 +147,40 @@
           <div class="sidebar-sticky">
             <ul class="nav flex-column">
               <li class="nav-item">
-                <a class="nav-link active" href="participantdashboard.html">
-                  <span data-feather="home"></span>
-                  Dashboard <span class="sr-only">(current)</span>
+                <a class="nav-link" href="editresearcherinfo.html">
+                  <span data-feather="users"></span>
+                  Edit Information 
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="editparticipantinfo.html">
-                  <span data-feather="users"></span>
-                  Edit Information
+                <a class="nav-link active" href="newtrial.html">
+                  <span data-feather="plus"></span>
+                  New Trial <span class="sr-only">(current)</span>
                 </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="activity.html">
-                  <span data-feather="activity"></span>
-                  Activity
-                </a>
-            </li>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="researcheractivity.html">
+                    <span data-feather="activity"></span>
+                    Activity
+                  </a>
+              </li>
             </ul>
           </div>
         </nav>
 
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
           <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-            <h1 class="h2">Welcome!</h1>
-            <div class="btn-toolbar mb-2 mb-md-0">
-            </div>
+            <h1 class="h2">Activity</h1>
+            <div class="btn-toolbar mb-2 mb-md-0"></div>
           </div>
           <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Upcoming Trials</h3>
-            </div>   
-            <div class="accordion" id="trialAccordianUpcoming"></div>
+<!--             <div class="panel-heading">
+                <h3 class="panel-title">Here's Your Most Recent Notifications</h3>
+            </div>   --> 
+            <div class="accordion" id="msgAccordian"></div>
           </div>
-          <div class = "row"><br><br></div>
           <div class="panel panel-default">
             <div id="modal"></div>
-          </div>
-          <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Pending Trials</h3>
-            </div>   
-            <div class="accordion" id="trialAccordianPending"></div>
           </div>
         </main>
       </div>

@@ -390,7 +390,7 @@ public class User {
     }
     matches = new LinkedList<Match>();
     loggedIn = true;
-    setData(new Criteria(db, form, id, "participant_data"));
+    data = new Criteria(db, form, id, "participant_data");
     checkMatches(db);
     return true;
   }
@@ -409,7 +409,7 @@ public class User {
     last = form.get(2).getAsJsonObject().get("value").getAsString();
     email = form.get(3).getAsJsonObject().get("value").getAsString();
     isResearcher = true;
-    id = db.insertUser("participants", this);
+    id = db.insertUser("researchers", this);
     if (id == 0) {
       return false;
     }
@@ -428,7 +428,6 @@ public class User {
       if (trial.getCriteria().matches(data) && !db.matchExists(id, trial.getID())) {
         Match m = new Match(this, trial, db);
         addMatch(m);
-        //send emails
       }
     }
   }
