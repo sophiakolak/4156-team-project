@@ -368,7 +368,7 @@ public class User {
     }
     matches = new LinkedList<Match>();
     loggedIn = true;
-    setData(new Criteria(db, form, id, "participant_data"));
+    data = new Criteria(db, form, id, "participant_data");
     checkMatches(db);
     return true;
   }
