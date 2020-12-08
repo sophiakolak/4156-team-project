@@ -40,10 +40,15 @@ $(document).ready(function(){
 
     $('input[type="radio"]').click(function() {
        if($(this).attr('id') == 'participantButton') {
-            $('.participant').show();     
+            $('.participant').show();  
+            // make all participant fields required   
+            $('.participant').required = true;
        }
        else if($(this).attr('id') == 'researcherButton') {
-            $('.participant').hide();     
+            $('.participant').hide();
+            // make all participant fields not required
+            // $('.participant').required = false;
+            $('.participant').removeAttr('required')
        }
        else if($(this).attr('id') == 'metricButton') {
             $('.imperial').hide();
