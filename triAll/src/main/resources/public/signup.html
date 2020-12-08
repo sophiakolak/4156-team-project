@@ -154,7 +154,7 @@
                             <div class = "col-md-3"><input id = "centimeters" class="form-control metric" type="number" name="centimeters" placeholder="Centimeters"/></div>
                         </div>
                     </span> 
-                    <input id = "heightInInches" class="form-control" type="hidden" name="heightInInches"/>
+                    <input id = "heightInInches" class="form-control participant" type="hidden" name="heightInInches"/>
                     <span class="Error"></span>
                 </div>
                 <div class="form-group participant">
@@ -165,13 +165,14 @@
                     <div class = "metric">
                         <input id = "kilograms" class="form-control metric" type="number" name="kilograms" min="5" max = "500" placeholder="Kilograms"/>
                     </div> 
-                    <input id = "weightInLbs" class="form-control" type="hidden" name="weightInLbs"/>
+                    <input id = "weightInLbs" class="form-control participant" type="hidden" name="weightInLbs"/>
                     <span class="Error"></span>
                 </div>
-                <div class = "form-group participant">
+                <div class = "form-group participant row">
+                    <div class = "col">
                 <fieldset>
                   <label>Ethnicity:</label>
-                  <select class="form-control dropdown" id="ethnicity" name="ethnicity">
+                  <select class="form-control dropdown participant" id="ethnicity" name="ethnicity" required>
                     <option value="" selected="selected" disabled="disabled">-- select one --</option>
                     <optgroup label="White">
                       <option value="White English">English</option>
@@ -209,10 +210,11 @@
                       <option value="Other">Any other ethnic group</option>
                     </optgroup>
                   </select>
-                </fieldset>
+                </fieldset></div>
+                <div class = "col">
                 <fieldset>
                   <label>Nationality:</label>
-                  <select class="form-control dropdown" id="nationality" name="nationality">
+                  <select class="form-control dropdown participant" id="nationality" name="nationality" required>
                     <option value="" selected="selected" disabled="disabled">-- select one --</option>
                     <option value="afghan">Afghan</option>
                     <option value="albanian">Albanian</option>
@@ -409,6 +411,7 @@
                   </select>
                 </fieldset>
                 </div>
+                </div>
                <div class="form-group participant row">
                     Have you had any of the following? Select "Yes" or "No" for each condition. <br><br>
                     <div class = "col-md-6">
@@ -416,94 +419,94 @@
                         <div class = "row">
                             <div class = "col-md-6">
                             <label>Anaemia: &nbsp</label></div><div class = "col-md-6">
-                            <label><input type="radio" name="anaemia" value="Yes" required/> Yes </label> &nbsp &nbsp
-                            <label><input type="radio" name="anaemia" value="No" required/> No </label>
+                            <label><input type="radio" name="anaemia" class="participant" value="Yes" required/> Yes </label> &nbsp &nbsp
+                            <label><input type="radio" name="anaemia" class="participant" value="No" required/> No </label>
                             </div><span class="Error"></span>
                         </div>
 
                         <div class = "row">
                             <div class = "col-md-6">
                             <label>Artificial joints: &nbsp</label></div><div class = "col-md-6">
-                            <label><input type="radio" name="artificial_joints" value="Yes" required/> Yes </label> &nbsp &nbsp
-                            <label><input type="radio" name="artificial_joints" value="No" required/> No </label>
+                            <label><input type="radio" name="artificial_joints" class="participant" value="Yes" required/> Yes </label> &nbsp &nbsp
+                            <label><input type="radio" name="artificial_joints" class="participant" value="No" required/> No </label>
                             </div><span class="Error"></span>
                         </div>
 
                         <div class = "row">
                             <div class = "col-md-6">
                             <label>Allergies: &nbsp</label></div><div class = "col-md-6">
-                            <label><input type="radio" name="allergies" value="Yes" required/> Yes </label> &nbsp &nbsp
-                            <label><input type="radio" name="allergies" value="No" required/> No </label>
+                            <label><input type="radio" name="allergies" class="participant" value="Yes" required/> Yes </label> &nbsp &nbsp
+                            <label><input type="radio" name="allergies" class="participant" value="No" required/> No </label>
                             </div><span class="Error"></span>
                         </div>
                         <div class = "row">
                             <div class = "col-md-6">
                             <label>Asthma: &nbsp</label></div><div class = "col-md-6">
-                            <label><input type="radio" name="asthma" value="Yes" required/> Yes </label> &nbsp &nbsp
-                            <label><input type="radio" name="asthma" value="No" required/> No </label>
+                            <label><input type="radio" name="asthma" class="participant" value="Yes" required/> Yes </label> &nbsp &nbsp
+                            <label><input type="radio" name="asthma" class="participant" value="No" required/> No </label>
                             </div><span class="Error"></span>
                         </div>
                         <div class = "row">
                             <div class = "col-md-6">
                             <label>Blood disease: &nbsp</label></div><div class = "col-md-6">
-                            <label><input type="radio" name="blood_disease" value="Yes" required/> Yes </label> &nbsp &nbsp
-                            <label><input type="radio" name="blood_disease" value="No" required/> No </label>
+                            <label><input type="radio" name="blood_disease" class="participant" value="Yes" required/> Yes </label> &nbsp &nbsp
+                            <label><input type="radio" name="blood_disease" class="participant" value="No" required/> No </label>
                             </div><span class="Error"></span>
                         </div>
                         <div class = "row">
                             <div class = "col-md-6">
                             <label>Cancer: &nbsp</label></div><div class = "col-md-6">
-                            <label><input type="radio" name="cancer" value="Yes" required/> Yes </label> &nbsp &nbsp
-                            <label><input type="radio" name="cancer" value="No" required/> No </label>
+                            <label><input type="radio" name="cancer" class="participant" value="Yes" required/> Yes </label> &nbsp &nbsp
+                            <label><input type="radio" name="cancer" class="participant" value="No" required/> No </label>
                             </div><span class="Error"></span>
                         </div>
                         <div class = "row">
                             <div class = "col-md-6">
                             <label>Dizziness/Fainting: &nbsp</label></div><div class = "col-md-6">
-                            <label><input type="radio" name="dizziness" value="Yes" required/> Yes </label> &nbsp &nbsp
-                            <label><input type="radio" name="dizziness" value="No" required/> No </label>
+                            <label><input type="radio" name="dizziness" class="participant" value="Yes" required/> Yes </label> &nbsp &nbsp
+                            <label><input type="radio" name="dizziness" class="participant" value="No" required/> No </label>
                             </div><span class="Error"></span>
                         </div>
                         <div class = "row">
                             <div class = "col-md-6">
                             <label>Diabetes: &nbsp</label></div><div class = "col-md-6">
-                            <label><input type="radio" name="diabetes" value="Yes" required/> Yes </label> &nbsp &nbsp
-                            <label><input type="radio" name="diabetes" value="No" required/> No </label>
+                            <label><input type="radio" name="diabetes" class="participant" value="Yes" required/> Yes </label> &nbsp &nbsp
+                            <label><input type="radio" name="diabetes" class="participant" value="No" required/> No </label>
                             </div><span class="Error"></span>
                         </div>
                         <div class = "row">
                             <div class = "col-md-6">
                             <label>Epilepsy: &nbsp</label></div><div class = "col-md-6">
-                            <label><input type="radio" name="epilepsy" value="Yes" required/> Yes </label> &nbsp &nbsp
-                            <label><input type="radio" name="epilepsy" value="No" required/> No </label>
+                            <label><input type="radio" name="epilepsy" class="participant" value="Yes" required/> Yes </label> &nbsp &nbsp
+                            <label><input type="radio" name="epilepsy" class="participant" value="No" required/> No </label>
                             </div><span class="Error"></span>
                         </div>
                         <div class = "row">
                             <div class = "col-md-6">
                             <label>Excessive bleeding: &nbsp</label></div><div class = "col-md-6">
-                            <label><input type="radio" name="bleeding" value="Yes" required/> Yes </label> &nbsp &nbsp
-                            <label><input type="radio" name="bleeding" value="No" required/> No </label>
+                            <label><input type="radio" name="bleeding" class="participant" value="Yes" required/> Yes </label> &nbsp &nbsp
+                            <label><input type="radio" name="bleeding" class="participant" value="No" required/> No </label>
                             </div><span class="Error"></span>
                         </div>
                         <div class = "row">
                             <div class = "col-md-6">
                             <label>Glaucoma: &nbsp</label></div><div class = "col-md-6">
-                            <label><input type="radio" name="glaucoma" value="Yes" required/> Yes </label> &nbsp &nbsp
-                            <label><input type="radio" name="glaucoma" value="No" required/> No </label>
+                            <label><input type="radio" name="glaucoma" class="participant" value="Yes" required/> Yes </label> &nbsp &nbsp
+                            <label><input type="radio" name="glaucoma" class="participant" value="No" required/> No </label>
                             </div><span class="Error"></span>
                         </div>
                         <div class = "row">
                             <div class = "col-md-6">
                             <label>Heart disease or murmur: &nbsp</label></div><div class = "col-md-6">
-                            <label><input type="radio" name="heartmurmur" value="Yes" required/> Yes </label> &nbsp &nbsp
-                            <label><input type="radio" name="heartmurmur" value="No" required/> No </label>
+                            <label><input type="radio" name="heartmurmur" class="participant" value="Yes" required/> Yes </label> &nbsp &nbsp
+                            <label><input type="radio" name="heartmurmur" class="participant" value="No" required/> No </label>
                             </div><span class="Error"></span>
                         </div>
                         <div class = "row">
                             <div class = "col-md-6">
                             <label>Hepatitis: &nbsp</label></div><div class = "col-md-6">
-                            <label><input type="radio" name="hepatitis" value="Yes" required/> Yes </label> &nbsp &nbsp
-                            <label><input type="radio" name="hepatitis" value="No" required/> No </label>
+                            <label><input type="radio" name="hepatitis" class="participant" value="Yes" required/> Yes </label> &nbsp &nbsp
+                            <label><input type="radio" name="hepatitis" class="participant" value="No" required/> No </label>
                             </div><span class="Error"></span>
                         </div>
                         <div class = "row">
@@ -511,8 +514,8 @@
                                 <label>High blood pressure: &nbsp</label>
                             </div>
                             <div class = "col-md-6">
-                                <label><input type="radio" name="high_bp" value="Yes" required/> Yes </label> &nbsp &nbsp
-                                <label><input type="radio" name="high_bp" value="No" required/> No </label>
+                                <label><input type="radio" name="high_bp" class="participant" value="Yes" required/> Yes </label> &nbsp &nbsp
+                                <label><input type="radio" name="high_bp" class="participant" value="No" required/> No </label>
                             </div>
                             <span class="Error"></span>
                         </div>
@@ -522,94 +525,94 @@
                         <div class = "row">
                             <div class = "col-md-6">
                             <label>HIV/AIDS: &nbsp</label></div><div class = "col-md-6">
-                            <label><input type="radio" name="anaemia" value="Yes" required/> Yes </label> &nbsp &nbsp
-                            <label><input type="radio" name="anaemia" value="No" required/> No </label>
+                            <label><input type="radio" name="anaemia" class="participant" value="Yes" required/> Yes </label> &nbsp &nbsp
+                            <label><input type="radio" name="anaemia" class="participant" value="No" required/> No </label>
                             </div><span class="Error"></span>
                         </div>
 
                         <div class = "row">
                             <div class = "col-md-6">
                             <label>Kidney disease: &nbsp</label></div><div class = "col-md-6">
-                            <label><input type="radio" name="kidney" value="Yes" required/> Yes </label> &nbsp &nbsp
-                            <label><input type="radio" name="kidney" value="No" required/> No </label>
+                            <label><input type="radio" name="kidney" class="participant" value="Yes" required/> Yes </label> &nbsp &nbsp
+                            <label><input type="radio" name="kidney" class="participant" value="No" required/> No </label>
                             </div><span class="Error"></span>
                         </div>
 
                         <div class = "row">
                             <div class = "col-md-6">
                             <label>Liver disease: &nbsp</label></div><div class = "col-md-6">
-                            <label><input type="radio" name="Liver" value="Yes" required/> Yes </label> &nbsp &nbsp
-                            <label><input type="radio" name="liver" value="No" required/> No </label>
+                            <label><input type="radio" name="Liver" class="participant" value="Yes" required/> Yes </label> &nbsp &nbsp
+                            <label><input type="radio" name="liver" class="participant" value="No" required/> No </label>
                             </div><span class="Error"></span>
                         </div>
                         <div class = "row">
                             <div class = "col-md-6">
                             <label>Osteoporosis: &nbsp</label></div><div class = "col-md-6">
-                            <label><input type="radio" name="Osteoporosis" value="Yes" required/> Yes </label> &nbsp &nbsp
-                            <label><input type="radio" name="Osteoporosis" value="No" required/> No </label>
+                            <label><input type="radio" name="Osteoporosis" class="participant" value="Yes" required/> Yes </label> &nbsp &nbsp
+                            <label><input type="radio" name="Osteoporosis" class="participant" value="No" required/> No </label>
                             </div><span class="Error"></span>
                         </div>
                         <div class = "row">
                             <div class = "col-md-6">
                             <label>Pacemaker: &nbsp</label></div><div class = "col-md-6">
-                            <label><input type="radio" name="Pacemaker" value="Yes" required/> Yes </label> &nbsp &nbsp
-                            <label><input type="radio" name="Pacemaker" value="No" required/> No </label>
+                            <label><input type="radio" name="Pacemaker" class="participant" value="Yes" required/> Yes </label> &nbsp &nbsp
+                            <label><input type="radio" name="Pacemaker" class="participant" value="No" required/> No </label>
                             </div><span class="Error"></span>
                         </div>
                         <div class = "row">
                             <div class = "col-md-6">
                             <label>Psychological disorders: &nbsp</label></div><div class = "col-md-6">
-                            <label><input type="radio" name="psych" value="Yes" required/> Yes </label> &nbsp &nbsp
-                            <label><input type="radio" name="psych" value="No" required/> No </label>
+                            <label><input type="radio" name="psych" class="participant" value="Yes" required/> Yes </label> &nbsp &nbsp
+                            <label><input type="radio" name="psych" class="participant" value="No" required/> No </label>
                             </div><span class="Error"></span>
                         </div>
                         <div class = "row">
                             <div class = "col-md-6">
                             <label>Rheumatic fever: &nbsp</label></div><div class = "col-md-6">
-                            <label><input type="radio" name="rheu" value="Yes" required/> Yes </label> &nbsp &nbsp
-                            <label><input type="radio" name="rheu" value="No" required/> No </label>
+                            <label><input type="radio" name="rheu" class="participant" value="Yes" required/> Yes </label> &nbsp &nbsp
+                            <label><input type="radio" name="rheu" class="participant" value="No" required/> No </label>
                             </div><span class="Error"></span>
                         </div>
                         <div class = "row">
                             <div class = "col-md-6">
                             <label>Radiation therapy: &nbsp</label></div><div class = "col-md-6">
-                            <label><input type="radio" name="rad" value="Yes" required/> Yes </label> &nbsp &nbsp
-                            <label><input type="radio" name="rad" value="No" required/> No </label>
+                            <label><input type="radio" name="rad" class="participant" value="Yes" required/> Yes </label> &nbsp &nbsp
+                            <label><input type="radio" name="rad" class="participant" value="No" required/> No </label>
                             </div><span class="Error"></span>
                         </div>
                         <div class = "row">
                             <div class = "col-md-6">
                             <label>Respiratory problems: &nbsp</label></div><div class = "col-md-6">
-                            <label><input type="radio" name="resp" value="Yes" required/> Yes </label> &nbsp &nbsp
-                            <label><input type="radio" name="resp" value="No" required/> No </label>
+                            <label><input type="radio" name="resp" class="participant" value="Yes" required/> Yes </label> &nbsp &nbsp
+                            <label><input type="radio" name="resp" class="participant" value="No" required/> No </label>
                             </div><span class="Error"></span>
                         </div>
                         <div class = "row">
                             <div class = "col-md-6">
                             <label>Stroke: &nbsp</label></div><div class = "col-md-6">
-                            <label><input type="radio" name="Stroke" value="Yes" required/> Yes </label> &nbsp &nbsp
-                            <label><input type="radio" name="Stroke" value="No" required/> No </label>
+                            <label><input type="radio" name="Stroke" class="participant" value="Yes" required/> Yes </label> &nbsp &nbsp
+                            <label><input type="radio" name="Stroke" class="participant" value="No" required/> No </label>
                             </div><span class="Error"></span>
                         </div>
                         <div class = "row">
                             <div class = "col-md-6">
                             <label>Sinus problems: &nbsp</label></div><div class = "col-md-6">
-                            <label><input type="radio" name="Sinus" value="Yes" required/> Yes </label> &nbsp &nbsp
-                            <label><input type="radio" name="sinus" value="No" required/> No </label>
+                            <label><input type="radio" name="Sinus" class="participant" value="Yes" required/> Yes </label> &nbsp &nbsp
+                            <label><input type="radio" name="sinus" class="participant" value="No" required/> No </label>
                             </div><span class="Error"></span>
                         </div>
                         <div class = "row">
                             <div class = "col-md-6">
                             <label>Tumours: &nbsp</label></div><div class = "col-md-6">
-                            <label><input type="radio" name="Tumours" value="Yes" required/> Yes </label> &nbsp &nbsp
-                            <label><input type="radio" name="Tumours" value="No" required/> No </label>
+                            <label><input type="radio" name="Tumours" class="participant" value="Yes" required/> Yes </label> &nbsp &nbsp
+                            <label><input type="radio" name="Tumours" class="participant" value="No" required/> No </label>
                             </div><span class="Error"></span>
                         </div>
                         <div class = "row">
                             <div class = "col-md-6">
                             <label>Turberculosis: &nbsp</label></div><div class = "col-md-6">
-                            <label><input type="radio" name="Turberculosis" value="Yes" required/> Yes </label> &nbsp &nbsp
-                            <label><input type="radio" name="Turberculosis" value="No" required/> No </label>
+                            <label><input type="radio" name="Turberculosis" class="participant" value="Yes" required/> Yes </label> &nbsp &nbsp
+                            <label><input type="radio" name="Turberculosis" class="participant" value="No" required/> No </label>
                             </div><span class="Error"></span>
                         </div>                       
                     </div>

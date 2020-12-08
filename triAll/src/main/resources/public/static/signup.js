@@ -47,7 +47,8 @@ $(document).ready(function(){
        else if($(this).attr('id') == 'researcherButton') {
             $('.participant').hide();
             // make all participant fields not required
-            $('.participant').required = false;
+            // $('.participant').required = false;
+            $('.participant').removeAttr('required')
        }
        else if($(this).attr('id') == 'metricButton') {
             $('.imperial').hide();
