@@ -54,8 +54,8 @@ public class User {
    */
   public User(int id, double lat, double lon, String location, String first, 
       String last, String email, boolean isR) {
-    if (id < 0) {
-      throw new IllegalArgumentException("id cannot be less than 0");
+    if (id <= 0) {
+      throw new IllegalArgumentException("id must be > 0");
     }
     this.id = id;
     if (lat < -90.0 || lat > 90.0) {

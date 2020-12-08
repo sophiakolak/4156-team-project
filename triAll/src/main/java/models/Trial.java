@@ -28,8 +28,8 @@ public class Trial {
    */
   public Trial(int id, String n, String d, double lat, double lon, String location, String s, 
       String e, double p, int irb, int pn, int pc, Criteria crit) {
-    if (id < 0) {
-      throw new IllegalArgumentException("id must not be less than 0");
+    if (id <= 0) {
+      throw new IllegalArgumentException("id must be > 0");
     }
     this.id = id;
     if (n == "") {
@@ -60,7 +60,7 @@ public class Trial {
       throw new IllegalArgumentException("end date is not valid");
     }
     this.end = e;
-    if (pay < 0) {
+    if (p < 0) {
       throw new IllegalArgumentException("pay must not be negative");
     }
     this.pay = p;
@@ -150,6 +150,10 @@ public class Trial {
 
   public int getRes() {
     return resID;
+  }
+  
+  public void setRes(int resID) {
+    this.resID = resID; 
   }
 
   public String getName() {

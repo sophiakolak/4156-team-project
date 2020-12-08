@@ -17,8 +17,8 @@ public class Notification {
       throw new IllegalArgumentException("invalid date/time");
     }
     this.time = time;
-    if (id < 0) {
-      throw new IllegalArgumentException("ID must be >= 0");
+    if (id <= 0) {
+      throw new IllegalArgumentException("ID must be > 0");
     }
     trialName = db.loadTrial(id).getName();
     if (message == "") {

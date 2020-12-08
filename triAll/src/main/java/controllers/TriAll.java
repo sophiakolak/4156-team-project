@@ -106,6 +106,7 @@ public class TriAll {
 
     app.post("/new-trial-submit", ctx -> {
       if (user.isLoggedIn() && user.isResearcher()) {
+        System.out.println("NEW TRIAL SUBMIT");
         System.out.println(ctx.body());
         JsonArray form = gson.fromJson(ctx.body(), JsonArray.class);
         Trial t = new Trial(db, form, user.getID());

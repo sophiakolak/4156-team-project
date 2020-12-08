@@ -702,7 +702,7 @@ public class SqliteDB {
    */
   public int updateTrial(Trial t) {
     int id = 0;
-    String command = "REPLACE INTO trials VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+    String command = "REPLACE INTO trials VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
     try (
         PreparedStatement st = conn.prepareStatement(command);
     ) {

@@ -20,8 +20,8 @@ public class Match {
    * @param s The status of the match (e.g. accepted, rejected)
    */
   public Match(int id, Trial t, double d, String s) {
-    if (id < 0) {
-      throw new IllegalArgumentException("Id must be >= 0");
+    if (id <= 0) {
+      throw new IllegalArgumentException("Id must be > 0");
     }
     this.id = id;
     trial = t;

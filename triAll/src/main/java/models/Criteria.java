@@ -22,8 +22,8 @@ public class Criteria {
   public Criteria(int id, int extID, int minAge, int maxAge, double minHeight, 
       double maxHeight, double minWeight,
       double maxWeight, String gender, String race, String nationality) {
-    if (id < 0 || extID < 0) {
-      throw new IllegalArgumentException("id and extID must be >= 0");
+    if (id <= 0 || extID <= 0) {
+      throw new IllegalArgumentException("id and extID must be > 0");
     }
     this.id = id;
     this.extID = extID;
