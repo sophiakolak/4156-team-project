@@ -55,10 +55,13 @@ function newAlert(title, text, redirect){
   $('#alert').modal('toggle')
 }
 
-function loadTrialUpcoming(id, name, desc, location, startDate, endDate, pay, IRB, partNeeded, partConfirmed, status, start, destination){
-    var start = start.split(' ').join('+')
-    var destination = destination.split(' ').join('+')
+function loadTrialUpcoming(id, name, desc, loc, startDate, endDate, pay, IRB, part_needed, part_confirmed, status, start){
+    var start = String(start).split(' ').join('+')
+    var destination = String(loc).split(' ').join('+')
+    alert(start)
+    alert(destination)
     var map = $("<iframe width='100%' height='100%'' frameborder='0' style='border:0' src='https://www.google.com/maps/embed/v1/directions?key=AIzaSyAYSwqY4yLII5q5a-fXGTdWy9uEBdBWPRo&start="+start+"&destination="+destination+">")
+    alert(map)
     var card = $("<div class = 'card_container'>")
     var cardHeader = $('<div class="card-header" id="headingOne">')
     var h2 = $('<h2 class="mb-0">')
@@ -70,7 +73,7 @@ function loadTrialUpcoming(id, name, desc, location, startDate, endDate, pay, IR
 
     var collapsableDiv = $('<div id="collapse'+id+'" class="collapse" aria-labelledby="heading'+id+'" data-parent="#trialAccordianUpcoming">')
     cardBody = $('<div class="card-body">')
-    cardBody.append("Start Date: ", startDate, ", ", "End Date: ", endDate, ", ", "Location: ", location)
+    cardBody.append("Start Date: ", startDate, ", ", "End Date: ", endDate, ", ", "Location: ", loc)
     cardBody.append("<div class = 'description'>Description: ", desc, "</div>", "<div class = 'irb'>IRB: ", IRB, "</div><br>", "<div class = 'pay'>Hourly Pay in USD: ", pay, "</div>")
 
     var acceptBtn = $('<button type="button" onclick="acceptMatch(' + id + ')" class="btn btn-primary acceptTrial">')
@@ -80,6 +83,8 @@ function loadTrialUpcoming(id, name, desc, location, startDate, endDate, pay, IR
     var rejectBtn = $('<button type="button" onclick="rejectMatch(' + id + ')" class="btn btn-danger rejectTrial">')
     rejectBtn.append("Reject")
     rejectBtn.attr('id', id)
+
+    cardBody.append(map)
 
     cardBody.append("<br>", acceptBtn, "   ", rejectBtn) 
     collapsableDiv.append(cardBody)
@@ -227,7 +232,7 @@ function loadTrials(matchList) {
         var id = trial.id
         var name = trial.name
         var desc = trial.desc
-        var location = trial.location
+        var loc = trial.location
         var startDate = trial.start
         var endDate = trial.end
         var pay = trial.pay
@@ -235,8 +240,9 @@ function loadTrials(matchList) {
         var part_needed = trial.partNeeded
         var part_confirmed = trial.partConfirmed
         var criteria = trial.crit
+        var start = "New York, NY"
         if (status == "accepted") {
-          loadTrialUpcoming(id, name, desc, location, startDate, endDate, pay, IRB, part_needed, part_confirmed, status, start, location)
+          loadTrialUpcoming(id, name, desc, loc, startDate, endDate, pay, IRB, part_needed, part_confirmed, status, start)
           nAccepted++
         }
         else if (status == "rejected"){
@@ -244,7 +250,7 @@ function loadTrials(matchList) {
         }
         else {
           // loadTrialPending(id, name, desc, location, startDate, endDate, pay, IRB, part_needed, part_confirmed, status, start, location)
-          loadTrialUpcoming(id, name, desc, location, startDate, endDate, pay, IRB, part_needed, part_confirmed, status, start, location)
+          loadTrialUpcoming(id, name, desc, location, startDate, endDate, pay, IRB, part_needed, part_confirmed, status, start)
           nPending++
         }
         
