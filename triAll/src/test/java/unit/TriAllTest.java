@@ -34,7 +34,7 @@ public class TriAllTest {
 
   HashMap<Integer, Trial> trials = new HashMap<Integer, Trial>();
   LinkedList<Match> matches = new LinkedList<Match>();
-  Criteria crit = new Criteria(1, 1, 22, 28, 60, 70, 110, 180, "male", "cool", "cool");
+  Criteria crit = new Criteria(1, 1, 22, 28, 60, 70, 110, 180, "Male", "cool", "cool");
   User user1 = new User(1, 0, 0, "Columbia", "Shirish", "Shirish", "shirishIsCool@gmail.com", 
       false);
   User user2 = new User(1, 0, 0, "Columbia", "Gail", "Kaiser", "gailIsCool@gmail.com", true);
@@ -202,14 +202,14 @@ public class TriAllTest {
   @Test
   public void goodCriteria() {
     String gender = crit.getGender();
-    assertEquals("male", gender);
+    assertEquals("Male", gender);
   }
   
   //Criteria equiv class 1 
   @Test 
   public void testJustBelowCriteria() {
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-      Criteria c = new Criteria(-1, -1, 17, 110, -10.0, -12.0, -100.0, -120.0, "female", "white", "american");
+      Criteria c = new Criteria(-1, -1, 17, 110, -10.0, -12.0, -100.0, -120.0, "Female", "white", "american");
     });
   }
   
@@ -217,7 +217,7 @@ public class TriAllTest {
   @Test 
   public void testJustAboveCriteria() {
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-      Criteria c = new Criteria(1, 1, 18, 121, 10.0, 12.0, 100.0, 120.0, "male", "white", "american");
+      Criteria c = new Criteria(1, 1, 18, 121, 10.0, 12.0, 100.0, 120.0, "Female", "white", "american");
     });
   }
   
@@ -276,7 +276,7 @@ public class TriAllTest {
  
   @Test
   public void testMatches() {
-    Criteria c = new Criteria(1, 1, 23, 23, 67, 67, 130, 130, "male", "cool", "cool");
+    Criteria c = new Criteria(1, 1, 23, 23, 67, 67, 130, 130, "Male", "cool", "cool");
     boolean isMatch = crit.matches(c);
     assertEquals(true, isMatch);
   }
@@ -341,7 +341,7 @@ public class TriAllTest {
     User part = new User(2, 80.0, 80.0, "kansas", "Jane", "Doe", "sophiakolak@gmail.com", false );
     db.insertUser("researchers", res);
     db.insertUser("participants", part);
-    Criteria c = new Criteria(1, 1, 22, 28, 60, 70, 110, 180, "male", "cool", "cool");
+    Criteria c = new Criteria(1, 1, 22, 28, 60, 70, 110, 180, "Male", "cool", "cool");
     db.insertCriteria("trial_criteria", c);
     Trial t = new Trial(1, "Cool Trial", "cool trial", 0, 0, "Siberia", "2020-12-01", "2020-12-02", 
         12, 1234, 100, 0, c);
@@ -364,7 +364,7 @@ public class TriAllTest {
     User part = new User(2, 80.0, 80.0, "kansas", "Jane", "Doe", "sophiakolak@gmail.com", false );
     db.insertUser("researchers", res);
     db.insertUser("participants", part);
-    Criteria c = new Criteria(1, 1, 22, 28, 60, 70, 110, 180, "male", "cool", "cool");
+    Criteria c = new Criteria(1, 1, 22, 28, 60, 70, 110, 180, "Male", "cool", "cool");
     db.insertCriteria("trial_criteria", c);
     Trial t = new Trial(1, "Cool Trial", "cool trial", 0, 0, "Siberia", "2020-12-01", "2020-12-02", 
         12, 1234, 1, 1, c);
@@ -387,28 +387,7 @@ public class TriAllTest {
     boolean db_update = goodMatch.reject(db);
     assertEquals(true, db_update);
   }
-  
-  /**@Test 
-  public void testJson() {
-    String inputString = [{"name":"name","value":"trial"},{"name":"description","value":"description"},
-                          {"name":"location","value":"New York, NY, USA"},{"name":"lat","value":"40.7127753"},
-                          {"name":"lon","value":"-74.0059728"},{"name":"startdate","value":"2021-01-05"},
-                          {"name":"enddate","value":"2021-01-15"},{"name":"pay","value":"14"},{"name":"irb","value":"1234"},
-                          {"name":"numberofparticipants","value":"10"},{"name":"gender","value":"Female"},
-                          {"name":"min_age","value":"20"},{"name":"max_age","value":"100"},
-                          {"name":"metric_or_imperial","value":"Feet"},{"name":"feet","value":"5"},
-                          {"name":"inches","value":"0"},{"name":"centimeters","value":""},
-                          {"name":"heightInInchesMin","value":"60"},{"name":"feet","value":"6"},
-                          {"name":"inches","value":"0"},{"name":"centimeters","value":""},
-                          {"name":"heightInInchesMax","value":"72"},{"name":"pounds","value":"90"},
-                          {"name":"kilograms","value":""},{"name":"weightInLbs","value":"90"},
-                          {"name":"pounds","value":"200"},{"name":"kilograms","value":""},
-                          {"name":"weightInLbs","value":"200"},{"name":"ethnicity","value":"White Other"},
-                          {"name":"nationality","value":"american"},{"name":"disease_anaemia","value":"yes"},
-                          {"name":"disease_cancer_not","value":"yes"}]
-    JsonArray form = gson.fromJson(inputSring, JsonArray.class);
-    
-  }**/
+
  
 
 
