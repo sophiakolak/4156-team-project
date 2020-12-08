@@ -80,6 +80,7 @@ public class TriAll {
 
     app.post("/new-part-submit", ctx -> {
       String body = ctx.body();
+      System.out.println("NEW PART");
       System.out.println(body);
       JsonArray form = gson.fromJson(ctx.body(), JsonArray.class);
       if (user.signUpPart(db, form)) {
@@ -106,8 +107,6 @@ public class TriAll {
 
     app.post("/new-trial-submit", ctx -> {
       if (user.isLoggedIn() && user.isResearcher()) {
-        System.out.println("NEW TRIAL SUBMIT");
-        System.out.println(ctx.body());
         JsonArray form = gson.fromJson(ctx.body(), JsonArray.class);
         Trial t = new Trial(db, form, user.getID());
         user.addTrial(t.getID(), t);

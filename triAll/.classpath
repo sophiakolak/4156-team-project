@@ -37,5 +37,7 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
+	<classpathentry kind="lib" path="/home/sophia/Downloads/json-simple-1.1.1.jar"/>
+	<classpathentry kind="lib" path="/home/sophia/Downloads/java-json.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

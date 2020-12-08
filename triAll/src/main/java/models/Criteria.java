@@ -141,15 +141,15 @@ public class Criteria {
    * @return Whether the operation was successful.
    */
   public boolean updateCrit(SqliteDB db, JsonArray form) {
-    minAge = form.get(7).getAsJsonObject().get("value").getAsInt();
-    maxAge = form.get(8).getAsJsonObject().get("value").getAsInt();
-    minHeight = form.get(13).getAsJsonObject().get("value").getAsInt();
-    maxHeight = form.get(17).getAsJsonObject().get("value").getAsInt();
-    minWeight = form.get(20).getAsJsonObject().get("value").getAsInt();
-    maxWeight = form.get(23).getAsJsonObject().get("value").getAsInt();
-    gender = form.get(6).getAsJsonObject().get("value").getAsString();
-    race = form.get(24).getAsJsonObject().get("value").getAsString();
-    nationality = form.get(25).getAsJsonObject().get("value").getAsString();
+    minAge = form.get(11).getAsJsonObject().get("value").getAsInt();
+    maxAge = form.get(12).getAsJsonObject().get("value").getAsInt();
+    minHeight = form.get(17).getAsJsonObject().get("value").getAsInt();
+    maxHeight = form.get(21).getAsJsonObject().get("value").getAsInt();
+    minWeight = form.get(24).getAsJsonObject().get("value").getAsInt();
+    maxWeight = form.get(27).getAsJsonObject().get("value").getAsInt();
+    gender = form.get(10).getAsJsonObject().get("value").getAsString();
+    race = form.get(28).getAsJsonObject().get("value").getAsString();
+    nationality = form.get(29).getAsJsonObject().get("value").getAsString();
     if (db.updateCriteria("trial_criteria", this) == 0) {
       return false;
     }

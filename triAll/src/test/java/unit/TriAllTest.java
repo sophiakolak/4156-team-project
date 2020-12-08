@@ -13,6 +13,14 @@ import models.Match;
 import models.Notification;
 import models.Trial;
 import models.User;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+
+import org.json.CDL;
+import org.json.JSONObject;
+import org.json.CDL;
+import org.json.JSONArray;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import units.SqliteDB;
@@ -108,6 +116,7 @@ public class TriAllTest {
   @Order(1)
   public void goodTrial() {
     String location = tr.getLocation();
+    Criteria crit = tr.getCriteria();
     assertEquals("Siberia", location);
   }
   
@@ -386,6 +395,175 @@ public class TriAllTest {
     Match goodMatch = new Match(1, tr, 0.5, "pending");
     boolean db_update = goodMatch.reject(db);
     assertEquals(true, db_update);
+  }
+  
+  @Test 
+  public void testTrialForm() {
+    SqliteDB db = new SqliteDB("triall");
+    Gson gson = new Gson();
+    Gson gson1 = new Gson();
+    String string = "name, value \n" +
+         "name, new trial \n" + 
+          "description, desc \n" +
+          "location, New York \n" +
+          "lat,40.7127753 \n" +
+          "lon,-74.0059728 \n"+
+          "startdate, 2021-01-01 \n"+
+          "enddate, 2021-01-10 \n"+
+          "pay, 15 \n"+
+          "irb, 1234 \n"+
+          "numberofparticipants, 10 \n"+
+          "gender, Female \n"+
+          "min_age, 20 \n"+
+          "max_age, 90 \n"+
+          "metric_or_imperial, Feet \n"+
+          "feet, 5 \n"+
+          "inches, 0 \n"+
+          "centimeters, \n"+
+          "heightInInchesMin, 60 \n"+
+          "feet, 6 \n"+
+          "inches, 0 \n"+
+          "centimeters \n"+
+          "heightInInchesMax, 72 \n"+
+          "pounds, 90 \n"+
+          "kilograms, \n"+
+          "weightInLbs, 90 \n"+
+          "pounds, 120 \n"+
+          "kilograms, \n"+
+          "weightInLbs, 120 \n"+
+          "ethnicity, White Other \n"+
+          "nationality, american";
+    
+     String partString = "name, value \n"+
+         "participant_or_researcher, Participant \n"+
+         "firstname, Sophia \n"+
+         "lastname, Kolak \n"+
+         "email, sophiakolak.sk@gmail.com \n"+
+         "location, New York \n"+
+         "lat, 40.7127753 \n"+
+         "lon, -74.0059728 \n"+
+          "gender, Female \n"+
+         "age, 21 \n"+ 
+          "metric_or_imperial, Feet \n"+
+         "feet, 5 \n"+
+          "inches, 4 \n"+
+         "centimeters, \n"+
+          "heightInInches, 64 \n"+
+         "pounds, 120 \n"+
+          "kilograms, \n"+
+         "weightInLbs, 120 \n"+
+          "ethnicity, White Other \n"+
+         "nationality, american";
+     
+     try {
+       //JSONArray partJson = CDL.toJSONArray(partString);
+       //JsonArray partForm = gson.fromJson(partJson.toString(), JsonArray.class);
+       //String is_res = partForm.get(0).getAsJsonObject().get("value").getAsString();
+       User res = new User(1, 80.0, 80.0, "kansas", "Jane", "Doe", "sophiakolak.sk@gmail.com", true);
+       User part = new User(2, 80.0, 80.0, "kansas", "Jane", "Doe", "sophiakolak.sk@gmail.com", false);
+       db.insertUser("participants", part);
+       db.insertUser("researchers", res);
+       Criteria c = new Criteria(1, 2, 22, 28, 60, 70, 110, 180, "Male", "cool", "cool");
+       db.insertCriteria("participant_data", c);
+       System.out.println("4");
+       JSONArray result = CDL.toJSONArray(string);
+       JsonArray form = gson1.fromJson(result.toString(), JsonArray.class);
+       Trial t = new Trial(db, form, 2);
+       String desc = t.getDesc();
+       assertEquals("desc", desc);
+     }
+     catch (Exception e) {
+       e.printStackTrace();
+     }
+  }
+  
+  @Test 
+  public void testUpdateTrial() {
+    SqliteDB db = new SqliteDB("triall");
+    Gson gson = new Gson();
+    Gson gson1 = new Gson();
+    String string = "name, value \n" +
+         "name, new trial \n" + 
+          "description, desc \n" +
+          "location, New York \n" +
+          "lat,40.7127753 \n" +
+          "lon,-74.0059728 \n"+
+          "startdate, 2021-01-01 \n"+
+          "enddate, 2021-01-10 \n"+
+          "pay, 15 \n"+
+          "irb, 1234 \n"+
+          "numberofparticipants, 10 \n"+
+          "gender, Female \n"+
+          "min_age, 20 \n"+
+          "max_age, 90 \n"+
+          "metric_or_imperial, Feet \n"+
+          "feet, 5 \n"+
+          "inches, 0 \n"+
+          "centimeters, \n"+
+          "heightInInchesMin, 60 \n"+
+          "feet, 6 \n"+
+          "inches, 0 \n"+
+          "centimeters \n"+
+          "heightInInchesMax, 72 \n"+
+          "pounds, 90 \n"+
+          "kilograms, \n"+
+          "weightInLbs, 90 \n"+
+          "pounds, 120 \n"+
+          "kilograms, \n"+
+          "weightInLbs, 120 \n"+
+          "ethnicity, White Other \n"+
+          "nationality, american";
+     try {
+       User res = new User(1, 80.0, 80.0, "kansas", "Jane", "Doe", "sophiakolak.sk@gmail.com", true);
+       User part = new User(2, 80.0, 80.0, "kansas", "Jane", "Doe", "sophiakolak.sk@gmail.com", false);
+       db.insertUser("participants", part);
+       db.insertUser("researchers", res);
+       Criteria c = new Criteria(1, 2, 22, 28, 60, 70, 110, 180, "Male", "cool", "cool");
+       db.insertCriteria("participant_data", c);
+       System.out.println("4");
+       JSONArray result = CDL.toJSONArray(string);
+       JsonArray form = gson1.fromJson(result.toString(), JsonArray.class);
+       Trial t = new Trial(db, form, 2);
+       String update = "name, value \n" +
+           "name, new trial \n" + 
+           "description, desc \n" +
+           "location, New York \n" +
+           "lat,40.7127753 \n" +
+           "lon,-74.0059728 \n"+
+           "startdate, 2021-01-01 \n"+
+           "enddate, 2021-01-10 \n"+
+           "pay, 20 \n"+
+           "irb, 1234 \n"+
+           "numberofparticipants, 10 \n"+
+           "gender, Female \n"+
+           "min_age, 20 \n"+
+           "max_age, 90 \n"+
+           "metric_or_imperial, Feet \n"+
+           "feet, 5 \n"+
+           "inches, 0 \n"+
+           "centimeters, \n"+
+           "heightInInchesMin, 60 \n"+
+           "feet, 6 \n"+
+           "inches, 0 \n"+
+           "centimeters \n"+
+           "heightInInchesMax, 72 \n"+
+           "pounds, 90 \n"+
+           "kilograms, \n"+
+           "weightInLbs, 90 \n"+
+           "pounds, 120 \n"+
+           "kilograms, \n"+
+           "weightInLbs, 120 \n"+
+           "ethnicity, White Other \n"+
+           "nationality, american";
+       JSONArray updateString = CDL.toJSONArray(update);
+       JsonArray updateForm = gson.fromJson(updateString.toString(), JsonArray.class);
+       t.update(db, updateForm);
+       double pay = t.getPay();
+       assertEquals(20, pay);
+     }
+     catch (Exception e) {
+       e.printStackTrace();
+     }
   }
 
  

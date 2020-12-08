@@ -383,6 +383,7 @@ public class User {
     first = form.get(1).getAsJsonObject().get("value").getAsString();
     last = form.get(2).getAsJsonObject().get("value").getAsString();
     email = form.get(3).getAsJsonObject().get("value").getAsString();
+    System.out.println(lat+lon+location+first+last+email);
     isResearcher = false;
     id = db.insertUser("participants", this);
     if (id == 0) {

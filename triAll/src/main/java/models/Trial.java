@@ -139,7 +139,6 @@ public class Trial {
       user.setData(db.loadData(user.getID()));
       if (crit.matches(user.getData()) && !db.matchExists(user.getID(), id)) {
         Match m = new Match(user, this, db);
-        System.out.println(m.getID());
       }
     }
   }
