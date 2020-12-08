@@ -42,12 +42,12 @@ $(document).ready(function(){
        if($(this).attr('id') == 'participantButton') {
             $('.participant').show();  
             // make all participant fields required   
-            $('.participant').prop("required", true);
+            $('.participant').required = true;
        }
        else if($(this).attr('id') == 'researcherButton') {
             $('.participant').hide();
             // make all participant fields not required
-            $('.participant').prop("required", false);  
+            $('.participant').required = false;
        }
        else if($(this).attr('id') == 'metricButton') {
             $('.imperial').hide();
