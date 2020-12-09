@@ -328,9 +328,11 @@ public class SqliteDB {
                   .getInt(4), rs.getDouble(5), rs.getDouble(6), rs.getDouble(7), rs
                   .getDouble(8), rs.getString(9), rs.getString(10), rs.getString(11));
       } catch (Exception e) {
+        e.printStackTrace();
         return crit;
       }
     } catch (Exception e) {
+      e.printStackTrace();
       return crit;
     }
     return crit;
@@ -444,7 +446,7 @@ public class SqliteDB {
   public LinkedList<Integer> openTrials() {
     ResultSet rs = null;
     LinkedList<Integer> trialSet = new LinkedList<>();
-    String command = "SELECT ID FROM trials WHERE participants_needed = participants_confirmed;";
+    String command = "SELECT ID FROM trials WHERE participants_needed > participants_confirmed;";
     try (
         PreparedStatement st = conn.prepareStatement(command);
     ) {
@@ -481,9 +483,11 @@ public class SqliteDB {
             .getString(7), rs.getString(8), rs.getString(9), rs
             .getDouble(10), rs.getInt(11), rs.getInt(12), rs.getInt(13), c);
       } catch (Exception e) {
+        e.printStackTrace();
         return t;
       }
     } catch (Exception e) {
+      e.printStackTrace();
       return t;
     }
     return t;

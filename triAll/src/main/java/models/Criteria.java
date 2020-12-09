@@ -110,6 +110,7 @@ public class Criteria {
     nationality = form.get(29).getAsJsonObject().get("value").getAsString();
     extID = parent;
     id = db.insertCriteria("trial_criteria", this);
+    System.out.println(id);
   }
   
   /**

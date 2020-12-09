@@ -97,6 +97,7 @@ public class Trial {
     resID = parent;
     id = db.insertTrial(this);
     crit = new Criteria(db, form, id, "trial_criteria");
+    System.out.println(crit);
     checkMatches(db);
   }
 
