@@ -55,29 +55,68 @@ function newAlert(title, text, redirect){
   $('#alert').modal('toggle')
 }
 
-function loadTrial(id, name, desc, location, startDate, endDate, pay, IRB, partNeeded, partConfirmed){
-    var totalPart = partNeeded + partConfirmed
-    var progressWidth = partConfirmed/partNeeded
-    var card = $("<div class = 'card_container'>")
-    var cardHeader = $('<div class="card-header" id="headingOne">')
-    var h2 = $('<h2 class="mb-0">')
-    var expandBtn = $('<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse'+id+'" aria-expanded="false" aria-controls="collapse'+id+'">')
-    expandBtn.append("Start Date: ", startDate, ", ", "End Date: ", endDate, ", ", "Location: ", location)
-    h2.append(expandBtn)
-    cardHeader.append(h2)
-    card.append(cardHeader)
+function sortByDate(date){  
+   return function(a,b){  
+      aDate = a[date]
+      bDate = b[date]
+      aParts = aDate.split('-')
+      bParts = bDate.split('-')
+      if(parseInt(aParts[0]) > parseInt(bParts[0]))  
+         return 1;  
+      else if(parseInt(aParts[0]) < parseInt(bParts[0]))  
+        return -1
+      else if(parseInt(aParts[1]) > parseInt(bParts[1]))  
+         return 1;  
+      else if(parseInt(aParts[1]) < parseInt(bParts[1]))  
+         return -1;  
+      else if(parseInt(aParts[2]) > parseInt(bParts[2]))  
+         return 1;  
+      else if(parseInt(aParts[2]) < parseInt(bParts[2]))  
+         return -1;  
+      return 0;  
+   }  
+}
 
+
+function loadTrial(id, name, desc, location, startDate, endDate, pay, IRB, partNeeded, partConfirmed, start){
+    var monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
+    var monthNamesLong = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    dateParts = startDate.split('-')
+    var month_i = dateParts[1]
+    var month = monthNames[parseInt(month_i)-1]
+    var day = dateParts[2]
+    var year = dateParts[0]
+
+    dateParts = endDate.split('-')
+    month_i = dateParts[1]
+    var monthEnd = monthNamesLong[parseInt(month_i)-1]
+    var dayEnd = dateParts[2]
+    var yearEnd = dateParts[0]
+
+    var card = $("<div class = 'card_container'>")
+    var cardHeader = $('<div class="card-header row row-row striped" id="headingOne">')
+    var col1 = $('<div class="col-2">')
+    col1.append('<h3 class="display-4"><span class="badge badge-secondary">'+day+'</span></h3>')
+    col1.append('<h5>'+month+'&nbsp '+ year +'</h5>')
+    var col2 = $('<div class="col-6">')
+    col2.append('<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse'+id+'" aria-expanded="false" aria-controls="collapse'+id+'"><h2 class="text-uppercase cardHead"><strong>'+name+'</strong></h2></button>')
+    col2.append('<h5> &nbsp &nbsp' + location + '</h5>')
+    cardHeader.append(col1, col2)
+    card.append(cardHeader)
     var collapsableDiv = $('<div id="collapse'+id+'" class="collapse" aria-labelledby="heading'+id+'" data-parent="#trialAccordian">')
-    cardBody = $('<div class="card-body">')
-    cardBody.append("<div class = 'description'>Description: " +desc + "</div>", "<div class = 'irb'>IRB: "+  IRB,+ "</div>", "<div class = 'pay'>Hourly Pay in USD: "+ pay+"</div>")
-    var progressContainer = $('<div class="progressContainer">')
-    progressContainer.append("Participants Confirmed: "+partConfirmed+"<br>")
-    progressContainer.append("Participants Needed: "+partNeeded+"<br>")
-    var progress = $('<div class="progress">')
-    var progressBody = $('<div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow='+partConfirmed+' aria-valuemin="0" aria-valuemax='+totalPart+' style="width:'+progressWidth+'%">')
-    progress.append(progressBody)
-    progressContainer.append(progress)
-    cardBody.append(progressContainer)
+    cardBody = $('<div class="card-body row">')
+    var c1 = $('<div class = "col-5">')
+    var c2 = $('<div class = "col">')
+    c1.append('<div class = "big"> <strong><i class="fa fa-calendar-o" aria-hidden="true"></i> End Date: </strong>' + monthEnd + '&nbsp' + dayEnd + ', ' + yearEnd + '</div>')
+    c1.append('<div class = "big"> <strong><i class="fa fa-money" aria-hidden="true"></i> Pay:  </strong> $' + pay + ' per hour </div>')
+    c1.append('<div class = "big"> <strong><i class="fa fa-check-square" aria-hidden="true"></i> IRB:  </strong>' + IRB + '</div>')
+    c1.append('<br>')
+    c1.append('<div class = "med"> <strong><i class="fa fa-info-circle" aria-hidden="true"></i> Description:  </strong>' + desc + '</div>')
+    c1.append('<br>')
+    c1.append('<div class = "small"> <strong><i class="fa fa-user" aria-hidden="true"></i> Participants Confirmed:  </strong>' + partConfirmed + '</div>')
+    c1.append('<div class = "small"> <strong><i class="fa fa-users" aria-hidden="true"></i> Participants Needed:  </strong>' + partNeeded + '</div>')
+    c2.append('<iframe width="650" height="400" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/directions?key=AIzaSyAYSwqY4yLII5q5a-fXGTdWy9uEBdBWPRo&origin='+ start +'&destination='+location+'" allowfullscreen></iframe>')
+    cardBody.append(c1, c2)
     collapsableDiv.append(cardBody)
     card.append(collapsableDiv)
     $("#trialAccordian").append(card)
@@ -104,17 +143,15 @@ function noTrials() {
     $("#trialAccordian").append(card)
 }
 
-function loadTrials(trialList) {
+function loadTrials(trialList, start) {
   if (trialList == "") {
     noTrials()
   } else {
-    var trials = trialList
-    console.log("TRIALS: " + trials)
-
+    var trials = trialList.sort(sortByDate("start"))
     for (index = 0; index < trials.length; index++) { 
         trial = trials[index]
-        console.log("trial: " + trial)
         var id = trial.id
+        var name = trial.name
         var desc = trial.desc
         var location = trial.location
         var startDate = trial.start
@@ -124,7 +161,7 @@ function loadTrials(trialList) {
         var part_needed = trial.partNeeded
         var part_confirmed = trial.partConfirmed
         var criteria = trial.crit
-        loadTrial(id, name, desc, location, startDate, endDate, pay, IRB, part_needed, part_confirmed)
+        loadTrial(id, name, desc, location, startDate, endDate, pay, IRB, part_needed, part_confirmed, start)
     } 
   }
 }
@@ -139,9 +176,26 @@ $(document).ready(function(){
       dataType : "json",
       contentType: "application/json; charset=utf-8",
       success: function(trials){
-        loadTrials(trials)
+        $.ajax({
+          type: "GET",
+          url: "/edit-res-form",                
+          dataType : "json",
+          contentType: "application/json; charset=utf-8",
+          success: function(result){
+            $("#name").html(result.first)
+            loadTrials(trials, result.location)
+          },
+          error: function(request, status, error){
+              newAlert("Oh no!", "Something went wrong. Please contact clinicaltriall@aol.com for more information.", "/")
+              console.log("Error");
+              console.log(request)
+              console.log(status)
+              console.log(error)
+          }
+        });
       },
       error: function(request, status, error){
+          newAlert("Oh no!", "Something went wrong. Please contact clinicaltriall@aol.com for more information.", "/")
           console.log("Error");
           console.log(request)
           console.log(status)
