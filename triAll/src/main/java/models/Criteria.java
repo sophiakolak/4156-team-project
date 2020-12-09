@@ -1,7 +1,8 @@
 package models;
 
 import com.google.gson.JsonArray;
-import units.SqliteDB;
+
+import database.SqliteDB;
 
 public class Criteria {
   private int id;

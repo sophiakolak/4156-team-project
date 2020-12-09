@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import controllers.TriAll;
+import database.SqliteDB;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import models.Criteria;
@@ -23,7 +25,6 @@ import org.json.CDL;
 import org.json.JSONArray;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import units.SqliteDB;
 
 
 public class TriAllTest {

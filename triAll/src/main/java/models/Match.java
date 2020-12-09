@@ -1,6 +1,6 @@
 package models;
 
-import units.SqliteDB;
+import database.SqliteDB;
 
 public class Match {
 

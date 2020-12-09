@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import controllers.TriAll;
+import database.SqliteDB;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import models.Criteria;
@@ -15,8 +17,6 @@ import models.Trial;
 import models.User;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import units.SqliteDB;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;

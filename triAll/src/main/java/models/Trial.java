@@ -1,9 +1,11 @@
 package models;
 
 import com.google.gson.JsonArray;
+
+import database.SqliteDB;
+
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import units.SqliteDB;
 
 public class Trial {
 

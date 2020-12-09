@@ -2,7 +2,8 @@ package models;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
-import units.SqliteDB;
+
+import database.SqliteDB;
 
 public class Notification {
   private String time;

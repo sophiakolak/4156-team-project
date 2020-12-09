@@ -1,6 +1,9 @@
 package models;
 
 import com.google.gson.JsonArray;
+
+import database.SqliteDB;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
@@ -8,7 +11,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.regex.Pattern;
-import units.SqliteDB;
 
 public class User {
   private int id;
