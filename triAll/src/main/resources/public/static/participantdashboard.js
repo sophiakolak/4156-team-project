@@ -423,9 +423,9 @@ $(document).ready(function(){
           contentType: "application/json; charset=utf-8",
           success: function(result){
             $("#name").html(result.first)
-            loadTrialPending("3", "trial name", "dfasjklfads", "Ghent, NY", "2020-11-11", "2020-12-11", "10", "4444", "New York, NY", "3.6548")
-            loadTrialPending("4", "trial123 name", "dfasjklfads", "Ghent, NY", "2020-11-11", "2020-12-11", "10", "4444", "New York, NY", "5")
-            // loadTrials(trials, result.location)
+            // loadTrialPending("3", "trial name", "dfasjklfads", "Ghent, NY", "2020-11-11", "2020-12-11", "10", "4444", "New York, NY", "3.6548")
+            // loadTrialPending("4", "trial123 name", "dfasjklfads", "Ghent, NY", "2020-11-11", "2020-12-11", "10", "4444", "New York, NY", "5")
+            loadTrials(trials, result.location)
           },
           error: function(request, status, error){
               newAlert("Oh no!", "Something went wrong. Please contact clinicaltriall@aol.com for more information.", "/")
