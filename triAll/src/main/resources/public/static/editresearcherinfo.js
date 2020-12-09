@@ -130,7 +130,7 @@ function save_changes(form_data){
       contentType: "application/json; charset=utf-8",
       data : JSON.stringify(form_data),
       success: function(result){
-          newAlert("Success", "You have successfully saved your changes", result)
+          newAlert("Success", "You have successfully saved your changes.", result)
       },
       error: function(request, status, error){
           newAlert("Oh no!", "Something went wrong when saving your changes. Please contact clinicaltriall@aol.com for more information.", "/researcherdashboard.html")
