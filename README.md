@@ -25,7 +25,7 @@ How to run the application
 
 ```
 2) Run TriAll.java (in triAll/src/main/java/controllers)
-  a) Right clicking on file
+  a) Right click on file
   b) Click Run As --> Java Application
 ```
 
