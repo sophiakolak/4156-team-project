@@ -212,6 +212,7 @@
                    <input class="form-control" type="date" name="enddate"/>
                    <span class="Error"></span>
                 </div>
+                <br>
                 <div class="form-group">
                   <input class="form-control" type="number" name="pay"required placeholder = "Hourly Pay (USD per Hour)"/>
                   <span class="Error"></span>
@@ -231,11 +232,11 @@
                     <label><input type="radio" name="gender"  value="Other" /> Other</label>
                 </div>
                 <div class="form-group">
-                    <input class="form-control" type="number" name="min_age" required placeholder="Minimum Age of Participants (>18)"/>
+                    <input class="form-control" type="number" name="min_age" required placeholder="Minimum Age of Participants (18+)"/>
                 </div>
                 <div class="form-group">
                     <input class="form-control" type="number" name="max_age" required placeholder="Maximum Age of Participants"/>
-                </div>
+                </div><br>
                             <div class="form-group participant">
                 <label><input id = "metricButton" type="radio" name="metric_or_imperial" required value="Centimeters" /> Metric</label>
                 <label><input id = "imperialButton" type="radio" name="metric_or_imperial" required value="Feet" checked /> Imperial</label><br>
@@ -248,7 +249,7 @@
                     <input id = "centimetersMin" class="form-control metric" type="number" min="30" max = "250" name="centimeters" placeholder="Centimeters"/>
                 </div> 
                 <input id = "heightInInchesMin" class="form-control" type="hidden" name="heightInInchesMin"/>
-                <span class="Error"></span>
+                <span class="Error"></span><br>
                 <label>Maximum Height of Participants</label>
                 <div class = "imperial">
                     <input id = "feetMax" class="form-control imperial" type="number" min="1" max = "8" name="feet" placeholder="Feet"/>
@@ -523,7 +524,8 @@
             </fieldset>
             </div>
             <div class = "row">
-                    Which of the following conditions are important for your participants to have or not have? <br><br>
+                    Which of the following conditions are important for your participants to have or not have? <br> 
+                    If the condition doesn't matter for your trial, please select "Neither".<br>
                   </div>
             <div class="form-group participant row">
 
