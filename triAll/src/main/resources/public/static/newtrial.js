@@ -51,7 +51,6 @@ $(document).ready(function(){
 
     $('#startDate').change(function(){
       var date = new Date($('#startDate').val());
-      alert(date.toJSON().split('T')[0])
       $('#endDate').attr('min', date.toJSON().split('T')[0])
     });
 

@@ -126,15 +126,16 @@
                      <input id = "lon" type="hidden" name="lon">
                 </div>
                 <div class="form-group participant row">
-                    <div class = "col">
-                    <input class="form-control participant" type="number" name="age" min="18" max = "120" placeholder="Age" required />
-                    <span class="Error"></span> </div>
+                    
                     <div class = "col-md-1"></div>
                     <div class = "col">
                     <label>Gender: &nbsp</label>
                     <label><input type="radio" class="participant" name="gender" value="Male" required/> Male</label>
                     <label><input type="radio" class="participant" name="gender" value="Female" required /> Female</label>
                     <label><input type="radio" class="participant" name="gender" value="Other" required/> Other</label>
+                    <span class="Error"></span> </div>
+                    <div class = "col">
+                    <input class="form-control participant" type="number" name="age" min="18" max = "120" placeholder="Age" required />
                     <span class="Error"></span> </div>
                 </div>
                 <br>
@@ -144,14 +145,14 @@
                     <span class = "imperial">
                         <div class = "row">
                             <div class = "col-md-1"><label>Height: </label></div>
-                            <div class = "col-md-2"><input id = "feet" class="form-control imperial" type="number" min="1" max = "8" name="feet" required placeholder="Feet"/></div>
-                            <div class = "col-md-1"><input id = "inches" class="form-control imperial" type="number" min="0" max = "12" name="inches" required placeholder="Inches"/> </div>
+                            <div class = "col-md-2"><input id = "feet" class="form-control imperial participant" type="number" min="1" max = "8" name="feet" required placeholder="Feet"/></div>
+                            <div class = "col-md-1"><input id = "inches" class="form-control imperial participant" type="number" min="0" max = "12" name="inches" required placeholder="Inches"/> </div>
                         </div>
                     </span>
                     <span class = "metric">
                         <div class = "row">
                             <div class = "col-md-1"><label>Height: </label></div>
-                            <div class = "col-md-3"><input id = "centimeters" class="form-control metric" type="number" name="centimeters" min="30" max = "250" placeholder="Centimeters"/></div>
+                            <div class = "col-md-3"><input id = "centimeters" class="form-control metric participant" type="number" name="centimeters" min="30" max = "250" placeholder="Centimeters"/></div>
                         </div>
                     </span> 
                     <input id = "heightInInches" class="form-control participant" type="hidden" name="heightInInches"/>
@@ -160,12 +161,12 @@
                 <div class="form-group participant">
                     <label>Weight: </label>
                     <div class = "imperial">
-                        <input id = "pounds" class="form-control imperial" type="number" name="pounds" min="10" max = "1000" required placeholder="Pounds"/>
+                        <input id = "pounds" class="form-control imperial participant" type="number" name="pounds" min="10" max = "1000" required placeholder="Pounds"/>
                     </div>
                     <div class = "metric">
-                        <input id = "kilograms" class="form-control metric" type="number" name="kilograms" min="5" max = "500" placeholder="Kilograms"/>
+                        <input id = "kilograms" class="form-control metric participant" type="number" name="kilograms" min="5" max = "500" placeholder="Kilograms"/>
                     </div> 
-                    <input id = "weightInLbs" class="form-control participant" type="hidden" name="weightInLbs"/>
+                    <input id = "weightInLbs" class="form-control" type="hidden" name="weightInLbs"/>
                     <span class="Error"></span>
                 </div>
                 <div class = "form-group participant row">
@@ -412,7 +413,7 @@
                 </fieldset>
                 </div>
                 </div>
-               <div class="form-group participant row">
+<!--                <div class="form-group participant row">
                     Have you had any of the following? Select "Yes" or "No" for each condition. <br><br>
                     <div class = "col-md-6">
 
@@ -616,7 +617,7 @@
                             </div><span class="Error"></span>
                         </div>                       
                     </div>
-               </div>
+               </div> -->
                 <div class="form-group">
                     <input id = "saveChanges" class="btn btn-primary btn-block" type="submit" value="Submit"/>
                 </div>
