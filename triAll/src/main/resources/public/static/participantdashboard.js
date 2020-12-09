@@ -91,7 +91,7 @@ function sortByDistance(param){
    }  
 }
 
-function loadTrialPending(id, name, desc, location, startDate, endDate, pay, IRB, start, distance){
+function loadTrialPending(id, name, desc, loc, startDate, endDate, pay, IRB, start, distance){
     var dist = parseFloat(distance)
     var distRounded = Math.round(dist * 10) / 10;
     var monthNamesLong = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
@@ -114,7 +114,7 @@ function loadTrialPending(id, name, desc, location, startDate, endDate, pay, IRB
     col1.append('<h5>miles away</h5>')
     var col2 = $('<div class="col-6">')
     col2.append('<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse'+id+'" aria-expanded="false" aria-controls="collapse'+id+'"><h2 class="text-uppercase cardHead"><strong>'+name+'</strong></h2></button>')
-    col2.append('<h5> &nbsp &nbsp' + location + '</h5>')
+    col2.append('<h5> &nbsp &nbsp' + loc + '</h5>')
     cardHeader.append(col1, col2)
     card.append(cardHeader)
     var collapsableDiv = $('<div id="collapse'+id+'" class="collapse" aria-labelledby="heading'+id+'" data-parent="#trialAccordianPending">')
@@ -136,9 +136,9 @@ function loadTrialPending(id, name, desc, location, startDate, endDate, pay, IRB
     rejectBtn.append("Reject")
     rejectBtn.attr('id', id)
 
-    c1.append(acceptBtn, "&nbsp", rejectBtn)
+    c1.append(acceptBtn, " ", rejectBtn)
     
-    c2.append('<iframe width="650" height="400" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/directions?key=AIzaSyAYSwqY4yLII5q5a-fXGTdWy9uEBdBWPRo&origin='+ start +'&destination='+location+'" allowfullscreen></iframe>')
+    c2.append('<iframe width="650" height="400" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/directions?key=AIzaSyAYSwqY4yLII5q5a-fXGTdWy9uEBdBWPRo&origin='+ start +'&destination='+loc+'" allowfullscreen></iframe>')
     cardBody.append(c1, c2)
     collapsableDiv.append(cardBody)
     card.append(collapsableDiv)
@@ -146,7 +146,7 @@ function loadTrialPending(id, name, desc, location, startDate, endDate, pay, IRB
 
 }
 
-function loadTrialUpcoming(id, name, desc, location, startDate, endDate, pay, IRB, start){
+function loadTrialUpcoming(id, name, desc, loc, startDate, endDate, pay, IRB, start){
     var monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
     var monthNamesLong = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     dateParts = startDate.split('-')
@@ -168,7 +168,7 @@ function loadTrialUpcoming(id, name, desc, location, startDate, endDate, pay, IR
     col1.append('<h5>'+month+'&nbsp '+ year +'</h5>')
     var col2 = $('<div class="col-6">')
     col2.append('<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse'+id+'" aria-expanded="false" aria-controls="collapse'+id+'"><h2 class="text-uppercase cardHead"><strong>'+name+'</strong></h2></button>')
-    col2.append('<h5> &nbsp &nbsp' + location + '</h5>')
+    col2.append('<h5> &nbsp &nbsp' + loc + '</h5>')
     cardHeader.append(col1, col2)
     card.append(cardHeader)
     var collapsableDiv = $('<div id="collapse'+id+'" class="collapse" aria-labelledby="heading'+id+'" data-parent="#trialAccordianUpcoming">')
@@ -191,7 +191,7 @@ function loadTrialUpcoming(id, name, desc, location, startDate, endDate, pay, IR
 
     c1.append(acceptBtn, rejectBtn)
     
-    c2.append('<iframe width="650" height="400" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/directions?key=AIzaSyAYSwqY4yLII5q5a-fXGTdWy9uEBdBWPRo&origin='+ start +'&destination='+location+'" allowfullscreen></iframe>')
+    c2.append('<iframe width="650" height="400" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/directions?key=AIzaSyAYSwqY4yLII5q5a-fXGTdWy9uEBdBWPRo&origin='+ start +'&destination='+loc+'" allowfullscreen></iframe>')
     cardBody.append(c1, c2)
     collapsableDiv.append(cardBody)
     card.append(collapsableDiv)
@@ -267,7 +267,7 @@ function loadTrials(matchList, start) {
 
         var criteria = trial.crit
         if (status == "accepted") {
-          loadTrialUpcoming(id, name, desc, location, startDate, endDate, pay, IRB, start)
+          loadTrialUpcoming(id, name, desc, loc, startDate, endDate, pay, IRB, start)
           nAccepted++
         }
         else if (status == "rejected"){
@@ -278,6 +278,9 @@ function loadTrials(matchList, start) {
           nPending++
         }
         
+    }
+    if (nAccepted == 0) {
+      noUpcomingTrials()
     }
     if (nPending == 0) {
       noPendingTrials()
@@ -299,7 +302,7 @@ function loadTrials(matchList, start) {
         var pay = trial.pay
         var IRB = trial.irb
         var criteria = trial.crit
-        loadTrialPending(id, name, desc, location, startDate, endDate, pay, IRB, start, distance)
+        loadTrialPending(id, name, desc, loc, startDate, endDate, pay, IRB, start, distance)
       }
     }
   }
@@ -333,7 +336,7 @@ function rejectMatch(trialId){
         contentType: "application/json; charset=utf-8",
         data : JSON.stringify(trialId),
         success: function(result){
-          newAlert("Success!", "You have rejected a trial match. This trial will be removed from your pending matches.", "/participantdashboard.html")
+          newAlert("Success!", "You have rejected a trial match. This trial will be removed from your pending matches the next time you log in.", "/participantdashboard.html")
         },
         error: function(request, status, error){
             newAlert("Oh no!", "Something went wrong. Please contact clinicaltriall@aol.com for more information.", "/participantdashboard.html")
