@@ -53,11 +53,15 @@ $(document).ready(function(){
        else if($(this).attr('id') == 'metricButton') {
             $('.imperial').hide();
             $('.metric').show()
+            $('.metric').required = true;
+            $('.imperial').removeAttr('required')
 
        }
        else if($(this).attr('id') == 'imperialButton') {
             $('.metric').hide(); 
-            $('.imperial').show();      
+            $('.imperial').show();
+            $('.imperial').required = true;
+            $('.metric').removeAttr('required')      
        }
    });
     $("#saveChanges").submit(function( event ) {

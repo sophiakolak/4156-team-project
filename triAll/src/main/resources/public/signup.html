@@ -144,8 +144,8 @@
                     <span class = "imperial">
                         <div class = "row">
                             <div class = "col-md-1"><label>Height: </label></div>
-                            <div class = "col-md-2"><input id = "feet" class="form-control imperial" type="number" min="1" max = "8" name="feet" placeholder="Feet"/></div>
-                            <div class = "col-md-1"><input id = "inches" class="form-control imperial" type="number" min="0" max = "12" name="inches" placeholder="Inches"/> </div>
+                            <div class = "col-md-2"><input id = "feet" class="form-control imperial" type="number" min="1" max = "8" name="feet" required placeholder="Feet"/></div>
+                            <div class = "col-md-1"><input id = "inches" class="form-control imperial" type="number" min="0" max = "12" name="inches" required placeholder="Inches"/> </div>
                         </div>
                     </span>
                     <span class = "metric">
@@ -160,7 +160,7 @@
                 <div class="form-group participant">
                     <label>Weight: </label>
                     <div class = "imperial">
-                        <input id = "pounds" class="form-control imperial" type="number" name="pounds" min="10" max = "1000" placeholder="Pounds"/>
+                        <input id = "pounds" class="form-control imperial" type="number" name="pounds" min="10" max = "1000" required placeholder="Pounds"/>
                     </div>
                     <div class = "metric">
                         <input id = "kilograms" class="form-control metric" type="number" name="kilograms" min="5" max = "500" placeholder="Kilograms"/>

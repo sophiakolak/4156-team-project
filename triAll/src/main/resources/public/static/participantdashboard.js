@@ -24,7 +24,7 @@ function signOut() {
           newAlert("Success!", "You have succesfully signed out of TriAll.", result)
         },
         error: function(request, status, error){
-            newAlert("Oh no!", "Something went wrong. Please contact clinicaltriall@aol.com for more information.", "/participantdashboard.html")
+            newAlert("Oh no!", "Something went wrong. Please contact clinicaltriall@aol.com for more information.", "/")
             console.log("Error");
             console.log(request)
             console.log(status)
@@ -44,8 +44,10 @@ function newAlert(title, text, redirect){
   var alert5 = $('<div class="modal-body">')
   alert5.append(text)
   var alert6 = $('<div class="modal-footer">')
-  var alert7 = ('<button type="button" onclick=\"location.href=\''+redirect+'\'\" class="btn btn-primary">Continue</button>')
-  // alert7.append("Continue")
+  if (redirect == "/participantdashboard.html")
+    var alert7 = ('<button type="button" onclick=\"location.reload();\" class="btn btn-primary">Continue</button>')
+  else
+    var alert7 = ('<button type="button" onclick=\"location.href=\''+redirect+'\'\" class="btn btn-primary">Continue</button>')
   alert6.append(alert7)
   alert3.append(alert4)
   alert2.append(alert3, alert5, alert6)
@@ -201,11 +203,9 @@ function noUpcomingTrials() {
     // update upcoming trials view
     var card = $("<div class = 'card_container'>")
     var cardHeader = $('<div class="card-header" id="headingOne">')
-    var h2 = $('<h2 class="mb-0">')
     var expandBtn = $('<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">')
-    expandBtn.append("You have no upcoming trials. Get more matches by updating your information.")
-    h2.append(expandBtn)
-    cardHeader.append(h2)
+    expandBtn.append('<h5 class="cardHead"> You have no upcoming trials. Get more matches by updating your information.</h5>')
+    cardHeader.append(expandBtn)
     card.append(cardHeader)
     var collapsableDiv = $('<div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#trialAccordianUpcoming">')
     cardBody = $('<div class="card-body">')
@@ -221,74 +221,10 @@ function noUpcomingTrials() {
 function noPendingTrials() {
     // update pending trials view
     var card = $("<div class = 'card_container'>")
-    var cardHeader = $('<div class="card-header" id="headingOne">')
-    var h2 = $('<h2 class="mb-0">')
-    var expandBtn = $('<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">')
-    expandBtn.append("You have no pending trials. Get more matches by updating your information.")
-    h2.append(expandBtn)
-    cardHeader.append(h2)
-    card.append(cardHeader)
-    var collapsableDiv = $('<div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#trialAccordianPending">')
-    cardBody = $('<div class="card-body">')
-    cardBody.append("What are you waiting for? Update your information now. <br><br>")
-    var editBtn = $('<button type="button" class="btn btn-primary" onclick="window.location.href=\'editparticipantinfo.html\'">')
-    editBtn.append("Edit Information")
-    cardBody.append(editBtn)
-    collapsableDiv.append(cardBody)
-    card.append(collapsableDiv)
-    $("#trialAccordianPending").append(card)
-}
-
-function noUpcomingTrials() {
-      // update upcoming trials view
-    var card = $("<div class = 'card_container'>")
-    var cardHeader = $('<div class="card-header" id="headingOne">')
-    var h2 = $('<h2 class="mb-0">')
-    var expandBtn = $('<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">')
-    expandBtn.append("You have no upcoming trials. Scroll down to see your pending matches!")
-    h2.append(expandBtn)
-    cardHeader.append(h2)
-    card.append(cardHeader)
-    var collapsableDiv = $('<div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#trialAccordianUpcoming">')
-    cardBody = $('<div class="card-body">')
-    cardBody.append("What are you waiting for? Update your information now. <br><br>")
-    var editBtn = $('<button type="button" class="btn btn-primary" onclick="window.location.href=\'editparticipantinfo.html\'">')
-    editBtn.append("Edit Information")
-    cardBody.append(editBtn)
-    collapsableDiv.append(cardBody)
-    card.append(collapsableDiv)
-    $("#trialAccordianUpcoming").append(card)
-}
-
-// Load html for when user has no matches 
-function noTrials() {
-    // update upcoming trials view
-    var card = $("<div class = 'card_container'>")
-    var cardHeader = $('<div class="card-header" id="headingOne">')
-    var h2 = $('<h2 class="mb-0">')
-    var expandBtn = $('<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">')
-    expandBtn.append("You have no upcoming trials. Get more matches by updating your information.")
-    h2.append(expandBtn)
-    cardHeader.append(h2)
-    card.append(cardHeader)
-    var collapsableDiv = $('<div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#trialAccordianUpcoming">')
-    cardBody = $('<div class="card-body">')
-    cardBody.append("What are you waiting for? Update your information now. <br><br>")
-    var editBtn = $('<button type="button" class="btn btn-primary" onclick="window.location.href=\'editparticipantinfo.html\'">')
-    editBtn.append("Edit Information")
-    cardBody.append(editBtn)
-    collapsableDiv.append(cardBody)
-    card.append(collapsableDiv)
-    $("#trialAccordianUpcoming").append(card)
-
-    // update pending trials view
-    var card = $("<div class = 'card_container'>")
-    var cardHeader = $('<div class="card-header" id="headingOne">')
-    var h2 = $('<h2 class="mb-0">')
+    var cardHeader = $('<div class="card-header" id="headingTwo">')
     var expandBtn = $('<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">')
-    expandBtn.append("You have no pending trials. Get more matches by updating your information.")
-    h2.append(expandBtn)
-    cardHeader.append(h2)
+    expandBtn.append('<h5 class="cardHead"> You have no pending trials. Get more matches by updating your information.</h5>')
+    cardHeader.append(expandBtn)
     card.append(cardHeader)
     var collapsableDiv = $('<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#trialAccordianPending">')
     cardBody = $('<div class="card-body">')
@@ -301,11 +237,14 @@ function noTrials() {
     $("#trialAccordianPending").append(card)
 }
 
+
+
 // function to dynamically load in trials
 function loadTrials(matchList, start) {
 
   if (matchList == "") {
-    noTrials()
+    noUpcomingTrials()
+    noPendingTrials()
   } else {
     var matches = matchList.sort(sortByDate("start"))
     matches

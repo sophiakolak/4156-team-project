@@ -204,75 +204,74 @@
                 </div>
                 <div class="form-group">
                   <label>Start Date:</label>
-                   <input class="form-control" type="date" name="startdate"/>
+                   <input id = "startDate" class="form-control" type="date" name="startdate" required />
                    <span class="Error"></span>
                 </div>
                 <div class="form-group">
                   <label>End Date:</label>
-                   <input class="form-control" type="date" name="enddate"/>
+                   <input id = "endDate" class="form-control" type="date" name="enddate" required />
                    <span class="Error"></span>
                 </div>
                 <br>
                 <div class="form-group">
-                  <input class="form-control" type="number" name="pay"required placeholder = "Hourly Pay (USD per Hour)"/>
+                  <input class="form-control" type="number" name="pay" min = "1" required placeholder = "Hourly Pay (USD per Hour)"/>
                   <span class="Error"></span>
                 </div>
                 <div class="form-group">
-                  <input class="form-control" type="number" name="irb" required placeholder = "IRB Number (4 or 5 digit number)"/>
+                  <input class="form-control" type="number" name="irb" minlength = "4" maxlength = "5" required placeholder = "IRB Number (4 or 5 digit number)"/>
                   <span class="Error"></span>
                 </div>
                 <div class="form-group">
-                  <input class="form-control" type="number" name="numberofparticipants" required placeholder="Number of Participants Needed"/>
+                  <input class="form-control" type="number" name="numberofparticipants" min = "1" max = "10000" required placeholder="Number of Participants Needed"/>
                   <span class="Error"></span>
                 </div> <br><br>
                 <div class="form-group">
                     <label>Participant Gender:</label><br/>
-                    <label><input type="radio" name="gender"  value="Male"/> Male</label>
+                    <label><input type="radio" name="gender"  value="Male" required/> Male</label>
                     <label><input type="radio" name="gender"  value="Female" /> Female</label>
                     <label><input type="radio" name="gender"  value="Other" /> Other</label>
                 </div>
                 <div class="form-group">
-                    <input class="form-control" type="number" name="min_age" required placeholder="Minimum Age of Participants (18+)"/>
+                    <input class="form-control" type="number" name="min_age" min="18" max = "120" required placeholder="Minimum Age of Participants (18+)"/>
                 </div>
                 <div class="form-group">
-                    <input class="form-control" type="number" name="max_age" required placeholder="Maximum Age of Participants"/>
+                    <input class="form-control" type="number" name="max_age" min="18" max = "120" required placeholder="Maximum Age of Participants"/>
                 </div><br>
                             <div class="form-group participant">
                 <label><input id = "metricButton" type="radio" name="metric_or_imperial" required value="Centimeters" /> Metric</label>
                 <label><input id = "imperialButton" type="radio" name="metric_or_imperial" required value="Feet" checked /> Imperial</label><br>
-                <label>Minimum Height of Participants</label>
+                <label>Minimum Height of Participants:</label>
                 <div class = "imperial">
-                    <input id = "feetMin" class="form-control imperial" type="number" min="1" max = "8" name="feet" placeholder="Feet"/>
-                    <input id = "inchesMin" class="form-control imperial" type="number" min="0" max = "12" name="inches" placeholder="Inches"/>
+                    <input id = "feetMin" class="form-control imperial" type="number" min="1" max = "8" name="feet" required placeholder="Feet"/>
+                    <input id = "inchesMin" class="form-control imperial" type="number" min="0" max = "12" name="inches" required placeholder="Inches"/>
                 </div>
                 <div class = "metric">
                     <input id = "centimetersMin" class="form-control metric" type="number" min="30" max = "250" name="centimeters" placeholder="Centimeters"/>
                 </div> 
                 <input id = "heightInInchesMin" class="form-control" type="hidden" name="heightInInchesMin"/>
                 <span class="Error"></span><br>
-                <label>Maximum Height of Participants</label>
+                <label>Maximum Height of Participants:</label>
                 <div class = "imperial">
-                    <input id = "feetMax" class="form-control imperial" type="number" min="1" max = "8" name="feet" placeholder="Feet"/>
-                    <input id = "inchesMax" class="form-control imperial" type="number" min="0" max = "12" name="inches" placeholder="Inches"/>
+                    <input id = "feetMax" class="form-control imperial" type="number" min="1" max = "8" name="feet" required placeholder="Feet"/>
+                    <input id = "inchesMax" class="form-control imperial" type="number" min="0" max = "12" name="inches" required placeholder="Inches"/>
                 </div>
                 <div class = "metric">
-                    <label>Centimeters:</label>
                     <input id = "centimetersMax" class="form-control metric" type="number" name="centimeters" min="30" max = "250" placeholder="Centimeters"/>
                 </div> 
                 <input id = "heightInInchesMax" class="form-control" type="hidden" name="heightInInchesMax"/>
                 <span class="Error"></span>
             </div>
             <div class="form-group participant">
-                <label>Minimum Weight of Participants</label>
+                <label>Minimum Weight of Participants:</label>
                 <div class = "imperial">
-                    <input id = "poundsMin" class="form-control imperial" type="number" min="10" max = "1000" name="pounds" placeholder="Pounds"/>
+                    <input id = "poundsMin" class="form-control imperial" type="number" min="10" max = "1000" name="pounds" required placeholder="Pounds"/>
                 </div>
                 <div class = "metric">
                     <input id = "kilogramsMin" class="form-control metric" type="number" min="5" max = "500" name="kilograms" placeholder="Kilograms"/>
                 </div> 
                 <input id = "weightInLbsMin" class="form-control" type="hidden" name="weightInLbs"/>
                 <span class="Error"></span>
-                <label>Maximum Weight of Participants</label>
+                <label>Maximum Weight of Participants:</label>
                 <div class = "imperial">
                     <input id = "poundsMax" class="form-control imperial" type="number" name="pounds" placeholder="Pounds"/>
                 </div>
@@ -285,7 +284,7 @@
             <div class = "form-group participant">
             <fieldset>
               <label>Ethnicity of Participants</label>
-              <select class="form-control dropdown" id="ethnicity" name="ethnicity">
+              <select class="form-control dropdown" id="ethnicity" name="ethnicity" required >
                 <option value="" selected="selected" disabled="disabled">-- select one --</option>
                 <optgroup label="White">
                   <option value="White English">English</option>
@@ -326,7 +325,7 @@
             </fieldset>
             <fieldset>
               <label>Nationality of Participants</label>
-              <select class="form-control dropdown" id="nationality" name="nationality">
+              <select class="form-control dropdown" id="nationality" name="nationality" required >
                 <option value="" selected="selected" disabled="disabled">-- select one --</option>
                 <option value="afghan">Afghan</option>
                 <option value="albanian">Albanian</option>
