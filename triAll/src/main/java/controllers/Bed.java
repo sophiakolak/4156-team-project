@@ -1,5 +1,7 @@
 package controllers;
 
+import java.sql.PreparedStatement;
+
 import com.google.gson.Gson;
 import models.*;
 import units.SqliteDB;
@@ -21,6 +23,15 @@ public class Bed {
     }
     System.out.println(gson.toJson(u.sortedMatches()));*/
     
-    System.out.println(java.time.LocalTime.now().toString());
+    SqliteDB db = new SqliteDB("triall");
+    String command = "UPDATE trial_matches SET status = 'pending' WHERE trial_ID = ?";
+    try (
+        PreparedStatement st = db.getConn().prepareStatement(command);
+    ) {
+      st.setInt(1, 1);
+      st.executeUpdate();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 }

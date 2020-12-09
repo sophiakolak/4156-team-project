@@ -95,6 +95,7 @@ public class Trial {
     partNeeded = form.get(9).getAsJsonObject().get("value").getAsInt();
     partConfirmed = 0;
     resID = parent;
+    System.out.println(resID);
     id = db.insertTrial(this);
     crit = new Criteria(db, form, id, "trial_criteria");
     System.out.println(crit);

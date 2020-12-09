@@ -273,9 +273,11 @@ public class SqliteDB {
         u = new User(rs.getInt(1), rs.getDouble(2), rs.getDouble(3), rs.getString(4), 
             rs.getString(5), rs.getString(6), rs.getString(7), true);
       } catch (Exception e) {
+        e.printStackTrace();
         return u;
       }
     } catch (Exception e) {
+      e.printStackTrace();
       return u;
     } 
     return u;
@@ -482,6 +484,7 @@ public class SqliteDB {
             .getString(4), rs.getDouble(5), rs.getDouble(6), rs
             .getString(7), rs.getString(8), rs.getString(9), rs
             .getDouble(10), rs.getInt(11), rs.getInt(12), rs.getInt(13), c);
+        t.setRes(rs.getInt(2));
       } catch (Exception e) {
         e.printStackTrace();
         return t;
