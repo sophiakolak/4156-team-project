@@ -874,11 +874,13 @@ public class SqliteDB {
           ResultSet rs = st.executeQuery();
       ) {
         rs.next();
-        n = new Notification(this, rs.getInt(2), rs.getString("time"), rs.getString("message"));
+        n = new Notification(this, rs.getInt(2), rs.getString("time_sent"), rs.getString("message"));
       } catch (Exception e) {
+        e.printStackTrace();
         return n;
       }
     } catch (Exception e) {
+      e.printStackTrace();
       return n;
     }
     return n;

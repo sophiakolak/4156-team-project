@@ -75,7 +75,7 @@ function noMessages(){
 }
 
 function loadMessage(msg){
-  var time = msg.time
+  var time = msg.content
   var content = msg.message
   var card = $("<div class = 'card_container'>")
   var cardHeader = $('<div class="card-header" id="headingOne">')

@@ -240,7 +240,7 @@ function noPendingTrials() {
 
 
 // function to dynamically load in trials
-function loadTrials(matchList, start) {
+function loadTrials(matchList, startLoc) {
 
   if (matchList == "") {
     noUpcomingTrials()
@@ -267,7 +267,7 @@ function loadTrials(matchList, start) {
 
         var criteria = trial.crit
         if (status == "accepted") {
-          loadTrialUpcoming(id, name, desc, loc, startDate, endDate, pay, IRB, start)
+          loadTrialUpcoming(id, name, desc, loc, startDate, endDate, pay, IRB, startLoc)
           nAccepted++
         }
         else if (status == "rejected"){
@@ -302,7 +302,7 @@ function loadTrials(matchList, start) {
         var pay = trial.pay
         var IRB = trial.irb
         var criteria = trial.crit
-        loadTrialPending(id, name, desc, loc, startDate, endDate, pay, IRB, start, distance)
+        loadTrialPending(id, name, desc, loc, startDate, endDate, pay, IRB, startLoc, distance)
       }
     }
   }
