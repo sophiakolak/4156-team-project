@@ -75,13 +75,16 @@ function noMessages(){
 }
 
 function loadMessage(msg){
-  var time = msg.content
+  var time = msg.time
+  time_parts = time.split(':')
+  hour = time_parts[0]
+  minute = time_parts[1]
   var content = msg.message
   var card = $("<div class = 'card_container'>")
   var cardHeader = $('<div class="card-header" id="headingOne">')
   var h2 = $('<h2 class="mb-0">')
   var expandBtn = $('<button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">')
-  expandBtn.append(time)
+  expandBtn.append("Message sent at " +hour +":"+minute)
   h2.append(expandBtn)
   cardHeader.append(h2)
   card.append(cardHeader)
