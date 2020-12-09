@@ -39,6 +39,14 @@ public class Notification {
     return message;
   }
   
+  public void store(SqliteDB db, int trialID, int parent, boolean toRes) {
+    if (toRes) {
+      db.insertNotification(trialID, parent, 0, time, message);
+    } else {
+      db.insertNotification(trialID, 0, parent, time, message);
+    }
+  }
+  
   /**
    * Checks whether the given time string is valid.
    * @param time Time string.

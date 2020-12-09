@@ -865,7 +865,7 @@ public class SqliteDB {
    */
   public Notification loadNotification(int id) {
     Notification n = null;
-    String command = "SELECT * FROM participant_data WHERE ID = ?;";
+    String command = "SELECT * FROM email WHERE ID = ?;";
     try (
         PreparedStatement st = conn.prepareStatement(command);
     ) {

@@ -47,7 +47,10 @@ public class Match {
     id = db.insertMatch(u, t);
     status = "pending";
     email = u.getEmail();
-    EmailService.newMatchSend(t, email);
+    String message = EmailService.newMatchSend(t, email);
+    String time = java.time.LocalTime.now().toString();
+    Notification n = new Notification(db, t.getID(), time, message);
+    n.store(db, t.getID(), u.getID(), false);
   }
   
   /**
@@ -61,7 +64,11 @@ public class Match {
     }
     status = "accept";
     db.acceptMatch(trial.getID());
-    EmailService.acceptMatchSend(trial, db.loadRes(trial.getRes()).getEmail(), email);
+    String message = EmailService.acceptMatchSend(trial, db.loadRes(trial.getRes())
+        .getEmail(), email);
+    String time = java.time.LocalTime.now().toString();
+    Notification n = new Notification(db, trial.getID(), time, message);
+    n.store(db, trial.getID(), trial.getRes(), true);
     return true;
   }
   
