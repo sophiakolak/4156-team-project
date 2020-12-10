@@ -79,13 +79,13 @@ public class Criteria {
    * @param parent Row number of the participant or trial owning this object.
    */
   private void makeData(SqliteDB db, JsonArray form, int parent) {
-    minAge = form.get(8).getAsJsonObject().get("value").getAsInt();
+    minAge = form.get(7).getAsJsonObject().get("value").getAsInt();
     maxAge = minAge;
     minHeight = form.get(13).getAsJsonObject().get("value").getAsInt();
     maxHeight = minHeight;
     minWeight = form.get(16).getAsJsonObject().get("value").getAsInt();
     maxWeight = minWeight;
-    gender = form.get(7).getAsJsonObject().get("value").getAsString();
+    gender = form.get(8).getAsJsonObject().get("value").getAsString();
     race = form.get(17).getAsJsonObject().get("value").getAsString();
     nationality = form.get(18).getAsJsonObject().get("value").getAsString();
     extID = parent;

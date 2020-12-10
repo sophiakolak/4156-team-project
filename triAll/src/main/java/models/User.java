@@ -202,6 +202,10 @@ public class User {
     }
   }
   
+  public LinkedList<Match> getMatches() {
+    return this.matches;
+  }
+  
   /**
    * Updates one of the user's trials.
    * @param trialID Row number of the trial.
@@ -294,7 +298,7 @@ public class User {
    * @param db Database.
    * @param email Email address of the researcher.
    */
-  private void retrieveRes(SqliteDB db, String email) {
+  public void retrieveRes(SqliteDB db, String email) {
     restart(db.loadRes(email));
     for (int trial : db.trialSet(id)) {
       Trial t = db.loadTrial(trial);
@@ -423,7 +427,7 @@ public class User {
    * Checks for new matches.
    * @param db Database to check.
    */
-  private void checkMatches(SqliteDB db) {
+  public void checkMatches(SqliteDB db) {
     for (int t : db.openTrials()) {
       Trial trial = db.loadTrial(t);
       if (trial.getCriteria().matches(data) && !db.matchExists(id, trial.getID())) {
@@ -506,7 +510,5 @@ public class User {
       return (dist);
     }
   }
-  
-  
 
 }

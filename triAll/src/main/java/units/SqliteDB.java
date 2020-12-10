@@ -1,6 +1,7 @@
 package units;
 
 import java.sql.Connection;
+import java.io.File; 
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -163,7 +164,7 @@ public class SqliteDB {
         return false;
       }
     } catch (Exception e) {
-      return false;
+      e.printStackTrace();;
     }
     return false;
   }
@@ -216,7 +217,7 @@ public class SqliteDB {
           return true;
         }
       } catch (Exception e) {
-        return false;
+        e.printStackTrace();
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -444,7 +445,7 @@ public class SqliteDB {
   public LinkedList<Integer> openTrials() {
     ResultSet rs = null;
     LinkedList<Integer> trialSet = new LinkedList<>();
-    String command = "SELECT ID FROM trials WHERE participants_needed = participants_confirmed;";
+    String command = "SELECT ID FROM trials WHERE participants_needed != participants_confirmed;";
     try (
         PreparedStatement st = conn.prepareStatement(command);
     ) {
@@ -579,6 +580,7 @@ public class SqliteDB {
       row = rs.getInt("num");
       rs.close();
     } catch (Exception e) {
+      e.printStackTrace();
       return 0;
     }
     return row;
@@ -653,6 +655,7 @@ public class SqliteDB {
       id = rs.getInt("num");
       rs.close();
     } catch (Exception e) {
+      e.printStackTrace();
       return 0;
     }
     return id;
@@ -726,6 +729,7 @@ public class SqliteDB {
       id = rs.getInt("num");
       rs.close();
     } catch (Exception e) {
+      e.printStackTrace();
       return 0;
     }
     return id;
@@ -813,6 +817,7 @@ public class SqliteDB {
       id = rs.getInt("num");
       rs.close();
     } catch (Exception e) {
+      e.printStackTrace();
       return 0;
     }
     return id;
@@ -846,6 +851,7 @@ public class SqliteDB {
       id = rs.getInt("num");
       rs.close();
     } catch (Exception e) {
+      e.printStackTrace();
       return 0;
     }
     return id;
@@ -872,6 +878,7 @@ public class SqliteDB {
         return n;
       }
     } catch (Exception e) {
+      e.printStackTrace();
       return n;
     }
     return n;
@@ -902,6 +909,7 @@ public class SqliteDB {
       }
       rs.close();
     } catch (Exception e) {
+      e.printStackTrace();
       return emailSet;
     }
     return emailSet;
@@ -927,5 +935,20 @@ public class SqliteDB {
   public Connection getConn() {
     return conn;
   }
+  
+  
+  /**
+   * deletes the DB file 
+   * 
+   * @param args
+   */
+  /**public void deleteDB() { 
+    File myObj = new File("../../../../triall.db"); 
+    if (myObj.delete()) { 
+      System.out.println("Deleted the file: " + myObj.getName());
+    } else {
+      System.out.println("Failed to delete the file.");
+    } 
+  } **/
 
 }

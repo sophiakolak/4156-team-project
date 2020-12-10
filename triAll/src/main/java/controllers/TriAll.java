@@ -92,6 +92,7 @@ public class TriAll {
     });
 
     app.post("/new-res-submit", ctx -> {
+      System.out.println("NEW RESEARCHER");
       System.out.println(ctx.body());
       JsonArray form = gson.fromJson(ctx.body(), JsonArray.class);
       if (!user.signUpRes(db, form)) {

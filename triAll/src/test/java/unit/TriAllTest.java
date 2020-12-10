@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import controllers.TriAll;
+
+import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 import models.Criteria;
@@ -74,11 +76,39 @@ public class TriAllTest {
     });
   }
   
+  @Test 
+  public void testJustAboveUser1() {
+    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+      User justAbove = new User(1, 90.0, 180.1, "", "", "", "", false);
+    });
+  }
+  
   //User equiv. class 4
   @Test 
   public void badStringsUser() {
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
       User badStrings = new User(1, 80.0, 80.0, "", "432", "123", "JaneDoe.com", false);
+    });
+  }
+  
+  @Test 
+  public void badStringUser1() {
+    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+      User justAbove = new User(1, 90.0, 180.0, "loc", "", "", "", false);
+    });
+  }
+  
+  @Test
+  public void badStringUser2() {
+    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+      User justAbove = new User(1, 90.0, 180.0, "loc", "first", "", "", false);
+    });
+  }
+  
+  @Test
+  public void badStringUser3() {
+    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+      User justAbove = new User(1, 90.0, 180.0, "loc", "first", "last", "", false);
     });
   }
   
@@ -398,7 +428,38 @@ public class TriAllTest {
   }
   
   @Test 
+  public void testRestartUser() {
+    User goodPart1 = new User(1, 80.0, 80.0, "kansas", "Jane", "Doe", "JaneDoe@gmail.com", false);
+    User goodPart2 = new User(2, 80.0, 80.0, "kansas", "John", "Doe", "JaneDoe@gmail.com", false);
+    goodPart1.restart(goodPart2);
+    assertEquals("John", goodPart1.getFirst());
+  }
+  
+  @Test 
+  public void testRestartUser1() {
+    User goodRes1 = new User(1, 80.0, 80.0, "kansas", "Jane", "Doe", "JaneDoe@gmail.com", true);
+    User goodRes2 = new User(2, 80.0, 80.0, "kansas", "John", "Doe", "JaneDoe@gmail.com", true);
+    goodRes1.restart(goodRes2);
+    assertEquals("John", goodRes1.getFirst());
+  }
+  
+  @Test 
   public void testTrialForm() {
+    SqliteDB b = new SqliteDB("triall");
+    b.drop("researchers");
+    b.drop("participants");
+    b.drop("trials");
+    b.drop("participant_data");
+    b.drop("trial_criteria");
+    b.drop("trial_matches");
+    b.drop("emails");
+    b.stop();
+    File myObj = new File("triall.db"); 
+    if (myObj.delete()) { 
+      System.out.println("Deleted the file: " + myObj.getName());
+    } else {
+      System.out.println("Failed to delete the file.");
+    }
     SqliteDB db = new SqliteDB("triall");
     Gson gson = new Gson();
     Gson gson1 = new Gson();
@@ -460,15 +521,15 @@ public class TriAllTest {
        //JsonArray partForm = gson.fromJson(partJson.toString(), JsonArray.class);
        //String is_res = partForm.get(0).getAsJsonObject().get("value").getAsString();
        User res = new User(1, 80.0, 80.0, "kansas", "Jane", "Doe", "sophiakolak.sk@gmail.com", true);
-       User part = new User(2, 80.0, 80.0, "kansas", "Jane", "Doe", "sophiakolak.sk@gmail.com", false);
+       User part = new User(1, 80.0, 80.0, "kansas", "Jane", "Doe", "sophiakolak.sk@gmail.com", false);
        db.insertUser("participants", part);
        db.insertUser("researchers", res);
-       Criteria c = new Criteria(1, 2, 22, 28, 60, 70, 110, 180, "Male", "cool", "cool");
+       Criteria c = new Criteria(1, 1, 22, 28, 60, 70, 110, 180, "Male", "cool", "cool");
        db.insertCriteria("participant_data", c);
-       System.out.println("4");
+       //System.out.println("4");
        JSONArray result = CDL.toJSONArray(string);
        JsonArray form = gson1.fromJson(result.toString(), JsonArray.class);
-       Trial t = new Trial(db, form, 2);
+       Trial t = new Trial(db, form, 1);
        String desc = t.getDesc();
        assertEquals("desc", desc);
      }
@@ -479,6 +540,21 @@ public class TriAllTest {
   
   @Test 
   public void testUpdateTrial() {
+    SqliteDB b = new SqliteDB("triall");
+    b.drop("researchers");
+    b.drop("participants");
+    b.drop("trials");
+    b.drop("participant_data");
+    b.drop("trial_criteria");
+    b.drop("trial_matches");
+    b.drop("emails");
+    b.stop();
+    File myObj = new File("triall.db"); 
+    if (myObj.delete()) { 
+      System.out.println("Deleted the file: " + myObj.getName());
+    } else {
+      System.out.println("Failed to delete the file.");
+    }
     SqliteDB db = new SqliteDB("triall");
     Gson gson = new Gson();
     Gson gson1 = new Gson();
@@ -515,15 +591,14 @@ public class TriAllTest {
           "nationality, american";
      try {
        User res = new User(1, 80.0, 80.0, "kansas", "Jane", "Doe", "sophiakolak.sk@gmail.com", true);
-       User part = new User(2, 80.0, 80.0, "kansas", "Jane", "Doe", "sophiakolak.sk@gmail.com", false);
+       User part = new User(1, 80.0, 80.0, "kansas", "Jane", "Doe", "sophiakolak.sk@gmail.com", false);
        db.insertUser("participants", part);
        db.insertUser("researchers", res);
-       Criteria c = new Criteria(1, 2, 22, 28, 60, 70, 110, 180, "Male", "cool", "cool");
+       Criteria c = new Criteria(1, 1, 22, 28, 60, 70, 110, 180, "Male", "cool", "cool");
        db.insertCriteria("participant_data", c);
-       System.out.println("4");
        JSONArray result = CDL.toJSONArray(string);
        JsonArray form = gson1.fromJson(result.toString(), JsonArray.class);
-       Trial t = new Trial(db, form, 2);
+       Trial t = new Trial(db, form, 1);
        String update = "name, value \n" +
            "name, new trial \n" + 
            "description, desc \n" +
@@ -565,8 +640,574 @@ public class TriAllTest {
        e.printStackTrace();
      }
   }
+  
+  @Test
+  public void TestSignUpPartUser() {
+    SqliteDB b = new SqliteDB("triall");
+    b.drop("researchers");
+    b.drop("participants");
+    b.drop("trials");
+    b.drop("participant_data");
+    b.drop("trial_criteria");
+    b.drop("trial_matches");
+    b.drop("emails");
+    b.stop();
+    File myObj = new File("triall.db"); 
+    if (myObj.delete()) { 
+      System.out.println("Deleted the file: " + myObj.getName());
+    } else {
+      System.out.println("Failed to delete the file.");
+    } 
+    SqliteDB db = new SqliteDB("triall");
+    Gson gson = new Gson();
+    String user = "name, value \n" +
+     "participant_or_researcher, Participant\n"+
+     "firstname, Sophia \n"+
+     "lastname, Kolak \n"+
+     "email, sophiakolak.sk@gmail.com \n"+
+      "location, New York \n"+
+      "lat, 40.7127753 \n"+
+      "lon, -74.0059728 \n"+
+      "age, 21 \n"+
+     "gender, Female \n"+
+      "metric_or_imperial, Feet \n"+
+      "feet, 5 \n"+
+      "inches, 4 \n"+
+      "centimetersm, \n"+
+      "heightInInches, 64 \n"+
+      "pounds, 120 \n"+
+     "kilograms,  \n"+
+      "weightInLbs, 120 \n"+
+     "ethnicity, White Other \n"+
+     "nationality, american";
+    try {
+      JSONArray userJson = CDL.toJSONArray(user);
+      JsonArray userForm = gson.fromJson(userJson.toString(), JsonArray.class);
+      User u = new User();
+      u.signUpPart(db, userForm);
+      assertEquals("Sophia", u.getFirst());
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+  
+  @Test
+  public void TestSignUpResUser() {
+    SqliteDB b = new SqliteDB("triall");
+    b.drop("researchers");
+    b.drop("participants");
+    b.drop("trials");
+    b.drop("participant_data");
+    b.drop("trial_criteria");
+    b.drop("trial_matches");
+    b.drop("emails");
+    b.stop();
+    File myObj = new File("triall.db"); 
+    if (myObj.delete()) { 
+      System.out.println("Deleted the file: " + myObj.getName());
+    } else {
+      System.out.println("Failed to delete the file.");
+    } 
+    SqliteDB db = new SqliteDB("triall");
+    Gson gson = new Gson();
+    String res = "name, value \n" +
+     "participant_or_researcher, Researcher \n"+
+     "firstname, Sophia \n"+
+     "lastname, Kolak \n"+
+     "email, sdk2147@columbia.edu \n"+
+      "location, New York \n"+
+      "lat, 40.7127753 \n"+
+      "lon, -74.0059728 \n"+
+      "age, \n"+
+     "gender, \n"+
+      "metric_or_imperial, \n"+
+      "feet, \n"+
+      "inches, \n"+
+      "centimetersm, \n"+
+      "heightInInches, \n"+
+      "pounds, \n"+
+     "kilograms,  \n"+
+      "weightInLbs, ";
+    try {
+      JSONArray resJson = CDL.toJSONArray(res);
+      JsonArray resForm = gson.fromJson(resJson.toString(), JsonArray.class);
+      User u = new User();
+      u.signUpRes(db, resForm);
+      assertEquals("Sophia", u.getFirst());
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
 
- 
+  @Test
+  public void TestUpdatePartUser() {
+    SqliteDB b = new SqliteDB("triall");
+    b.drop("researchers");
+    b.drop("participants");
+    b.drop("trials");
+    b.drop("participant_data");
+    b.drop("trial_criteria");
+    b.drop("trial_matches");
+    b.drop("emails");
+    b.stop();
+    File myObj = new File("triall.db"); 
+    if (myObj.delete()) { 
+      System.out.println("Deleted the file: " + myObj.getName());
+    } else {
+      System.out.println("Failed to delete the file.");
+    } 
+    SqliteDB db = new SqliteDB("triall");
+    Gson gson = new Gson();
+    Gson gson1 = new Gson();
+    String user = "name, value \n" +
+     "participant_or_researcher, Participant\n"+
+     "firstname, Sophia \n"+
+     "lastname, Kolak \n"+
+     "email, sophiakolak.sk@gmail.com \n"+
+      "location, New York \n"+
+      "lat, 40.7127753 \n"+
+      "lon, -74.0059728 \n"+
+      "age, 21 \n"+
+     "gender, Female \n"+
+      "metric_or_imperial, Feet \n"+
+      "feet, 5 \n"+
+      "inches, 4 \n"+
+      "centimetersm, \n"+
+      "heightInInches, 64 \n"+
+      "pounds, 120 \n"+
+     "kilograms,  \n"+
+      "weightInLbs, 120 \n"+
+     "ethnicity, White Other \n"+
+     "nationality, american";
+    
+    String update =  "name, value \n" +
+        "firstname, Julia \n"+
+        "lastname, Kolak \n"+
+        "email, sophiakolak.sk@gmail.com \n"+
+         "location, New York \n"+
+         "lat, 40.7127753 \n"+
+         "lon, -74.0059728 \n"+
+         "gender, Female \n"+
+         "age, 21 \n"+
+         "metric_or_imperial, Feet \n"+
+         "feet, 5 \n"+
+         "inches, 4 \n"+
+         "centimetersm, \n"+
+         "heightInInches, 64 \n"+
+         "pounds, 120 \n"+
+         "kilograms,  \n"+
+         "weightInLbs, 120 \n"+
+         "ethnicity, White Other \n"+
+         "nationality, american";
+     
+    try {
+      JSONArray userJson = CDL.toJSONArray(user);
+      JsonArray userForm = gson.fromJson(userJson.toString(), JsonArray.class);
+      User u = new User();
+      u.signUpPart(db, userForm);
+      JSONArray updateJson = CDL.toJSONArray(update);
+      JsonArray updateForm = gson.fromJson(updateJson.toString(), JsonArray.class);
+      u.updatePart(db, updateForm);
+      assertEquals("Julia", u.getFirst());
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
 
+  @Test
+  public void TestUpdateResUser() {
+    SqliteDB b = new SqliteDB("triall");
+    b.drop("researchers");
+    b.drop("participants");
+    b.drop("trials");
+    b.drop("participant_data");
+    b.drop("trial_criteria");
+    b.drop("trial_matches");
+    b.drop("emails");
+    b.stop();
+    File myObj = new File("triall.db"); 
+    if (myObj.delete()) { 
+      System.out.println("Deleted the file: " + myObj.getName());
+    } else {
+      System.out.println("Failed to delete the file.");
+    } 
+    SqliteDB db = new SqliteDB("triall");
+    Gson gson = new Gson();
+    Gson gson1 = new Gson();
+    String res = "name, value \n" +
+     "participant_or_researcher, Researcher \n"+
+     "firstname, Sophia \n"+
+     "lastname, Kolak \n"+
+     "email, sdk2147@columbia.edu \n"+
+      "location, New York \n"+
+      "lat, 40.7127753 \n"+
+      "lon, -74.0059728 \n"+
+      "age, \n"+
+     "gender, \n"+
+      "metric_or_imperial, \n"+
+      "feet, \n"+
+      "inches, \n"+
+      "centimetersm, \n"+
+      "heightInInches, \n"+
+      "pounds, \n"+
+     "kilograms,  \n"+
+      "weightInLbs, ";
+    String update = "name, value \n" +
+        "participant_or_researcher, Researcher \n"+
+        "firstname, Yolo \n"+
+        "lastname, Kolak \n"+
+        "email, sophiakolak.sk@gmail.com \n"+
+         "location, New York \n"+
+         "lat, 40.7127753 \n"+
+         "lon, -74.0059728 \n"+
+         "gender, Female \n"+
+         "age, 21 \n"+
+         "metric_or_imperial, Feet \n"+
+         "feet, 5 \n"+
+         "inches, 4 \n"+
+         "centimetersm, \n"+
+         "heightInInches, 64 \n"+
+         "pounds, 120 \n"+
+         "kilograms,  \n"+
+         "weightInLbs, 120 \n"+
+         "ethnicity, White Other \n"+
+         "nationality, american";
+    try {
+      JSONArray resJson = CDL.toJSONArray(res);
+      JsonArray resForm = gson.fromJson(resJson.toString(), JsonArray.class);
+      User u = new User();
+      u.signUpRes(db, resForm);
+      JSONArray updateJson = CDL.toJSONArray(update);
+      JsonArray updateForm = gson.fromJson(updateJson.toString(), JsonArray.class);
+      u.updateRes(db, updateForm);
+      assertEquals("Yolo", u.getFirst());
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+  
+  @Test 
+  public void testLoginUser() {
+    File myObj = new File("triall.db"); 
+    if (myObj.delete()) { 
+      System.out.println("Deleted the file: " + myObj.getName());
+    } else {
+      System.out.println("Failed to delete the file.");
+    } 
+    SqliteDB db = new SqliteDB("triall");
+    User part = new User(1, 80.0, 80.0, "kansas", "Jane", "Doe", "sophiakolak.sk@gmail.com", false);
+    db.insertUser("participants", part);
+    int isPart = part.logIn(db, "sophiakolak.sk@gmail.com");
+    assertEquals(1, isPart);
+  }
+  
+  @Test 
+  public void testLoginRes() {
+    File myObj = new File("triall.db"); 
+    if (myObj.delete()) { 
+      System.out.println("Deleted the file: " + myObj.getName());
+    } else {
+      System.out.println("Failed to delete the file.");
+    } 
+    SqliteDB db = new SqliteDB("triall");
+    User res = new User(1, 80.0, 80.0, "kansas", "Jane", "Doe", "sophiakolak.sk@gmail.com", true);
+    db.insertUser("researchers", res);
+    int isPart = res.logIn(db, "sophiakolak.sk@gmail.com");
+    assertEquals(0, isPart); 
+  }
+  
+  @Test 
+  public void testLoginBad() {
+    File myObj = new File("triall.db"); 
+    if (myObj.delete()) { 
+      System.out.println("Deleted the file: " + myObj.getName());
+    } else {
+      System.out.println("Failed to delete the file.");
+    } 
+    SqliteDB db = new SqliteDB("triall");
+    User res = new User();
+    int isPart = res.logIn(db, "sophiakolak.sk@gmail.com");
+    assertEquals(-1, isPart); 
+  }
+  
+  @Test 
+  public void testAcceptMatch() {
+    File myObj = new File("triall.db"); 
+    if (myObj.delete()) { 
+      System.out.println("Deleted the file: " + myObj.getName());
+    } else {
+      System.out.println("Failed to delete the file.");
+    } 
+    SqliteDB db = new SqliteDB("triall");
+    Criteria crit = new Criteria(1, 1, 22, 28, 60, 70, 110, 180, "Male", "cool", "cool");
+    Trial tr = new Trial(1, "Cool Trial", "cool trial", 0, 0, "Siberia", "2020-12-01", "2020-12-02", 
+        12, 1234, 100, 1, crit); 
+    tr.setRes(1);
+    User part = new User(1, 80.0, 80.0, "kansas", "Jane", "Doe", "sophiakolak.sk@gmail.com", false);   
+    User res = new User(1, 80.0, 80.0, "kansas", "Jane", "Doe", "sophiakolak.sk@gmail.com", true);
+    db.insertUser("researchers", res);
+    db.insertCriteria("trial_criteria", crit); 
+    db.insertTrial(tr); 
+    db.insertUser("participants", part);
+    Match goodMatch = new Match(1, tr, 0.5, "pending");
+    part.addMatch(goodMatch);
+    db.insertMatch(part, tr);
+    boolean isAccepted = part.acceptMatch(1, db);
+    assertEquals(true, isAccepted);
+  }
+  
+  @Test 
+  public void testAcceptMatch1() {
+    File myObj = new File("triall.db"); 
+    if (myObj.delete()) { 
+      System.out.println("Deleted the file: " + myObj.getName());
+    } else {
+      System.out.println("Failed to delete the file.");
+    } 
+    SqliteDB db = new SqliteDB("triall");
+    Criteria crit = new Criteria(1, 1, 22, 28, 60, 70, 110, 180, "Male", "cool", "cool");
+    Trial tr = new Trial(1, "Cool Trial", "cool trial", 0, 0, "Siberia", "2020-12-01", "2020-12-02", 
+        12, 1234, 100, 1, crit); 
+    tr.setRes(1);
+    User part = new User(1, 80.0, 80.0, "kansas", "Jane", "Doe", "sophiakolak.sk@gmail.com", false);   
+    User res = new User(1, 80.0, 80.0, "kansas", "Jane", "Doe", "sophiakolak.sk@gmail.com", true);
+    db.insertUser("researchers", res);
+    db.insertCriteria("trial_criteria", crit); 
+    db.insertTrial(tr); 
+    db.insertUser("participants", part);
+    boolean isAccepted = part.acceptMatch(1, db);
+    assertEquals(false, isAccepted);
+  }
+  
+  @Test
+  public void testRejectMatch() {
+    File myObj = new File("triall.db"); 
+    if (myObj.delete()) { 
+      System.out.println("Deleted the file: " + myObj.getName());
+    } else {
+      System.out.println("Failed to delete the file.");
+    } 
+    SqliteDB db = new SqliteDB("triall");
+    Criteria crit = new Criteria(1, 1, 22, 28, 60, 70, 110, 180, "Male", "cool", "cool");
+    Trial tr = new Trial(1, "Cool Trial", "cool trial", 0, 0, "Siberia", "2020-12-01", "2020-12-02", 
+        12, 1234, 100, 1, crit); 
+    tr.setRes(1);
+    User part = new User(1, 80.0, 80.0, "kansas", "Jane", "Doe", "sophiakolak.sk@gmail.com", false);   
+    User res = new User(1, 80.0, 80.0, "kansas", "Jane", "Doe", "sophiakolak.sk@gmail.com", true);
+    db.insertUser("researchers", res);
+    db.insertCriteria("trial_criteria", crit); 
+    db.insertTrial(tr); 
+    db.insertUser("participants", part);
+    Match goodMatch = new Match(1, tr, 0.5, "pending");
+    part.addMatch(goodMatch);
+    db.insertMatch(part, tr);
+    boolean isRejected = part.rejectMatch(1, db);
+    assertEquals(true, isRejected);
+  }
+  
+  @Test
+  public void testRejectMatch1() {
+    File myObj = new File("triall.db"); 
+    if (myObj.delete()) { 
+      System.out.println("Deleted the file: " + myObj.getName());
+    } else {
+      System.out.println("Failed to delete the file.");
+    } 
+    SqliteDB db = new SqliteDB("triall");
+    Criteria crit = new Criteria(1, 1, 22, 28, 60, 70, 110, 180, "Male", "cool", "cool");
+    Trial tr = new Trial(1, "Cool Trial", "cool trial", 0, 0, "Siberia", "2020-12-01", "2020-12-02", 
+        12, 1234, 100, 1, crit); 
+    tr.setRes(1);
+    User part = new User(1, 80.0, 80.0, "kansas", "Jane", "Doe", "sophiakolak.sk@gmail.com", false);   
+    User res = new User(1, 80.0, 80.0, "kansas", "Jane", "Doe", "sophiakolak.sk@gmail.com", true);
+    db.insertUser("researchers", res);
+    db.insertCriteria("trial_criteria", crit); 
+    db.insertTrial(tr); 
+    db.insertUser("participants", part);
+    boolean isRejected = part.rejectMatch(1, db);
+    assertEquals(false, isRejected);
+  }
+  
+  @Test 
+  public void testUserFuncs() {
+    User goodPart = new User(1, 80.0, 80.0, "kansas", "Jane", "Doe", "JaneDoe@gmail.com", false);
+    goodPart.isResearcher();
+    goodPart.logOut();
+    boolean isLoggedIn = goodPart.isLoggedIn();
+    assertEquals(false, isLoggedIn);
+  }
+  
+  @Test 
+  public void testCheckMatches() {
+    File myObj = new File("triall.db"); 
+    if (myObj.delete()) { 
+      System.out.println("Deleted the file: " + myObj.getName());
+    } else {
+      System.out.println("Failed to delete the file.");
+    } 
+    SqliteDB db = new SqliteDB("triall");
+    Criteria crit = new Criteria(1, 1, 22, 28, 60, 70, 110, 180, "Male", "cool", "cool");
+    Trial tr = new Trial(1, "Cool Trial", "cool trial", 0, 0, "Siberia", "2020-12-01", "2020-12-02", 
+        12, 1234, 100, 1, crit); 
+    tr.setRes(1);
+    User part = new User(1, 80.0, 80.0, "kansas", "Jane", "Doe", "sophiakolak.sk@gmail.com", false);   
+    User res = new User(1, 80.0, 80.0, "kansas", "Jane", "Doe", "sophiakolak.sk@gmail.com", true);
+    Match goodMatch = new Match(1, tr, 0.5, "pending");
+    part.setData(crit);
+    part.addMatch(goodMatch);
+    db.insertMatch(part, tr);
+    db.insertCriteria("trial_criteria", crit); 
+    db.insertCriteria("participant_data", crit);
+    db.insertTrial(tr); 
+    db.insertUser("participants", part);
+    db.insertUser("researchers", res);
+    part.checkMatches(db);
+    assertEquals(1,part.getMatches().get(0).getID());
+  }
+  
+  @Test 
+  public void testUpdateTrialUser() {
+    File myObj = new File("triall.db"); 
+    if (myObj.delete()) { 
+      System.out.println("Deleted the file: " + myObj.getName());
+    } else {
+      System.out.println("Failed to delete the file.");
+    } 
+    SqliteDB db = new SqliteDB("triall");
+    Criteria crit = new Criteria(1, 1, 22, 28, 60, 70, 110, 180, "Male", "cool", "cool");
+    Trial tr = new Trial(1, "Cool Trial", "cool trial", 0, 0, "Siberia", "2020-12-01", "2020-12-02", 
+        12, 1234, 100, 1, crit); 
+    tr.setRes(1); 
+    User res = new User(1, 80.0, 80.0, "kansas", "Jane", "Doe", "sophiakolak.sk@gmail.com", true);
+    res.addTrial(1, tr);
+    db.insertTrial(tr); 
+    db.insertUser("researchers", res);
+    db.insertCriteria("trial_criteria", crit); 
+    Gson gson = new Gson();
+    String update = "name, value \n" +
+        "name, new trial \n" + 
+        "description, desc \n" +
+        "location, New York \n" +
+        "lat,40.7127753 \n" +
+        "lon,-74.0059728 \n"+
+        "startdate, 2021-01-01 \n"+
+        "enddate, 2021-01-10 \n"+
+        "pay, 20 \n"+
+        "irb, 1234 \n"+
+        "numberofparticipants, 10 \n"+
+        "gender, Female \n"+
+        "min_age, 20 \n"+
+        "max_age, 90 \n"+
+        "metric_or_imperial, Feet \n"+
+        "feet, 5 \n"+
+        "inches, 0 \n"+
+        "centimeters, \n"+
+        "heightInInchesMin, 60 \n"+
+        "feet, 6 \n"+
+        "inches, 0 \n"+
+        "centimeters \n"+
+        "heightInInchesMax, 72 \n"+
+        "pounds, 90 \n"+
+        "kilograms, \n"+
+        "weightInLbs, 90 \n"+
+        "pounds, 120 \n"+
+        "kilograms, \n"+
+        "weightInLbs, 120 \n"+
+        "ethnicity, White Other \n"+
+        "nationality, american";
+    try {
+      JSONArray updateString = CDL.toJSONArray(update);
+      JsonArray updateForm = gson.fromJson(updateString.toString(), JsonArray.class);
+      res.updateTrial(1, db, updateForm);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+  
+  @Test 
+  public void testUpdateTrialUser1() {
+    File myObj = new File("triall.db"); 
+    if (myObj.delete()) { 
+      System.out.println("Deleted the file: " + myObj.getName());
+    } else {
+      System.out.println("Failed to delete the file.");
+    } 
+    SqliteDB db = new SqliteDB("triall");
+    Criteria crit = new Criteria(1, 1, 22, 28, 60, 70, 110, 180, "Male", "cool", "cool");
+    Trial tr = new Trial(1, "Cool Trial", "cool trial", 0, 0, "Siberia", "2020-12-01", "2020-12-02", 
+        12, 1234, 100, 1, crit); 
+    tr.setRes(1); 
+    User res = new User(1, 80.0, 80.0, "kansas", "Jane", "Doe", "sophiakolak.sk@gmail.com", true);
+    res.addTrial(1, tr);
+    res.logOut();
+    db.insertTrial(tr); 
+    db.insertUser("researchers", res);
+    db.insertCriteria("trial_criteria", crit); 
+    Gson gson = new Gson();
+    String update = "name, value \n" +
+        "name, new trial \n" + 
+        "description, desc \n" +
+        "location, New York \n" +
+        "lat,40.7127753 \n" +
+        "lon,-74.0059728 \n"+
+        "startdate, 2021-01-01 \n"+
+        "enddate, 2021-01-10 \n"+
+        "pay, 20 \n"+
+        "irb, 1234 \n"+
+        "numberofparticipants, 10 \n"+
+        "gender, Female \n"+
+        "min_age, 20 \n"+
+        "max_age, 90 \n"+
+        "metric_or_imperial, Feet \n"+
+        "feet, 5 \n"+
+        "inches, 0 \n"+
+        "centimeters, \n"+
+        "heightInInchesMin, 60 \n"+
+        "feet, 6 \n"+
+        "inches, 0 \n"+
+        "centimeters \n"+
+        "heightInInchesMax, 72 \n"+
+        "pounds, 90 \n"+
+        "kilograms, \n"+
+        "weightInLbs, 90 \n"+
+        "pounds, 120 \n"+
+        "kilograms, \n"+
+        "weightInLbs, 120 \n"+
+        "ethnicity, White Other \n"+
+        "nationality, american";
+    try {
+      JSONArray updateString = CDL.toJSONArray(update);
+      JsonArray updateForm = gson.fromJson(updateString.toString(), JsonArray.class);
+      res.updateTrial(1, db, updateForm);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+  
+  @Test 
+  public void testRetrieveRes() {
+    File myObj = new File("triall.db"); 
+    if (myObj.delete()) { 
+      System.out.println("Deleted the file: " + myObj.getName());
+    } else {
+      System.out.println("Failed to delete the file.");
+    } 
+    SqliteDB db = new SqliteDB("triall");
+    User res1 = new User(1, 80.0, 80.0, "kansas", "Jane", "Doe", "sophiakolak.sk@gmail.com", true);
+    User res2 = new User(2, 80.0, 80.0, "kansas", "Jane", "Doe", "ohyeah.sk@gmail.com", true);
+    Trial tr = new Trial(1, "Cool Trial", "cool trial", 0, 0, "Siberia", "2020-12-01", "2020-12-02", 
+        12, 1234, 100, 1, crit); 
+    res1.addTrial(1, tr);
+    res2.addTrial(1, tr);
+    db.insertTrial(tr); 
+    db.insertUser("researchers", res1);
+    db.insertUser("researchers", res2);
+    res2.retrieveRes(db, "sophiakolak.sk@gmail.com");
+    assertEquals(1, res1.getTrial(1).getID());
+  }
 
 }
