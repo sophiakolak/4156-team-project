@@ -2,7 +2,8 @@ package models;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
-import units.SqliteDB;
+
+import database.SqliteDB;
 
 public class Notification {
   private String time;
@@ -37,6 +38,14 @@ public class Notification {
   
   public String getMessage() {
     return message;
+  }
+  
+  public void store(SqliteDB db, int trialID, int parent, boolean toRes) {
+    if (toRes) {
+      db.insertNotification(trialID, parent, 0, time, message);
+    } else {
+      db.insertNotification(trialID, 0, parent, time, message);
+    }
   }
   
   /**

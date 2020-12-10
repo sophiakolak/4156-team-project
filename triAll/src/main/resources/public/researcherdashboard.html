@@ -27,10 +27,29 @@
     <!-- Custom JS -->
     <script type="text/javascript" src="./static/researcherdashboard.js"></script>
 
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
    <style>
         
         body {
           font-size: .875rem;
+        }
+
+        .big {
+          font-size: 24px;
+        }
+
+        .med{
+          font-size: 18px;
+        }
+
+        .small{
+          font-size: 16px;
+        }
+
+        .cardHead {
+          color: #000000
         }
 
         .feather {
@@ -64,6 +83,19 @@
         }
         .nav-link {
           font-size: 1rem;
+        }
+        .row-striped:nth-of-type(odd){
+          background-color: #efefef;
+          border-left: 4px #000000 solid;
+        }
+
+        .row-striped:nth-of-type(even){
+          background-color: #ffffff;
+          border-left: 4px #efefef solid;
+        }
+
+        .row-striped {
+            padding: 15px 0;
         }
 
         .sidebar .nav-link {
@@ -175,13 +207,13 @@
 
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
           <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-            <h1 class="h2">Welcome<span id = "name">!</span></h1>
+            <h1 class="h2"><strong>Welcome, <span id = "name"></span>!</strong></h1>
             <div class="btn-toolbar mb-2 mb-md-0">
             </div>
           </div>
           <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 id = "upcomingTrials" class="panel-title">Here's a list of your upcoming trials.</h3>
+                <h3 id = "upcomingTrials" class="panel-title">Upcoming Trials</h3>
             </div>   
             <div class="accordion" id="trialAccordian">
             </div>

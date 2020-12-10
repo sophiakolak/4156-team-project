@@ -1,4 +1,4 @@
-package units;
+package database;
 
 import java.sql.Connection;
 import java.io.File; 
@@ -274,9 +274,11 @@ public class SqliteDB {
         u = new User(rs.getInt(1), rs.getDouble(2), rs.getDouble(3), rs.getString(4), 
             rs.getString(5), rs.getString(6), rs.getString(7), true);
       } catch (Exception e) {
+        e.printStackTrace();
         return u;
       }
     } catch (Exception e) {
+      e.printStackTrace();
       return u;
     } 
     return u;
@@ -329,9 +331,11 @@ public class SqliteDB {
                   .getInt(4), rs.getDouble(5), rs.getDouble(6), rs.getDouble(7), rs
                   .getDouble(8), rs.getString(9), rs.getString(10), rs.getString(11));
       } catch (Exception e) {
+        e.printStackTrace();
         return crit;
       }
     } catch (Exception e) {
+      e.printStackTrace();
       return crit;
     }
     return crit;
@@ -445,7 +449,11 @@ public class SqliteDB {
   public LinkedList<Integer> openTrials() {
     ResultSet rs = null;
     LinkedList<Integer> trialSet = new LinkedList<>();
+<<<<<<< HEAD:triAll/src/main/java/units/SqliteDB.java
     String command = "SELECT ID FROM trials WHERE participants_needed != participants_confirmed;";
+=======
+    String command = "SELECT ID FROM trials WHERE participants_needed > participants_confirmed;";
+>>>>>>> cc4ffdeb10ee062b73204da68616859b4aad6353:triAll/src/main/java/database/SqliteDB.java
     try (
         PreparedStatement st = conn.prepareStatement(command);
     ) {
@@ -481,10 +489,13 @@ public class SqliteDB {
             .getString(4), rs.getDouble(5), rs.getDouble(6), rs
             .getString(7), rs.getString(8), rs.getString(9), rs
             .getDouble(10), rs.getInt(11), rs.getInt(12), rs.getInt(13), c);
+        t.setRes(rs.getInt(2));
       } catch (Exception e) {
+        e.printStackTrace();
         return t;
       }
     } catch (Exception e) {
+      e.printStackTrace();
       return t;
     }
     return t;
@@ -864,7 +875,7 @@ public class SqliteDB {
    */
   public Notification loadNotification(int id) {
     Notification n = null;
-    String command = "SELECT * FROM participant_data WHERE ID = ?;";
+    String command = "SELECT * FROM email WHERE ID = ?;";
     try (
         PreparedStatement st = conn.prepareStatement(command);
     ) {
@@ -873,8 +884,9 @@ public class SqliteDB {
           ResultSet rs = st.executeQuery();
       ) {
         rs.next();
-        n = new Notification(this, rs.getInt(2), rs.getString("time"), rs.getString("message"));
+        n = new Notification(this, rs.getInt(2), rs.getString("time_sent"), rs.getString("message"));
       } catch (Exception e) {
+        e.printStackTrace();
         return n;
       }
     } catch (Exception e) {

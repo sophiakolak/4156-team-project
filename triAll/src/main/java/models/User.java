@@ -1,6 +1,9 @@
 package models;
 
 import com.google.gson.JsonArray;
+
+import database.SqliteDB;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
@@ -8,7 +11,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.regex.Pattern;
-import units.SqliteDB;
 
 public class User {
   private int id;
@@ -157,12 +159,12 @@ public class User {
     if (!loggedIn || !isResearcher) {
       return false;
     }
-    lat = form.get(5).getAsJsonObject().get("value").getAsDouble();
-    lon = form.get(6).getAsJsonObject().get("value").getAsDouble();
-    location = form.get(4).getAsJsonObject().get("value").getAsString();
-    first = form.get(1).getAsJsonObject().get("value").getAsString();
-    last = form.get(2).getAsJsonObject().get("value").getAsString();
-    email = form.get(3).getAsJsonObject().get("value").getAsString();
+    lat = form.get(4).getAsJsonObject().get("value").getAsDouble();
+    lon = form.get(5).getAsJsonObject().get("value").getAsDouble();
+    location = form.get(3).getAsJsonObject().get("value").getAsString();
+    first = form.get(0).getAsJsonObject().get("value").getAsString();
+    last = form.get(1).getAsJsonObject().get("value").getAsString();
+    email = form.get(2).getAsJsonObject().get("value").getAsString();
     if (db.updateUser("researchers", this) == 0) {
       return false;
     }

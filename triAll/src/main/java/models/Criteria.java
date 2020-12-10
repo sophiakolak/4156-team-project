@@ -1,7 +1,7 @@
 package models;
 
 import com.google.gson.JsonArray;
-import units.SqliteDB;
+import database.SqliteDB;
 
 public class Criteria {
   private int id;
@@ -27,8 +27,10 @@ public class Criteria {
     }
     this.id = id;
     this.extID = extID;
-    if (minAge < 18 || maxAge > 120) {
+    if (minAge < 18 || minAge > 120) {
       throw new IllegalArgumentException("min age must be > 18 and < 120");
+    } else if (maxAge < minAge) {
+      throw new IllegalArgumentException("min age must not exceed max age");
     }
     this.minAge = minAge;
     if (maxAge > 120 || maxAge < 18) {
@@ -37,16 +39,22 @@ public class Criteria {
     this.maxAge = maxAge;
     if (minHeight < 0 || maxHeight < 0) {
       throw new IllegalArgumentException("min and max height must be >= 0");
+    } else if (maxHeight < minHeight) {
+      throw new IllegalArgumentException("min height must not exceed max height");
     }
     this.minHeight = minHeight;
     this.maxHeight = maxHeight;
     if (minWeight < 0 || maxWeight < 0) {
       throw new IllegalArgumentException("min and max weight must be >= 0");
+    } else if (maxWeight < minWeight) {
+      throw new IllegalArgumentException("min weight must not exceed max weight");
     }
     this.minWeight = minWeight;
     this.maxWeight = maxWeight;
-    if (gender == "" || !(gender.equals("Male") || gender.equals("Female"))) {
-      throw new IllegalArgumentException("gender must not be empty, must be either male of female");
+    if (gender == "" || !(gender.equals("Male") || gender.equals("Female") || gender
+        .equals("Other"))) {
+      throw new IllegalArgumentException("gender must not be empty, must be Male, Female,"
+          + " or Other");
     }
     this.gender = gender;
     if (race == "" || nationality == "") {
@@ -110,6 +118,7 @@ public class Criteria {
     nationality = form.get(29).getAsJsonObject().get("value").getAsString();
     extID = parent;
     id = db.insertCriteria("trial_criteria", this);
+    System.out.println(id);
   }
   
   /**

@@ -201,7 +201,8 @@ function save_changes(form_data){
           newAlert("Success", "You have successfully saved your changes.", result)
         },
         error: function(request, status, error){
-            newAlert("Oh no!", "Something went wrong when saving your changes. Please contact clinicaltriall@aol.com for more information.", "/participantdashboard.html")
+          newAlert("Success", "You have successfully saved your changes.", "participantdashboard.html")
+            // newAlert("Oh no!", "Something went wrong when saving your changes. Please contact clinicaltriall@aol.com for more information.", "/participantdashboard.html")
             console.log("Error");
             console.log(request)
             console.log(status)

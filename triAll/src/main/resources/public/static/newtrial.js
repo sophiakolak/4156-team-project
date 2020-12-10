@@ -43,7 +43,17 @@ function newAlert(title, text, redirect){
   $('#alert').modal('toggle')
 }
 
+
 $(document).ready(function(){
+    $('[type="date"]').prop('min', function(){
+        return new Date().toJSON().split('T')[0];
+    });
+
+    $('#startDate').change(function(){
+      var date = new Date($('#startDate').val());
+      $('#endDate').attr('min', date.toJSON().split('T')[0])
+    });
+
     $('.metric').hide(); 
     $('.imperial').show();
     // Check if user is signed in 
@@ -57,6 +67,7 @@ $(document).ready(function(){
       });
     });
     $("#createTrial").submit(function( event ) {
+
       // Convert height to height in inches
       // Convert weight to weight in pounds
       var heightInInchesMin;
@@ -94,11 +105,15 @@ $(document).ready(function(){
        if($(this).attr('id') == 'metricButton') {
             $('.imperial').hide();
             $('.metric').show()
+            $('.metric').required = true;
+            $('.imperial').removeAttr('required')
 
        }
        else if($(this).attr('id') == 'imperialButton') {
             $('.metric').hide(); 
-            $('.imperial').show();      
+            $('.imperial').show();   
+            $('.imperial').required = true;
+            $('.metric').removeAttr('required')     
        }
    });
 })

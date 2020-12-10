@@ -1,9 +1,11 @@
 package models;
 
 import com.google.gson.JsonArray;
+
+import database.SqliteDB;
+
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import units.SqliteDB;
 
 public class Trial {
 
@@ -95,8 +97,10 @@ public class Trial {
     partNeeded = form.get(9).getAsJsonObject().get("value").getAsInt();
     partConfirmed = 0;
     resID = parent;
+    System.out.println(resID);
     id = db.insertTrial(this);
     crit = new Criteria(db, form, id, "trial_criteria");
+    System.out.println(crit);
     checkMatches(db);
   }
 

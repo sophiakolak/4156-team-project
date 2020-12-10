@@ -187,18 +187,15 @@
           
           <form id = "createTrial">
             <div class="form-group">
-                    <label>Name:</label>
-                    <textarea class="form-control" type="text" name="name" required placeholder="Enter Trial Name"></textarea>
+                    <input class="form-control" type="text" name="name" required placeholder="Trial Name"></textarea>
                     <span class="Error"></span>
                 </div>
                 <div class="form-group">
-                    <label>Description:</label>
-                    <textarea class="form-control" type="text" name="description" required placeholder="Enter Description"></textarea>
+                    <textarea class="form-control" type="text" name="description" required placeholder="Description"></textarea>
                     <span class="Error"></span>
                 </div>
                 <div class="form-group">
-                  <label>Location:</label>
-                  <input id = "autocomplete" class="form-control" type="text" name="location" onFocus="geolocate()" required placeholder="Enter Your Location"/>
+                  <input id = "autocomplete" class="form-control" type="text" name="location" onFocus="geolocate()" required placeholder="Trial Location"/>
                   <span class="Error"></span>
                 <div class = "hidden_fields">
                    <input id = "lat" type="hidden" name="lat">
@@ -207,93 +204,79 @@
                 </div>
                 <div class="form-group">
                   <label>Start Date:</label>
-                   <input class="form-control" type="date" name="startdate"/>
+                   <input id = "startDate" class="form-control" type="date" name="startdate" required />
                    <span class="Error"></span>
                 </div>
                 <div class="form-group">
                   <label>End Date:</label>
-                   <input class="form-control" type="date" name="enddate"/>
+                   <input id = "endDate" class="form-control" type="date" name="enddate" required />
                    <span class="Error"></span>
                 </div>
+                <br>
                 <div class="form-group">
-                  <label>Hourly Pay in USD:</label>
-                  <input class="form-control" type="number" name="pay"/>
+                  <input class="form-control" type="number" name="pay" min = "1" required placeholder = "Hourly Pay (USD per Hour)"/>
                   <span class="Error"></span>
                 </div>
                 <div class="form-group">
-                  <label>IRB Number:</label>
-                  <input class="form-control" type="number" name="irb"/>
+                  <input class="form-control" type="number" name="irb" min= "0001" max = "99999" required placeholder = "IRB Number (4 or 5 digit number)"/>
                   <span class="Error"></span>
                 </div>
                 <div class="form-group">
-                  <label>Number of Participants Needed:</label>
-                  <input class="form-control" type="number" name="numberofparticipants"/>
+                  <input class="form-control" type="number" name="numberofparticipants" min = "1" max = "10000" required placeholder="Number of Participants Needed"/>
                   <span class="Error"></span>
                 </div> <br><br>
                 <div class="form-group">
                     <label>Participant Gender:</label><br/>
-                    <label><input type="radio" name="gender"  value="Male"/> Male</label>
+                    <label><input type="radio" name="gender"  value="Male" required/> Male</label>
                     <label><input type="radio" name="gender"  value="Female" /> Female</label>
                     <label><input type="radio" name="gender"  value="Other" /> Other</label>
                 </div>
                 <div class="form-group">
-                    <label>Minimum age of participants</label>
-                    <input class="form-control" type="number" name="min_age"/>
+                    <input id = "minimumAge" class="form-control" type="number" name="min_age" min="18" max = "120" required placeholder="Minimum Age of Participants (18+)"/>
                 </div>
                 <div class="form-group">
-                    <label>Maximum age of participants</label>
-                    <input class="form-control" type="number" name="max_age"/>
-                </div>
+                    <input id = "maximumAge" class="form-control" type="number" name="max_age" min="18" max = "120" required placeholder="Maximum Age of Participants"/>
+                </div><br>
                             <div class="form-group participant">
                 <label><input id = "metricButton" type="radio" name="metric_or_imperial" required value="Centimeters" /> Metric</label>
                 <label><input id = "imperialButton" type="radio" name="metric_or_imperial" required value="Feet" checked /> Imperial</label><br>
-                <label>Minimum Height of Participants</label>
+                <label>Minimum Height of Participants:</label>
                 <div class = "imperial">
-                    <label>Feet:</label>
-                    <input id = "feetMin" class="form-control imperial" type="number" name="feet"/>
-                    <label>Inches:</label>
-                    <input id = "inchesMin" class="form-control imperial" type="number" name="inches"/>
+                    <input id = "feetMin" class="form-control imperial" type="number" min="1" max = "8" name="feet" required placeholder="Feet"/>
+                    <input id = "inchesMin" class="form-control imperial" type="number" min="0" max = "12" name="inches" required placeholder="Inches"/>
                 </div>
                 <div class = "metric">
-                    <label>Centimeters:</label>
-                    <input id = "centimetersMin" class="form-control metric" type="number" name="centimeters"/>
+                    <input id = "centimetersMin" class="form-control metric" type="number" min="30" max = "250" name="centimeters" placeholder="Centimeters"/>
                 </div> 
                 <input id = "heightInInchesMin" class="form-control" type="hidden" name="heightInInchesMin"/>
-                <span class="Error"></span>
-                <label>Maximum Height of Participants</label>
+                <span class="Error"></span><br>
+                <label>Maximum Height of Participants:</label>
                 <div class = "imperial">
-                    <label>Feet:</label>
-                    <input id = "feetMax" class="form-control imperial" type="number" name="feet"/>
-                    <label>Inches:</label>
-                    <input id = "inchesMax" class="form-control imperial" type="number" name="inches"/>
+                    <input id = "feetMax" class="form-control imperial" type="number" min="1" max = "8" name="feet" required placeholder="Feet"/>
+                    <input id = "inchesMax" class="form-control imperial" type="number" min="0" max = "12" name="inches" required placeholder="Inches"/>
                 </div>
                 <div class = "metric">
-                    <label>Centimeters:</label>
-                    <input id = "centimetersMax" class="form-control metric" type="number" name="centimeters"/>
+                    <input id = "centimetersMax" class="form-control metric" type="number" name="centimeters" min="30" max = "250" placeholder="Centimeters"/>
                 </div> 
                 <input id = "heightInInchesMax" class="form-control" type="hidden" name="heightInInchesMax"/>
                 <span class="Error"></span>
             </div>
             <div class="form-group participant">
-                <label>Minimum Weight of Participants</label>
+                <label>Minimum Weight of Participants:</label>
                 <div class = "imperial">
-                    <label>Pounds:</label>
-                    <input id = "poundsMin" class="form-control imperial" type="number" name="pounds"/>
+                    <input id = "poundsMin" class="form-control imperial" type="number" min="10" max = "1000" name="pounds" required placeholder="Pounds"/>
                 </div>
                 <div class = "metric">
-                    <label>Kilograms:</label>
-                    <input id = "kilogramsMin" class="form-control metric" type="number" name="kilograms"/>
+                    <input id = "kilogramsMin" class="form-control metric" type="number" min="5" max = "500" name="kilograms" placeholder="Kilograms"/>
                 </div> 
                 <input id = "weightInLbsMin" class="form-control" type="hidden" name="weightInLbs"/>
                 <span class="Error"></span>
-                <label>Maximum Weight of Participants</label>
+                <label>Maximum Weight of Participants:</label>
                 <div class = "imperial">
-                    <label>Pounds:</label>
-                    <input id = "poundsMax" class="form-control imperial" type="number" name="pounds"/>
+                    <input id = "poundsMax" class="form-control imperial" type="number" name="pounds" placeholder="Pounds"/>
                 </div>
                 <div class = "metric">
-                    <label>Kilograms:</label>
-                    <input id = "kilogramsMax" class="form-control metric" type="number" name="kilograms"/>
+                    <input id = "kilogramsMax" class="form-control metric" type="number" name="kilograms" placeholder="Kilograms"/>
                 </div> 
                 <input id = "weightInLbsMax" class="form-control" type="hidden" name="weightInLbs"/>
                 <span class="Error"></span>
@@ -301,7 +284,7 @@
             <div class = "form-group participant">
             <fieldset>
               <label>Ethnicity of Participants</label>
-              <select class="form-control dropdown" id="ethnicity" name="ethnicity">
+              <select class="form-control dropdown" id="ethnicity" name="ethnicity" required >
                 <option value="" selected="selected" disabled="disabled">-- select one --</option>
                 <optgroup label="White">
                   <option value="White English">English</option>
@@ -342,7 +325,7 @@
             </fieldset>
             <fieldset>
               <label>Nationality of Participants</label>
-              <select class="form-control dropdown" id="nationality" name="nationality">
+              <select class="form-control dropdown" id="nationality" name="nationality" required >
                 <option value="" selected="selected" disabled="disabled">-- select one --</option>
                 <option value="afghan">Afghan</option>
                 <option value="albanian">Albanian</option>
@@ -539,8 +522,9 @@
               </select>
             </fieldset>
             </div>
-            <div class = "row">
-                    Which of the following conditions are important for your participants to have or not have? <br><br>
+<!--             <div class = "row">
+                    Which of the following conditions are important for your participants to have or not have? <br> 
+                    If the condition doesn't matter for your trial, please select "Neither".<br>
                   </div>
             <div class="form-group participant row">
 
@@ -550,7 +534,7 @@
                             <div class = "col-md-4">
                             <label>Anaemia: &nbsp</label></div><div class = "col">
                             <label><input type="radio" name="anaemia" value="Required" required/> Required </label> &nbsp &nbsp
-                            <label><input type="radio" name="anaemia" value="not_permitted" required/> Not Permitted </label>
+                            <label><input type="radio" name="anaemia" value="not_permitted" required/> Not Permitted </label>&nbsp &nbsp
                             <label><input type = "radio" name = "anaemia" value = "doesnt_matter" required/> Neither </label>
                             </div><span class="Error"></span>
                         </div>
@@ -559,8 +543,8 @@
                             <div class = "col-md-4">
                             <label>Artificial joints: &nbsp</label></div><div class = "col">
                             <label><input type="radio" name="artificial_joints" value="Required" required/> Required </label> &nbsp &nbsp
-                            <label><input type="radio" name="artificial_joints" value="not_permitted" required/> Not Permitted </label>
-                            <label><input type = "radio" name = "" value = "doesnt_matter" required/> Neither </label>
+                            <label><input type="radio" name="artificial_joints" value="not_permitted" required/> Not Permitted </label>&nbsp &nbsp
+                            <label><input type = "radio" name = "artificial_joints" value = "doesnt_matter" required/> Neither </label>
                             </div><span class="Error"></span>
                         </div>
 
@@ -568,7 +552,7 @@
                             <div class = "col-md-4">
                             <label>Allergies: &nbsp</label></div><div class = "col">
                             <label><input type="radio" name="allergies" value="Required" required/> Required </label> &nbsp &nbsp
-                            <label><input type="radio" name="allergies" value="not_permitted" required/> Not Permitted </label>
+                            <label><input type="radio" name="allergies" value="not_permitted" required/> Not Permitted </label>&nbsp &nbsp
                             <label><input type = "radio" name = "allergies" value = "doesnt_matter" required/> Neither </label>
                             </div><span class="Error"></span>
                         </div>
@@ -576,7 +560,7 @@
                             <div class = "col-md-4">
                             <label>Asthma: &nbsp</label></div><div class = "col">
                             <label><input type="radio" name="asthma" value="Required" required/> Required </label> &nbsp &nbsp
-                            <label><input type="radio" name="asthma" value="not_permitted" required/> Not Permitted </label>
+                            <label><input type="radio" name="asthma" value="not_permitted" required/> Not Permitted </label>&nbsp &nbsp
                             <label><input type = "radio" name = "asthma" value = "doesnt_matter" required/> Neither </label>
                             </div><span class="Error"></span>
                         </div>
@@ -584,7 +568,7 @@
                             <div class = "col-md-4">
                             <label>Blood disease: &nbsp</label></div><div class = "col">
                             <label><input type="radio" name="blood_disease" value="Required" required/> Required </label> &nbsp &nbsp
-                            <label><input type="radio" name="blood_disease" value="not_permitted" required/> Not Permitted </label>
+                            <label><input type="radio" name="blood_disease" value="not_permitted" required/> Not Permitted </label>&nbsp &nbsp
                             <label><input type = "radio" name = "blood_disease" value = "doesnt_matter" required/> Neither </label>
                             </div><span class="Error"></span>
                         </div>
@@ -592,7 +576,7 @@
                             <div class = "col-md-4">
                             <label>Cancer: &nbsp</label></div><div class = "col">
                             <label><input type="radio" name="cancer" value="Required" required/> Required </label> &nbsp &nbsp
-                            <label><input type="radio" name="cancer" value="not_permitted" required/> Not Permitted </label>
+                            <label><input type="radio" name="cancer" value="not_permitted" required/> Not Permitted </label>&nbsp &nbsp
                             <label><input type = "radio" name = "cancer" value = "doesnt_matter" required/> Neither </label>
                             </div><span class="Error"></span>
                         </div>
@@ -600,7 +584,7 @@
                             <div class = "col-md-4">
                             <label>Dizziness/Fainting: &nbsp</label></div><div class = "col">
                             <label><input type="radio" name="dizziness" value="Required" required/> Required </label> &nbsp &nbsp
-                            <label><input type="radio" name="dizziness" value="not_permitted" required/> Not Permitted </label>
+                            <label><input type="radio" name="dizziness" value="not_permitted" required/> Not Permitted </label>&nbsp &nbsp
                             <label><input type = "radio" name = "dizziness" value = "doesnt_matter" required/> Neither </label>
                             </div><span class="Error"></span>
                         </div>
@@ -608,7 +592,7 @@
                             <div class = "col-md-4">
                             <label>Diabetes: &nbsp</label></div><div class = "col">
                             <label><input type="radio" name="diabetes" value="Required" required/> Required </label> &nbsp &nbsp
-                            <label><input type="radio" name="diabetes" value="not_permitted" required/> Not Permitted </label>
+                            <label><input type="radio" name="diabetes" value="not_permitted" required/> Not Permitted </label>&nbsp &nbsp
                             <label><input type = "radio" name = "diabetes" value = "doesnt_matter" required/> Neither </label>
                             </div><span class="Error"></span>
                         </div>
@@ -616,7 +600,7 @@
                             <div class = "col-md-4">
                             <label>Epilepsy: &nbsp</label></div><div class = "col">
                             <label><input type="radio" name="epilepsy" value="Required" required/> Required </label> &nbsp &nbsp
-                            <label><input type="radio" name="epilepsy" value="not_permitted" required/> Not Permitted </label>
+                            <label><input type="radio" name="epilepsy" value="not_permitted" required/> Not Permitted </label>&nbsp &nbsp
                             <label><input type = "radio" name = "epilepsy" value = "doesnt_matter" required/> Neither </label>
                             </div><span class="Error"></span>
                         </div>
@@ -624,7 +608,7 @@
                             <div class = "col-md-4">
                             <label>Excessive bleeding: &nbsp</label></div><div class = "col">
                             <label><input type="radio" name="bleeding" value="Required" required/> Required </label> &nbsp &nbsp
-                            <label><input type="radio" name="bleeding" value="not_permitted" required/> Not Permitted </label>
+                            <label><input type="radio" name="bleeding" value="not_permitted" required/> Not Permitted </label>&nbsp &nbsp
                             <label><input type = "radio" name = "bleeding" value = "doesnt_matter" required/> Neither </label>
                             </div><span class="Error"></span>
                         </div>
@@ -632,7 +616,7 @@
                             <div class = "col-md-4">
                             <label>Glaucoma: &nbsp</label></div><div class = "col">
                             <label><input type="radio" name="glaucoma" value="Required" required/> Required </label> &nbsp &nbsp
-                            <label><input type="radio" name="glaucoma" value="not_permitted" required/> Not Permitted </label>
+                            <label><input type="radio" name="glaucoma" value="not_permitted" required/> Not Permitted </label>&nbsp &nbsp
                             <label><input type = "radio" name = "glaucoma" value = "doesnt_matter" required/> Neither </label>
                             </div><span class="Error"></span>
                         </div>
@@ -640,7 +624,7 @@
                             <div class = "col-md-4">
                             <label>Heart disease or murmur: &nbsp</label></div><div class = "col">
                             <label><input type="radio" name="heartmurmur" value="Required" required/> Required </label> &nbsp &nbsp
-                            <label><input type="radio" name="heartmurmur" value="not_permitted" required/> Not Permitted </label>
+                            <label><input type="radio" name="heartmurmur" value="not_permitted" required/> Not Permitted </label>&nbsp &nbsp
                             <label><input type = "radio" name = "heartmurmur" value = "doesnt_matter" required/> Neither </label>
                             </div><span class="Error"></span>
                         </div>
@@ -648,7 +632,7 @@
                             <div class = "col-md-4">
                             <label>Hepatitis: &nbsp</label></div><div class = "col">
                             <label><input type="radio" name="hepatitis" value="Required" required/> Required </label> &nbsp &nbsp
-                            <label><input type="radio" name="hepatitis" value="not_permitted" required/> Not Permitted </label>
+                            <label><input type="radio" name="hepatitis" value="not_permitted" required/> Not Permitted </label>&nbsp &nbsp
                             <label><input type = "radio" name = "hepatitis" value = "doesnt_matter" required/> Neither </label>
                             </div><span class="Error"></span>
                         </div>
@@ -658,7 +642,7 @@
                             </div>
                             <div class = "col">
                                 <label><input type="radio" name="high_bp" value="Required" required/> Required </label> &nbsp &nbsp
-                                <label><input type="radio" name="high_bp" value="No" net_permittedquired/> Not Permitted </label>
+                                <label><input type="radio" name="high_bp" value="No" net_permittedquired/> Not Permitted </label>&nbsp &nbsp
                                 <label><input type = "radio" name = "high_bp" value = "doesnt_matter" required/> Neither </label>
                             </div>
                             <span class="Error"></span>
@@ -670,7 +654,7 @@
                             <div class = "col-md-4">
                             <label>HIV/AIDS: &nbsp</label></div><div class = "col">
                             <label><input type="radio" name="hiv" value="Required" required/> Required </label> &nbsp &nbsp
-                            <label><input type="radio" name="hiv" value="not_permitted" required/> Not Permitted </label>
+                            <label><input type="radio" name="hiv" value="not_permitted" required/> Not Permitted </label>&nbsp &nbsp
                             <label><input type = "radio" name = "hiv" value = "doesnt_matter" required/> Neither </label>
                             </div><span class="Error"></span>
                         </div>
@@ -679,7 +663,7 @@
                             <div class = "col-md-4">
                             <label>Kidney disease: &nbsp</label></div><div class = "col">
                             <label><input type="radio" name="kidney" value="Required" required/> Required </label> &nbsp &nbsp
-                            <label><input type="radio" name="kidney" value="not_permitted" required/> Not Permitted </label>
+                            <label><input type="radio" name="kidney" value="not_permitted" required/> Not Permitted </label>&nbsp &nbsp
                             <label><input type = "radio" name = "kidney" value = "doesnt_matter" required/> Neither </label>
                             </div><span class="Error"></span>
                         </div>
@@ -688,7 +672,7 @@
                             <div class = "col-md-4">
                             <label>Liver disease: &nbsp</label></div><div class = "col">
                             <label><input type="radio" name="Liver" value="Required" required/> Required </label> &nbsp &nbsp
-                            <label><input type="radio" name="Liver" value="not_permitted" required/> Not Permitted </label>
+                            <label><input type="radio" name="Liver" value="not_permitted" required/> Not Permitted </label>&nbsp &nbsp
                             <label><input type = "radio" name = "Liver" value = "doesnt_matter" required/> Neither </label>
                             </div><span class="Error"></span>
                         </div>
@@ -696,7 +680,7 @@
                             <div class = "col-md-4">
                             <label>Osteoporosis: &nbsp</label></div><div class = "col">
                             <label><input type="radio" name="Osteoporosis" value="Required" required/> Required </label> &nbsp &nbsp
-                            <label><input type="radio" name="Osteoporosis" value="not_permitted" required/> Not Permitted </label>
+                            <label><input type="radio" name="Osteoporosis" value="not_permitted" required/> Not Permitted </label>&nbsp &nbsp
                             <label><input type = "radio" name = "Osteoporosis" value = "doesnt_matter" required/> Neither </label>
                             </div><span class="Error"></span>
                         </div>
@@ -704,7 +688,7 @@
                             <div class = "col-md-4">
                             <label>Pacemaker: &nbsp</label></div><div class = "col">
                             <label><input type="radio" name="Pacemaker" value="Required" required/> Required </label> &nbsp &nbsp
-                            <label><input type="radio" name="Pacemaker" value="not_permitted" required/> Not Permitted </label>
+                            <label><input type="radio" name="Pacemaker" value="not_permitted" required/> Not Permitted </label>&nbsp &nbsp
                             <label><input type = "radio" name = "Pacemaker" value = "doesnt_matter" required/> Neither </label>
                             </div><span class="Error"></span>
                         </div>
@@ -712,7 +696,7 @@
                             <div class = "col-md-4">
                             <label>Psychological disorders: &nbsp</label></div><div class = "col">
                             <label><input type="radio" name="psych" value="Required" required/> Required </label> &nbsp &nbsp
-                            <label><input type="radio" name="psych" value="not_permitted" required/> Not Permitted </label>
+                            <label><input type="radio" name="psych" value="not_permitted" required/> Not Permitted </label>&nbsp &nbsp
                             <label><input type = "radio" name = "psych" value = "doesnt_matter" required/> Neither </label>
                             </div><span class="Error"></span>
                         </div>
@@ -720,7 +704,7 @@
                             <div class = "col-md-4">
                             <label>Rheumatic fever: &nbsp</label></div><div class = "col">
                             <label><input type="radio" name="rheu" value="Required" required/> Required </label> &nbsp &nbsp
-                            <label><input type="radio" name="rheu" value="not_permitted" required/> Not Permitted </label>
+                            <label><input type="radio" name="rheu" value="not_permitted" required/> Not Permitted </label>&nbsp &nbsp
                             <label><input type = "radio" name = "rheu" value = "doesnt_matter" required/> Neither </label>
                             </div><span class="Error"></span>
                         </div>
@@ -728,7 +712,7 @@
                             <div class = "col-md-4">
                             <label>Radiation therapy: &nbsp</label></div><div class = "col">
                             <label><input type="radio" name="rad" value="Required" required/> Required </label> &nbsp &nbsp
-                            <label><input type="radio" name="rad" value="not_permitted" required/> Not Permitted </label>
+                            <label><input type="radio" name="rad" value="not_permitted" required/> Not Permitted </label>&nbsp &nbsp
                             <label><input type = "radio" name = "rad" value = "doesnt_matter" required/> Neither </label>
                             </div><span class="Error"></span>
                         </div>
@@ -736,7 +720,7 @@
                             <div class = "col-md-4">
                             <label>Respiratory problems: &nbsp</label></div><div class = "col">
                             <label><input type="radio" name="resp" value="Required" required/> Required </label> &nbsp &nbsp
-                            <label><input type="radio" name="resp" value="not_permitted" required/> Not Permitted </label>
+                            <label><input type="radio" name="resp" value="not_permitted" required/> Not Permitted </label>&nbsp &nbsp
                             <label><input type = "radio" name = "resp" value = "doesnt_matter" required/> Neither </label>
                             </div><span class="Error"></span>
                         </div>
@@ -744,7 +728,7 @@
                             <div class = "col-md-4">
                             <label>Stroke: &nbsp</label></div><div class = "col">
                             <label><input type="radio" name="Stroke" value="Required" required/> Required </label> &nbsp &nbsp
-                            <label><input type="radio" name="Stroke" value="not_permitted" required/> Not Permitted </label>
+                            <label><input type="radio" name="Stroke" value="not_permitted" required/> Not Permitted </label>&nbsp &nbsp
                             <label><input type = "radio" name = "Stroke" value = "doesnt_matter" required/> Neither </label>
                             </div><span class="Error"></span>
                         </div>
@@ -752,7 +736,7 @@
                             <div class = "col-md-4">
                             <label>Sinus problems: &nbsp</label></div><div class = "col">
                             <label><input type="radio" name="Sinus" value="Required" required/> Required </label> &nbsp &nbsp
-                            <label><input type="radio" name="Sinus" value="not_permitted" required/> Not Permitted </label>
+                            <label><input type="radio" name="Sinus" value="not_permitted" required/> Not Permitted </label>&nbsp &nbsp
                             <label><input type = "radio" name = "Sinus" value = "doesnt_matter" required/> Neither </label>
                             </div><span class="Error"></span>
                         </div>
@@ -760,7 +744,7 @@
                             <div class = "col-md-4">
                             <label>Tumours: &nbsp</label></div><div class = "col">
                             <label><input type="radio" name="Tumours" value="Required" required/> Required </label> &nbsp &nbsp
-                            <label><input type="radio" name="Tumours" value="not_permitted" required/> Not Permitted </label>
+                            <label><input type="radio" name="Tumours" value="not_permitted" required/> Not Permitted </label>&nbsp &nbsp
                             <label><input type = "radio" name = "Tumours" value = "doesnt_matter" required/> Neither </label>
                             </div><span class="Error"></span>
                         </div>
@@ -768,12 +752,12 @@
                             <div class = "col-md-4">
                             <label>Turberculosis: &nbsp</label></div><div class = "col">
                             <label><input type="radio" name="Turberculosis" value="Required" required/> Required </label> &nbsp &nbsp
-                            <label><input type="radio" name="Turberculosis" value="not_permitted" required/> Not Permitted </label>
+                            <label><input type="radio" name="Turberculosis" value="not_permitted" required/> Not Permitted </label>&nbsp &nbsp
                             <label><input type = "radio" name = "Turberculosis" value = "doesnt_matter" required/> Neither </label>
                             </div><span class="Error"></span>
                         </div>                       
                     </div>
-               </div>
+               </div> -->
 
                 <div class="form-group">
                     <input id = "createTrial" class="btn btn-primary btn-block" type="submit" value="Save Changes"/>

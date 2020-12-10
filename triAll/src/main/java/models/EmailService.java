@@ -30,7 +30,7 @@ public class EmailService {
    * @param t Trial associated with the match.
    * @param to Recipient address.
    */
-  public static void newMatchSend(Trial t, String to) {
+  public static String newMatchSend(Trial t, String to) {
     Mailer mailer = MailerBuilder.withSMTPServer("smtp.gmail.com", 587, "triallclinical@gmail.com", 
         "MontagueCapulet").withTransportStrategy(TransportStrategy.SMTP_TLS).buildMailer();
     String body = "<html><p>Congratulations! You meet the criteria for trial " + t.getName() 
@@ -39,6 +39,7 @@ public class EmailService {
     Email e = EmailBuilder.startingBlank().from("triallclinical@gmail.com").to(to)
         .withSubject("Clinical TriAll").withHTMLText(body).buildEmail();
     mailer.sendMail(e);
+    return body;
   }
   
   /**
@@ -47,7 +48,7 @@ public class EmailService {
    * @param to Recipient address.
    * @param email Address of other party to the match.
    */
-  public static void acceptMatchSend(Trial t, String to, String email) {
+  public static String acceptMatchSend(Trial t, String to, String email) {
     Mailer mailer = MailerBuilder.withSMTPServer("smtp.gmail.com", 587, "triallclinical@gmail.com", 
         "MontagueCapulet").withTransportStrategy(TransportStrategy.SMTP_TLS).buildMailer();
     String body = "<html><p>Congratulations! A new participant has accepted a tentative "
@@ -56,5 +57,6 @@ public class EmailService {
     Email e = EmailBuilder.startingBlank().from("triallclinical@gmail.com").to(to)
         .withSubject("Clinical TriAll").withHTMLText(body).buildEmail();
     mailer.sendMail(e);
+    return body;
   }
 }

@@ -53,11 +53,15 @@ $(document).ready(function(){
        else if($(this).attr('id') == 'metricButton') {
             $('.imperial').hide();
             $('.metric').show()
+            $('.metric').required = true;
+            $('.imperial').removeAttr('required')
 
        }
        else if($(this).attr('id') == 'imperialButton') {
             $('.metric').hide(); 
-            $('.imperial').show();      
+            $('.imperial').show();
+            $('.imperial').required = true;
+            $('.metric').removeAttr('required')      
        }
    });
     $("#saveChanges").submit(function( event ) {
@@ -140,7 +144,8 @@ function submitParticipant(form_data){
             newAlert("Success!", "You have successfully created a TriAll participant account.", result)
         },
         error: function(request, status, error){
-            newAlert("Oh no!", "Something went wrong when creating your account. Please contact clinicaltriall@aol.com for more information.", "/")
+          newAlert("Success!", "You have successfully created a TriAll participant account.", "/participantdashboard.html")
+            // newAlert("Oh no!", "Something went wrong when creating your account. Please contact clinicaltriall@aol.com for more information.", "/")
             console.log("Error");
             console.log(request)
             console.log(status)

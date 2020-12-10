@@ -6,8 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import controllers.TriAll;
+<<<<<<< HEAD
 
 import java.io.File;
+=======
+import database.SqliteDB;
+
+>>>>>>> cc4ffdeb10ee062b73204da68616859b4aad6353
 import java.util.HashMap;
 import java.util.LinkedList;
 import models.Criteria;
@@ -23,11 +28,12 @@ import org.json.CDL;
 import org.json.JSONObject;
 import org.json.CDL;
 import org.json.JSONArray;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import units.SqliteDB;
+import org.junit.jupiter.api.TestMethodOrder;
 
-
+@TestMethodOrder(OrderAnnotation.class)
 public class TriAllTest {
 
   // test Criteria.matches
@@ -53,7 +59,8 @@ public class TriAllTest {
   
   
   //User equiv. class 1
-  @Test 
+  @Test
+  @Order(1)
   public void testGoodUser() {
     User goodPart = new User(1, 80.0, 80.0, "kansas", "Jane", "Doe", "JaneDoe@gmail.com", false);
     double lat = goodPart.getLat();
@@ -61,7 +68,8 @@ public class TriAllTest {
   }
   
   //User equiv. class 2
-  @Test 
+  @Test
+  @Order(2)
   public void testJustBelowUser() {
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
       User justBelow = new User(-1, -90.1, -180.1, "", "", "", "", false);
@@ -69,7 +77,8 @@ public class TriAllTest {
   }
   
   //User equiv. class 3
-  @Test 
+  @Test
+  @Order(3)
   public void testJustAboveUser() {
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
       User justAbove = new User(1, 90.1, 180.1, "", "", "", "", false);
@@ -84,7 +93,8 @@ public class TriAllTest {
   }
   
   //User equiv. class 4
-  @Test 
+  @Test
+  @Order(4)
   public void badStringsUser() {
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
       User badStrings = new User(1, 80.0, 80.0, "", "432", "123", "JaneDoe.com", false);
@@ -114,6 +124,7 @@ public class TriAllTest {
   
   //Notification equiv. class 1
   @Test
+  @Order(5)
   public void goodTimeNotification() {
     SqliteDB db = new SqliteDB("triall");
     Notification goodTime = new Notification(db, 1, "10:15:10", "new trial");
@@ -125,6 +136,7 @@ public class TriAllTest {
   
   //Notification equiv. class 2
   @Test
+  @Order(6)
   public void badIdMessageNotification() {
     SqliteDB db = new SqliteDB("triall");
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
@@ -134,6 +146,7 @@ public class TriAllTest {
   
   //Notification equiv. class 3
   @Test
+  @Order(7)
   public void badTimeNotification() {
     SqliteDB db = new SqliteDB("triall");
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
@@ -143,7 +156,7 @@ public class TriAllTest {
   
   //Trial equiv class 0 (correct behavior)
   @Test 
-  @Order(1)
+  @Order(8)
   public void goodTrial() {
     String location = tr.getLocation();
     Criteria crit = tr.getCriteria();
@@ -151,7 +164,8 @@ public class TriAllTest {
   }
   
   //Trial equiv class 1 (wrong input, just below)
-  @Test 
+  @Test
+  @Order(9)
   public void testJustBelowTrial() {
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
       Trial t = new Trial(-1, "name", "", -90.1, -180.1, "", "2020-12-01", "2020-12-02", -1.0, 123, -1, -1, crit);
@@ -160,6 +174,7 @@ public class TriAllTest {
   
   //Trial equiv class 2 (wrong input, just above)
   @Test
+  @Order(10)
   public void testAboveTrial() {
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
       Trial t = new Trial(3, "name", "desc", 90.1, 180.1, "loc", "2020-12-40", "2020-12-50", 10, 123456, 0, 0, crit);
@@ -168,6 +183,7 @@ public class TriAllTest {
   
   //Trial equiv class 3 (wrong input dates, at boundary)
   @Test
+  @Order(11)
   public void wrongDateTrial() {
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
       Trial t = new Trial(3, "name", "desc", 90, 180, "loc", "2020-14-12", "2020-15-12", 10, 1234, 0, 0, crit);
@@ -175,6 +191,7 @@ public class TriAllTest {
   }
   
   @Test
+  @Order(12)
   public void noNameTrial() {
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
       Trial t = new Trial(3, "", "desc", 90, 180, "loc", "2020-14-12", "2020-15-12", 10, 1234, 0, 0, crit);
@@ -182,6 +199,7 @@ public class TriAllTest {
   }
   
   @Test
+  @Order(13)
   public void noDescTrial() {
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
       Trial t = new Trial(3, "name", "", 90, 180, "loc", "2020-14-12", "2020-15-12", 10, 1234, 0, 0, crit);
@@ -189,6 +207,7 @@ public class TriAllTest {
   }
   
   @Test
+  @Order(14)
   public void lonAboveTrial() {
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
       Trial t = new Trial(3, "name", "desc", 90, 180.1, "loc", "2020-14-12", "2020-15-12", 10, 1234, 0, 0, crit);
@@ -196,6 +215,7 @@ public class TriAllTest {
   }
   
   @Test
+  @Order(15)
   public void noLocTrial() {
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
       Trial t = new Trial(3, "name", "desc", 90, 180, "", "2020-14-12", "2020-15-12", 10, 1234, 0, 0, crit);
@@ -203,6 +223,7 @@ public class TriAllTest {
   }
   
   @Test
+  @Order(16)
   public void endAboveTrial() {
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
       Trial t = new Trial(3, "name", "desc", 70.0, 170.0, "loc", "2020-12-12", "2020-15-12", 10, 1234, 0, 0, crit);
@@ -210,6 +231,7 @@ public class TriAllTest {
   }
   
   @Test
+  @Order(17)
   public void payBelowTrial() {
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
       Trial t = new Trial(3, "name", "desc", 90, 180, "loc", "2020-12-12", "2020-12-14", -1, 1234, 0, 0, crit);
@@ -217,6 +239,7 @@ public class TriAllTest {
   }
   
   @Test
+  @Order(18)
   public void irbAboveTrial() {
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
       Trial t = new Trial(3, "name", "desc", 90, 180, "loc", "2020-12-12", "2020-12-14", 10, 123456, 0, 0, crit);
@@ -224,6 +247,7 @@ public class TriAllTest {
   }
   
   @Test
+  @Order(19)
   public void partNeededBelowTrial() {
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
       Trial t = new Trial(3, "name", "desc", 90, 180, "loc", "2020-12-12", "2020-12-14", 10, 1234, -1, 0, crit);
@@ -231,6 +255,7 @@ public class TriAllTest {
   }
   
   @Test
+  @Order(20)
   public void partConfirmedBelowTrial() {
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
       Trial t = new Trial(3, "name", "desc", 90, 180, "loc", "2020-12-12", "2020-12-14", 10, 1234, 0, -1, crit);
@@ -239,13 +264,15 @@ public class TriAllTest {
   
   //Criteria equiv class 0 (correct behavior)
   @Test
+  @Order(21)
   public void goodCriteria() {
     String gender = crit.getGender();
     assertEquals("Male", gender);
   }
   
   //Criteria equiv class 1 
-  @Test 
+  @Test
+  @Order(22)
   public void testJustBelowCriteria() {
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
       Criteria c = new Criteria(-1, -1, 17, 110, -10.0, -12.0, -100.0, -120.0, "Female", "white", "american");
@@ -253,7 +280,8 @@ public class TriAllTest {
   }
   
   ///Criteria equiv class 2 
-  @Test 
+  @Test
+  @Order(23)
   public void testJustAboveCriteria() {
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
       Criteria c = new Criteria(1, 1, 18, 121, 10.0, 12.0, 100.0, 120.0, "Female", "white", "american");
@@ -261,7 +289,8 @@ public class TriAllTest {
   }
   
   //Criteria equiv class 3
-  @Test 
+  @Test
+  @Order(24)
   public void badStringCriteria() {
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
       Criteria c = new Criteria(1, 1, 18, 120, 10.0, 12.0, 100.0, 120.0, "", "", "");
@@ -271,7 +300,7 @@ public class TriAllTest {
   
   //Match equiv. class 0 (correct behavior)
   @Test 
-  @Order(5)
+  @Order(25)
   public void goodMatch() {
     Match goodMatch = new Match(1, tr, 0.5, "accepted");
     double dist = goodMatch.getDistance();
@@ -280,6 +309,7 @@ public class TriAllTest {
   }
   
   @Test 
+  @Order(26)
   public void goodMatch1() {
     SqliteDB db = new SqliteDB("triall");
     Match goodMatch = new Match(user1, tr, db);
@@ -291,6 +321,7 @@ public class TriAllTest {
   
   //Match equiv. class 1 (wrong input, just below + empty string)
   @Test
+  @Order(27)
   public void badDistMatch() {
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
       Match badDist = new Match(-1, tr, -1.1, "");
@@ -299,6 +330,7 @@ public class TriAllTest {
   
   //Match equiv. class 2 (wrong input, just below + correct string)
   @Test
+  @Order(28)
   public void badDistCorrectStatusMatch() {
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
       Match badDist = new Match(1, tr, -1.1, "accepted");
@@ -307,6 +339,7 @@ public class TriAllTest {
   
   //Match equiv. class 3 (wrong input, at boundary + incorrect string)
   @Test
+  @Order(29)
   public void badStatusMatch() {
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
       Match badStatus = new Match(1, tr, 1.1, "uhIdk");
@@ -314,6 +347,7 @@ public class TriAllTest {
   }
  
   @Test
+  @Order(30)
   public void testMatches() {
     Criteria c = new Criteria(1, 1, 23, 23, 67, 67, 130, 130, "Male", "cool", "cool");
     boolean isMatch = crit.matches(c);
@@ -321,26 +355,28 @@ public class TriAllTest {
   }
 
   @Test
+  @Order(31)
   public void testUpdate() {
     user1.update(0, 0, "Shirish", "Shirish", "shirishIsNotCool@gmail.com");
     assertEquals("shirishIsNotCool@gmail.com", user1.getEmail());
   }
 
   @Test
-  @Order(2)
+  @Order(32)
   public void addTrial() {
     user2.addTrial(1, tr);
     assertEquals(user2.getTrial(1).getID(), 1);
   }
 
   @Test
+  @Order(33)
   public void containsTrial() {
     user2.addTrial(1, tr);
     assertEquals(user2.containsTrial(1), true);
   }
 
   @Test
-  @Order(3)
+  @Order(34)
   public void sortedMatches() {
     Trial t2 = new Trial(2, "name", "cooler trial", 1, 1, "Siberia", "2020-12-01", "2020-12-02", 
         12, 1234, 100, 0, crit);
@@ -350,7 +386,7 @@ public class TriAllTest {
   }
 
   @Test
-  @Order(4)
+  @Order(35)
   public void sortedTrials() {
     Trial t1 = new Trial(2, "name", "even cooler trial", 1, 1, "NYC", "2020-12-01", "2020-12-02", 
         12, 1234, 100, 0, crit);
@@ -362,18 +398,21 @@ public class TriAllTest {
   }
 
   @Test
+  @Order(36)
   public void distance() {
     double dist = user1.distance(0, 0, 0, 0, "M");
     assertEquals(dist, 0);
   }
 
   @Test
+  @Order(37)
   public void authenticate() {
     boolean auth = TriAll.authenticate(",", "notRealEmail@fake.com");
     assertEquals(auth, false);
   }
   
   @Test 
+  @Order(38)
   public void testAccept() {
     SqliteDB db = new SqliteDB("triall");
     User res = new User(1, 80.0, 80.0, "kansas", "Jane", "Doe", "sophiakolak@gmail.com", true);
@@ -397,6 +436,7 @@ public class TriAllTest {
   }
   
   @Test 
+  @Order(39)
   public void testBadAccept() {
     SqliteDB db = new SqliteDB("triall");
     User res = new User(1, 80.0, 80.0, "kansas", "Jane", "Doe", "sophiakolak@gmail.com", true);
@@ -420,6 +460,7 @@ public class TriAllTest {
   }
   
   @Test 
+  @Order(40)
   public void testReject() {
     SqliteDB db = new SqliteDB("triall");
     Match goodMatch = new Match(1, tr, 0.5, "pending");
@@ -428,6 +469,7 @@ public class TriAllTest {
   }
   
   @Test 
+<<<<<<< HEAD
   public void testRestartUser() {
     User goodPart1 = new User(1, 80.0, 80.0, "kansas", "Jane", "Doe", "JaneDoe@gmail.com", false);
     User goodPart2 = new User(2, 80.0, 80.0, "kansas", "John", "Doe", "JaneDoe@gmail.com", false);
@@ -444,6 +486,9 @@ public class TriAllTest {
   }
   
   @Test 
+=======
+  @Order(41)
+>>>>>>> cc4ffdeb10ee062b73204da68616859b4aad6353
   public void testTrialForm() {
     SqliteDB b = new SqliteDB("triall");
     b.drop("researchers");
@@ -539,6 +584,7 @@ public class TriAllTest {
   }
   
   @Test 
+  @Order(42)
   public void testUpdateTrial() {
     SqliteDB b = new SqliteDB("triall");
     b.drop("researchers");
