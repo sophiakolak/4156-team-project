@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>Notification.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=2;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">TriAllTest (Dec 10, 2020 4:06:08 AM)</a> &gt; <a href="../../index.html" class="el_group">triAll</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">models</a> &gt; <span class="el_source">Notification.java</span></div><h1>Notification.java</h1><pre class="source lang-java linenums">package models;
+
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
+
+import database.SqliteDB;
+
+public class Notification {
+  private String time;
+  private String trialName;
+  private String message;
+
+  /**
+   * Create new notification.
+   */
+<span class="fc" id="L16">  public Notification(SqliteDB db, int id, String time, String message) {</span>
+<span class="fc bfc" id="L17" title="All 2 branches covered.">    if (!isValidIsoDateTime(time)) {</span>
+<span class="fc" id="L18">      throw new IllegalArgumentException(&quot;invalid date/time&quot;);</span>
+    }
+<span class="fc" id="L20">    this.time = time;</span>
+<span class="fc bfc" id="L21" title="All 2 branches covered.">    if (id &lt;= 0) {</span>
+<span class="fc" id="L22">      throw new IllegalArgumentException(&quot;ID must be &gt; 0&quot;);</span>
+    }
+<span class="fc" id="L24">    trialName = db.loadTrial(id).getName();</span>
+<span class="pc bpc" id="L25" title="1 of 2 branches missed.">    if (message == &quot;&quot;) {</span>
+<span class="nc" id="L26">      throw new IllegalArgumentException(&quot;Message must not be empty&quot;);</span>
+    }
+<span class="fc" id="L28">    this.message = message;</span>
+<span class="fc" id="L29">  }</span>
+  
+  public String getTime() {
+<span class="fc" id="L32">    return time;</span>
+  }
+  
+  public String getTrial() {
+<span class="fc" id="L36">    return trialName;</span>
+  }
+  
+  public String getMessage() {
+<span class="fc" id="L40">    return message;</span>
+  }
+  
+  public void store(SqliteDB db, int trialID, int parent, boolean toRes) {
+<span class="fc bfc" id="L44" title="All 2 branches covered.">    if (toRes) {</span>
+<span class="fc" id="L45">      db.insertNotification(trialID, parent, 0, time, message);</span>
+<span class="fc" id="L46">    } else {</span>
+<span class="fc" id="L47">      db.insertNotification(trialID, 0, parent, time, message);</span>
+    }
+<span class="fc" id="L49">  }</span>
+  
+  /**
+   * Checks whether the given time string is valid.
+   * @param time Time string.
+   * @return Whether it is valid.
+   */
+  private boolean isValidIsoDateTime(String time) {
+    try {
+<span class="fc" id="L58">      LocalTime.parse(time);</span>
+<span class="fc" id="L59">      return true;</span>
+<span class="fc" id="L60">    } catch (DateTimeParseException e) {</span>
+<span class="fc" id="L61">      return false;</span>
+    }
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span>TriAllTest (Dec 10, 2020 4:06:08 AM)</div></body></html>

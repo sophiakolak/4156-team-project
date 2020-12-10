@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>User.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=2;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">TriAllTest (Dec 10, 2020 4:06:08 AM)</a> &gt; <a href="../../index.html" class="el_group">triAll</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">models</a> &gt; <span class="el_source">User.java</span></div><h1>User.java</h1><pre class="source lang-java linenums">package models;
+
+import com.google.gson.JsonArray;
+
+import database.SqliteDB;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.regex.Pattern;
+
+public class User {
+  private int id;
+  private double lat;
+  private double lon;
+  private String location;
+  private String first;
+  private String last;
+  private String email;
+  private boolean isResearcher;
+  private Criteria data;
+  private boolean loggedIn;
+  private HashMap&lt;Integer, Trial&gt; trials;
+  private LinkedList&lt;Match&gt; matches;
+
+<span class="fc" id="L29">  private final Comparator&lt;Trial&gt; dateCompare = new Comparator&lt;Trial&gt;() {</span>
+    @Override
+    public int compare(Trial t1, Trial t2) {
+      try {
+<span class="fc" id="L33">        Date d1 = new SimpleDateFormat(&quot;yyyy-MM-dd&quot;).parse(t1.getStart());</span>
+<span class="fc" id="L34">        Date d2 = new SimpleDateFormat(&quot;yyyy-MM-dd&quot;).parse(t2.getStart());</span>
+<span class="fc" id="L35">        return d1.compareTo(d2);</span>
+<span class="nc" id="L36">      } catch (ParseException e) {</span>
+<span class="nc" id="L37">        return 0;</span>
+      }
+    }
+  };
+
+<span class="fc" id="L42">  private final Comparator&lt;Match&gt; distCompare = new Comparator&lt;Match&gt;() {</span>
+    @Override
+    public int compare(Match m1, Match m2) {
+<span class="fc" id="L45">      return Double.compare(m1.getDistance(), m2.getDistance());</span>
+    }
+  };
+
+<span class="fc" id="L49">  public User() {</span>
+<span class="fc" id="L50">    loggedIn = false;</span>
+<span class="fc" id="L51">  }</span>
+  
+
+  /**
+   * Creating user.
+   */
+<span class="fc" id="L57">  public User(int id, double lat, double lon, String location, String first, </span>
+      String last, String email, boolean isR) {
+<span class="fc bfc" id="L59" title="All 2 branches covered.">    if (id &lt;= 0) {</span>
+<span class="fc" id="L60">      throw new IllegalArgumentException(&quot;id must be &gt; 0&quot;);</span>
+    }
+<span class="fc" id="L62">    this.id = id;</span>
+<span class="pc bpc" id="L63" title="1 of 4 branches missed.">    if (lat &lt; -90.0 || lat &gt; 90.0) {</span>
+<span class="fc" id="L64">      throw new IllegalArgumentException(&quot;latitude must be between -90.0 and 90.0&quot;);</span>
+    }
+<span class="fc" id="L66">    this.lat = lat;</span>
+<span class="pc bpc" id="L67" title="1 of 4 branches missed.">    if (lon &lt; -180.0 || lon &gt; 180.0) {</span>
+<span class="fc" id="L68">      throw new IllegalArgumentException(&quot;longitude must be between -180.0 and 180.0&quot;);</span>
+    }
+<span class="fc" id="L70">    this.lon = lon;</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">    if (location == &quot;&quot;) {</span>
+<span class="fc" id="L72">      throw new IllegalArgumentException(&quot;location must not be empty&quot;);</span>
+    }
+<span class="fc" id="L74">    this.location = location;</span>
+<span class="pc bpc" id="L75" title="1 of 4 branches missed.">    if (!Pattern.matches(&quot;[a-zA-Z]+&quot;, first) || first == &quot;&quot;) {</span>
+<span class="fc" id="L76">      throw new IllegalArgumentException(&quot;first name must not be empty&quot;);</span>
+    }
+<span class="fc" id="L78">    this.first = first;</span>
+<span class="pc bpc" id="L79" title="1 of 4 branches missed.">    if (!Pattern.matches(&quot;[a-zA-Z]+&quot;, last) || last == &quot;&quot;) {</span>
+<span class="fc" id="L80">      throw new IllegalArgumentException(&quot;last name must not be empty&quot;);</span>
+    }
+<span class="fc" id="L82">    this.last = last;</span>
+<span class="pc bpc" id="L83" title="1 of 4 branches missed.">    if (!email.contains(&quot;@&quot;) || email == &quot;&quot;) {</span>
+<span class="fc" id="L84">      throw new IllegalArgumentException(&quot;email must not be empty and contain @ symbol&quot;);</span>
+    }
+<span class="fc" id="L86">    this.email = email;</span>
+<span class="fc" id="L87">    isResearcher = isR;</span>
+<span class="fc" id="L88">    loggedIn = true;</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">    if (isR) {</span>
+<span class="fc" id="L90">      trials = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L91">    } else {</span>
+<span class="fc" id="L92">      matches = new LinkedList&lt;&gt;();</span>
+    }
+<span class="fc" id="L94">  }</span>
+  
+  /**
+   * Reset this object's fields.
+   * @param u User object to copy into this.
+   */
+  public void restart(User u) {
+<span class="fc" id="L101">    this.id = u.id;</span>
+<span class="fc" id="L102">    this.lat = u.lat;</span>
+<span class="fc" id="L103">    this.lon = u.lon;</span>
+<span class="fc" id="L104">    this.location = u.location;</span>
+<span class="fc" id="L105">    this.first = u.first;</span>
+<span class="fc" id="L106">    this.last = u.last;</span>
+<span class="fc" id="L107">    this.email = u.email;</span>
+<span class="fc" id="L108">    isResearcher = u.isResearcher;</span>
+<span class="fc" id="L109">    loggedIn = true;</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">    if (isResearcher) {</span>
+<span class="fc" id="L111">      trials = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L112">    } else {</span>
+<span class="fc" id="L113">      matches = new LinkedList&lt;&gt;();</span>
+    }
+<span class="fc" id="L115">  }</span>
+
+  /**
+   * Update info.
+   */
+  public void update(double lat, double lon, String first, String last, String email) {
+<span class="fc" id="L121">    this.lat = lat;</span>
+<span class="fc" id="L122">    this.lon = lon;</span>
+<span class="fc" id="L123">    this.first = first;</span>
+<span class="fc" id="L124">    this.last = last;</span>
+<span class="fc" id="L125">    this.email = email;</span>
+<span class="fc" id="L126">  }</span>
+  
+  /**
+   * Update participant after edits to information.
+   * @param db Database.
+   * @param form Form information to parse.
+   * @return Whether the operation succeeds.
+   */
+  public boolean updatePart(SqliteDB db, JsonArray form) {
+<span class="pc bpc" id="L135" title="2 of 4 branches missed.">    if (!loggedIn || isResearcher) {</span>
+<span class="nc" id="L136">      return false;</span>
+    }
+<span class="fc" id="L138">    lat = form.get(4).getAsJsonObject().get(&quot;value&quot;).getAsDouble();</span>
+<span class="fc" id="L139">    lon = form.get(5).getAsJsonObject().get(&quot;value&quot;).getAsDouble();</span>
+<span class="fc" id="L140">    location = form.get(3).getAsJsonObject().get(&quot;value&quot;).getAsString();</span>
+<span class="fc" id="L141">    first = form.get(0).getAsJsonObject().get(&quot;value&quot;).getAsString();</span>
+<span class="fc" id="L142">    last = form.get(1).getAsJsonObject().get(&quot;value&quot;).getAsString();</span>
+<span class="fc" id="L143">    email = form.get(2).getAsJsonObject().get(&quot;value&quot;).getAsString();</span>
+<span class="pc bpc" id="L144" title="1 of 2 branches missed.">    if (db.updateUser(&quot;participants&quot;, this) == 0) {</span>
+<span class="nc" id="L145">      return false;</span>
+    }
+<span class="fc" id="L147">    data.updateData(db, form);</span>
+<span class="fc" id="L148">    checkMatches(db);</span>
+<span class="fc" id="L149">    return true;</span>
+  }
+  
+  /**
+   * Update researcher after edits to information.
+   * @param db Database.
+   * @param form Form information to parse.
+   * @return Whether the operation succeeds.
+   */
+  public boolean updateRes(SqliteDB db, JsonArray form) {
+<span class="pc bpc" id="L159" title="2 of 4 branches missed.">    if (!loggedIn || !isResearcher) {</span>
+<span class="nc" id="L160">      return false;</span>
+    }
+<span class="fc" id="L162">    lat = form.get(4).getAsJsonObject().get(&quot;value&quot;).getAsDouble();</span>
+<span class="fc" id="L163">    lon = form.get(5).getAsJsonObject().get(&quot;value&quot;).getAsDouble();</span>
+<span class="fc" id="L164">    location = form.get(3).getAsJsonObject().get(&quot;value&quot;).getAsString();</span>
+<span class="fc" id="L165">    first = form.get(0).getAsJsonObject().get(&quot;value&quot;).getAsString();</span>
+<span class="fc" id="L166">    last = form.get(1).getAsJsonObject().get(&quot;value&quot;).getAsString();</span>
+<span class="fc" id="L167">    email = form.get(2).getAsJsonObject().get(&quot;value&quot;).getAsString();</span>
+<span class="pc bpc" id="L168" title="1 of 2 branches missed.">    if (db.updateUser(&quot;researchers&quot;, this) == 0) {</span>
+<span class="nc" id="L169">      return false;</span>
+    }
+<span class="fc" id="L171">    return true;</span>
+  }
+
+  public int getID() {
+<span class="fc" id="L175">    return id;</span>
+  }
+
+  /**
+   * Set data.
+   */
+  public void setData(Criteria data) {
+<span class="pc bpc" id="L182" title="1 of 2 branches missed.">    if (!isResearcher) {</span>
+<span class="fc" id="L183">      this.data = data;</span>
+    }
+<span class="fc" id="L185">  }</span>
+
+  /**
+   * Add trial.
+   */
+  public void addTrial(int id, Trial t) {
+<span class="pc bpc" id="L191" title="2 of 4 branches missed.">    if (loggedIn &amp;&amp; isResearcher) {</span>
+<span class="fc" id="L192">      trials.put(id, t);</span>
+    }
+<span class="fc" id="L194">  }</span>
+
+  /**
+   * Get trial.
+   */
+  public Trial getTrial(int trialID) {
+<span class="pc bpc" id="L200" title="2 of 4 branches missed.">    if (loggedIn &amp;&amp; isResearcher) {</span>
+<span class="fc" id="L201">      return trials.get(trialID);</span>
+    } else {
+<span class="nc" id="L203">      return null;</span>
+    }
+  }
+  
+  public LinkedList&lt;Match&gt; getMatches() {
+<span class="fc" id="L208">    return this.matches;</span>
+  }
+  
+  /**
+   * Updates one of the user's trials.
+   * @param trialID Row number of the trial.
+   * @param db Database.
+   * @param form Form information to parse.
+   * @return Whether the trial could be updated by this user.
+   */
+  public boolean updateTrial(int trialID, SqliteDB db, JsonArray form) {
+<span class="pc bpc" id="L219" title="1 of 4 branches missed.">    if (!loggedIn || !isResearcher) {</span>
+<span class="fc" id="L220">      return false;</span>
+    }
+<span class="fc" id="L222">    return trials.get(trialID).update(db, form);</span>
+  }
+
+  /**
+   * Check if contains trial.
+   */
+  public boolean containsTrial(int trialID) {
+<span class="pc bpc" id="L229" title="2 of 4 branches missed.">    if (isResearcher &amp;&amp; trials.containsKey(trialID)) {</span>
+<span class="fc" id="L230">      return true;</span>
+    }
+<span class="nc" id="L232">    return false;</span>
+  }
+
+  public Criteria getData() {
+<span class="fc" id="L236">    return data;</span>
+  }
+  
+  public double getLat() {
+<span class="fc" id="L240">    return lat;</span>
+  }
+  
+  public double getLon() {
+<span class="fc" id="L244">    return lon;</span>
+  }
+  
+  public String getLocation() {
+<span class="fc" id="L248">    return location;</span>
+  }
+  
+  public String getFirst() {
+<span class="fc" id="L252">    return first;</span>
+  }
+  
+  public String getLast() {
+<span class="fc" id="L256">    return last;</span>
+  }
+  
+  /**
+   * Logs a user into this object.
+   * @param db Database.
+   * @param email Email address of the user.
+   * @return Whether or not the user is a participant; or -1 if no user exists.
+   */
+  public int logIn(SqliteDB db, String email) {
+<span class="fc" id="L266">    int type = checkType(db, email);</span>
+<span class="pc bpc" id="L267" title="1 of 4 branches missed.">    switch (type) {</span>
+      case 1:
+<span class="fc" id="L269">        retrievePart(db, email);</span>
+<span class="fc" id="L270">        break;</span>
+      case 0:
+<span class="fc" id="L272">        retrieveRes(db, email);</span>
+<span class="fc" id="L273">        break;</span>
+      case -1:
+<span class="fc" id="L275">        break;</span>
+      default:
+        break;
+    }
+<span class="fc" id="L279">    return type;</span>
+  }
+  
+  /**
+   * Determine what kind of user account exists for this email, if any.
+   * @param db Database containing the user tables.
+   * @param email Email address to check.
+   * @return Whether or not the user is a participant; or -1 if no user exists.
+   */
+  public int checkType(SqliteDB db, String email) {
+<span class="fc bfc" id="L289" title="All 2 branches covered.">    if (db.inTable(&quot;participants&quot;, &quot;email&quot;, email)) {</span>
+<span class="fc" id="L290">      return 1;</span>
+<span class="fc bfc" id="L291" title="All 2 branches covered.">    } else if (db.inTable(&quot;researchers&quot;, &quot;email&quot;, email)) {</span>
+<span class="fc" id="L292">      return 0;</span>
+    } else {
+<span class="fc" id="L294">      return -1;</span>
+    }
+  }
+  
+  /**
+   * Retrieves the researcher's data into this object.
+   * @param db Database.
+   * @param email Email address of the researcher.
+   */
+  public void retrieveRes(SqliteDB db, String email) {
+<span class="fc" id="L304">    restart(db.loadRes(email));</span>
+<span class="pc bpc" id="L305" title="1 of 2 branches missed.">    for (int trial : db.trialSet(id)) {</span>
+<span class="nc" id="L306">      Trial t = db.loadTrial(trial);</span>
+<span class="nc" id="L307">      addTrial(t.getID(), t);</span>
+    }
+    
+<span class="fc" id="L310">  }</span>
+  
+  /**
+   * Retrieves the participants's data into this object.
+   * @param db Database.
+   * @param email Email address of the participant.
+   */
+  private void retrievePart(SqliteDB db, String email) {
+<span class="fc" id="L318">    restart(db.loadPart(email));</span>
+<span class="fc" id="L319">    setData(db.loadData(id));</span>
+<span class="pc bpc" id="L320" title="1 of 2 branches missed.">    for (int match : db.matchSet(id)) {</span>
+<span class="nc" id="L321">      addMatch(db.loadMatch(match));</span>
+    }
+<span class="fc" id="L323">  }</span>
+
+  /**
+   * Adds a match to this user's records.
+   * @param id Row number of the match.
+   * @param t Trial associated with the match.
+   */
+  public void addMatch(int id, Trial t) {
+    //calculate distance to this User
+<span class="fc" id="L332">    double distance = distance(t.getLat(), t.getLong(), this.lat, this.lon, &quot;M&quot;);</span>
+<span class="fc" id="L333">    Match m = new Match(id, t, distance, &quot;pending&quot;);</span>
+<span class="fc" id="L334">    this.matches.add(m);</span>
+<span class="fc" id="L335">  }</span>
+  
+  /**
+   * Adds a match to this user's records.
+   * @param m Match to add.
+   */
+  public void addMatch(Match m) {
+<span class="fc" id="L342">    Trial t = m.getTrial();</span>
+<span class="fc" id="L343">    double distance = distance(t.getLat(), t.getLong(), this.lat, this.lon, &quot;M&quot;);</span>
+<span class="fc" id="L344">    m.setDistance(distance);</span>
+<span class="fc" id="L345">    this.matches.add(m);</span>
+<span class="fc" id="L346">  }</span>
+
+  /**
+   * Accept a particular match.
+   * @param id Row number of the match.
+   * @param db Database.
+   * @return Whether the match could be accepted by this user.
+   */
+  public boolean acceptMatch(int id, SqliteDB db) {
+<span class="fc bfc" id="L355" title="All 2 branches covered.">    for (Match m : matches) {</span>
+<span class="pc bpc" id="L356" title="1 of 2 branches missed.">      if (m.getTrial().getID() == id) {</span>
+<span class="fc" id="L357">        return m.accept(db);</span>
+      }
+    }
+<span class="fc" id="L360">    return false;</span>
+  }
+
+  /**
+   * Reject a particular match.
+   * @param id Row number of the match.
+   * @param db Database.
+   * @return Whether the match could be rejected by this user.
+   */
+  public boolean rejectMatch(int id, SqliteDB db) {
+<span class="fc bfc" id="L370" title="All 2 branches covered.">    for (Match m : matches) {</span>
+<span class="pc bpc" id="L371" title="1 of 2 branches missed.">      if (m.getTrial().getID() == id) {</span>
+<span class="fc" id="L372">        m.reject(db);</span>
+<span class="fc" id="L373">        return true;</span>
+      }
+    }
+<span class="fc" id="L376">    return false;</span>
+  }
+  
+  /**
+   * Creates a new participant.
+   * @param db Database.
+   * @param form Form information to parse.
+   * @return Whether or not creation succeeded.
+   */
+  public boolean signUpPart(SqliteDB db, JsonArray form) {
+<span class="fc" id="L386">    lat = form.get(5).getAsJsonObject().get(&quot;value&quot;).getAsDouble();</span>
+<span class="fc" id="L387">    lon = form.get(6).getAsJsonObject().get(&quot;value&quot;).getAsDouble();</span>
+<span class="fc" id="L388">    location = form.get(4).getAsJsonObject().get(&quot;value&quot;).getAsString();</span>
+<span class="fc" id="L389">    first = form.get(1).getAsJsonObject().get(&quot;value&quot;).getAsString();</span>
+<span class="fc" id="L390">    last = form.get(2).getAsJsonObject().get(&quot;value&quot;).getAsString();</span>
+<span class="fc" id="L391">    email = form.get(3).getAsJsonObject().get(&quot;value&quot;).getAsString();</span>
+<span class="fc" id="L392">    System.out.println(lat+lon+location+first+last+email);</span>
+<span class="fc" id="L393">    isResearcher = false;</span>
+<span class="fc" id="L394">    id = db.insertUser(&quot;participants&quot;, this);</span>
+<span class="pc bpc" id="L395" title="1 of 2 branches missed.">    if (id == 0) {</span>
+<span class="nc" id="L396">      return false;</span>
+    }
+<span class="fc" id="L398">    matches = new LinkedList&lt;Match&gt;();</span>
+<span class="fc" id="L399">    loggedIn = true;</span>
+<span class="fc" id="L400">    data = new Criteria(db, form, id, &quot;participant_data&quot;);</span>
+<span class="fc" id="L401">    checkMatches(db);</span>
+<span class="fc" id="L402">    return true;</span>
+  }
+  
+  /**
+   * Creates a new researcher.
+   * @param db Database.
+   * @param form Form information to parse.
+   * @return Whether or not creation succeeded.
+   */
+  public boolean signUpRes(SqliteDB db, JsonArray form) {
+<span class="fc" id="L412">    lat = form.get(5).getAsJsonObject().get(&quot;value&quot;).getAsDouble();</span>
+<span class="fc" id="L413">    lon = form.get(6).getAsJsonObject().get(&quot;value&quot;).getAsDouble();</span>
+<span class="fc" id="L414">    location = form.get(4).getAsJsonObject().get(&quot;value&quot;).getAsString();</span>
+<span class="fc" id="L415">    first = form.get(1).getAsJsonObject().get(&quot;value&quot;).getAsString();</span>
+<span class="fc" id="L416">    last = form.get(2).getAsJsonObject().get(&quot;value&quot;).getAsString();</span>
+<span class="fc" id="L417">    email = form.get(3).getAsJsonObject().get(&quot;value&quot;).getAsString();</span>
+<span class="fc" id="L418">    isResearcher = true;</span>
+<span class="fc" id="L419">    id = db.insertUser(&quot;researchers&quot;, this);</span>
+<span class="pc bpc" id="L420" title="1 of 2 branches missed.">    if (id == 0) {</span>
+<span class="nc" id="L421">      return false;</span>
+    }
+<span class="fc" id="L423">    trials = new HashMap&lt;Integer, Trial&gt;();</span>
+<span class="fc" id="L424">    loggedIn = true;</span>
+<span class="fc" id="L425">    return true;</span>
+  }
+  
+  /**
+   * Checks for new matches.
+   * @param db Database to check.
+   */
+  public void checkMatches(SqliteDB db) {
+<span class="fc bfc" id="L433" title="All 2 branches covered.">    for (int t : db.openTrials()) {</span>
+<span class="fc" id="L434">      Trial trial = db.loadTrial(t);</span>
+<span class="pc bpc" id="L435" title="2 of 4 branches missed.">      if (trial.getCriteria().matches(data) &amp;&amp; !db.matchExists(id, trial.getID())) {</span>
+<span class="nc" id="L436">        Match m = new Match(this, trial, db);</span>
+<span class="nc" id="L437">        addMatch(m);</span>
+      }
+    }
+<span class="fc" id="L440">  }</span>
+
+  public boolean isResearcher() {
+<span class="fc" id="L443">    return isResearcher;</span>
+  }
+
+  public void logOut() {
+<span class="fc" id="L447">    loggedIn = false;</span>
+<span class="fc" id="L448">  }</span>
+
+  public boolean isLoggedIn() {
+<span class="fc" id="L451">    return loggedIn;</span>
+  }
+
+  public String getEmail() {
+<span class="fc" id="L455">    return email;</span>
+  }
+
+  /**
+   * Sort trials.
+   */
+  public LinkedList&lt;Trial&gt; sortedTrials() {
+<span class="pc bpc" id="L462" title="2 of 4 branches missed.">    if (!isResearcher || trials == null) {</span>
+<span class="nc" id="L463">      return null;</span>
+    }
+<span class="fc" id="L465">    LinkedList&lt;Trial&gt; list = new LinkedList&lt;&gt;(trials.values());</span>
+<span class="fc" id="L466">    list.sort(dateCompare);</span>
+<span class="fc" id="L467">    return list;</span>
+  }
+
+  /**
+   * Sort matches.
+   */
+  public LinkedList&lt;Match&gt; sortedMatches() {
+<span class="pc bpc" id="L474" title="1 of 2 branches missed.">    if (isResearcher) {</span>
+<span class="nc" id="L475">      return null;</span>
+    }
+<span class="fc" id="L477">    matches.sort(distCompare);</span>
+<span class="fc" id="L478">    return matches;</span>
+  }
+  
+  /**
+   * Sort emails.
+   */
+  public LinkedList&lt;Notification&gt; sortedEmails(SqliteDB db) {
+<span class="nc" id="L485">    LinkedList&lt;Notification&gt; emails = new LinkedList&lt;&gt;();</span>
+<span class="nc bnc" id="L486" title="All 2 branches missed.">    for (int em : db.emailSet(id, isResearcher)) {</span>
+<span class="nc" id="L487">      emails.add(db.loadNotification(em));</span>
+    }
+<span class="nc" id="L489">    return emails;</span>
+  }
+
+  /**
+   * Calculate distance.
+   */
+  public double distance(double lat1, double lon1, 
+      double lat2, double lon2, String unit) {
+<span class="pc bpc" id="L497" title="1 of 4 branches missed.">    if ((lat1 == lat2) &amp;&amp; (lon1 == lon2)) {</span>
+<span class="fc" id="L498">      return 0;</span>
+    } else {
+<span class="fc" id="L500">      double theta = lon1 - lon2;</span>
+<span class="fc" id="L501">      double dist = Math.sin(Math.toRadians(lat1)) </span>
+<span class="fc" id="L502">          * Math.sin(Math.toRadians(lat2)) + Math.cos(Math.toRadians(lat1)) </span>
+<span class="fc" id="L503">          * Math.cos(Math.toRadians(lat2)) * Math.cos(Math.toRadians(theta));</span>
+<span class="fc" id="L504">      dist = Math.acos(dist);</span>
+<span class="fc" id="L505">      dist = Math.toDegrees(dist);</span>
+<span class="fc" id="L506">      dist = dist * 60 * 1.1515;</span>
+<span class="pc bpc" id="L507" title="1 of 2 branches missed.">      if (unit.equals(&quot;K&quot;)) {</span>
+<span class="nc" id="L508">        dist = dist * 1.609344;</span>
+<span class="pc bpc" id="L509" title="1 of 2 branches missed.">      } else if (unit.equals(&quot;N&quot;)) {</span>
+<span class="nc" id="L510">        dist = dist * 0.8684;</span>
+      }
+<span class="fc" id="L512">      return (dist);</span>
+    }
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span>TriAllTest (Dec 10, 2020 4:06:08 AM)</div></body></html>

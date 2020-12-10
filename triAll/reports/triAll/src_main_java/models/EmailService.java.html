@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>EmailService.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=2;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">TriAllTest (Dec 10, 2020 4:06:08 AM)</a> &gt; <a href="../../index.html" class="el_group">triAll</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">models</a> &gt; <span class="el_source">EmailService.java</span></div><h1>EmailService.java</h1><pre class="source lang-java linenums">package models;
+
+import org.simplejavamail.api.email.Email;
+import org.simplejavamail.api.mailer.Mailer;
+import org.simplejavamail.api.mailer.config.TransportStrategy;
+import org.simplejavamail.email.EmailBuilder;
+import org.simplejavamail.mailer.MailerBuilder;
+
+<span class="nc" id="L9">public class EmailService {</span>
+  
+  /**
+   * Sends email denoting a new match.
+   * @param t Trial associated with the match.
+   * @param to Recipient address.
+   */
+  public static String newMatchSend(Trial t, String to) {
+<span class="fc" id="L17">    Mailer mailer = MailerBuilder.withSMTPServer(&quot;smtp.gmail.com&quot;, 587, &quot;triallclinical@gmail.com&quot;, </span>
+<span class="fc" id="L18">        &quot;MontagueCapulet&quot;).withTransportStrategy(TransportStrategy.SMTP_TLS).buildMailer();</span>
+<span class="fc" id="L19">    String body = &quot;&lt;html&gt;&lt;p&gt;Congratulations! You meet the criteria for trial &quot; + t.getName() </span>
+<span class="fc" id="L20">        + &quot;.&lt;p&gt;&quot; + &quot;&lt;br&gt; &lt;p&gt;Log into your account to view this this trial. If you choose to &quot;</span>
+<span class="fc" id="L21">        + &quot;accept a place in this trial, the researcher will reach out to you shortly.&lt;html&gt;&quot;;</span>
+<span class="fc" id="L22">    Email e = EmailBuilder.startingBlank().from(&quot;triallclinical@gmail.com&quot;).to(to)</span>
+<span class="fc" id="L23">        .withSubject(&quot;Clinical TriAll&quot;).withHTMLText(body).buildEmail();</span>
+<span class="fc" id="L24">    mailer.sendMail(e);</span>
+<span class="fc" id="L25">    return body;</span>
+  }
+  
+  /**
+   * Sends email denoting a match's acceptance.
+   * @param t Trial associated with the match.
+   * @param to Recipient address.
+   * @param email Address of other party to the match.
+   */
+  public static String acceptMatchSend(Trial t, String to, String email) {
+<span class="fc" id="L35">    Mailer mailer = MailerBuilder.withSMTPServer(&quot;smtp.gmail.com&quot;, 587, &quot;triallclinical@gmail.com&quot;, </span>
+<span class="fc" id="L36">        &quot;MontagueCapulet&quot;).withTransportStrategy(TransportStrategy.SMTP_TLS).buildMailer();</span>
+<span class="fc" id="L37">    String body = &quot;&lt;html&gt;&lt;p&gt;Congratulations! A new participant has accepted a tentative &quot;</span>
+<span class="fc" id="L38">        + &quot;place in &quot; + t.getName() + &quot;.&lt;p&gt;&quot; + &quot;&lt;br&gt; &lt;p&gt;You can reach out to them at this &quot;</span>
+<span class="fc" id="L39">        + &quot;email address: &quot; + email + &quot;&lt;p&gt;&lt;html&gt;&quot;;</span>
+<span class="fc" id="L40">    Email e = EmailBuilder.startingBlank().from(&quot;triallclinical@gmail.com&quot;).to(to)</span>
+<span class="fc" id="L41">        .withSubject(&quot;Clinical TriAll&quot;).withHTMLText(body).buildEmail();</span>
+<span class="fc" id="L42">    mailer.sendMail(e);</span>
+<span class="fc" id="L43">    return body;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span>TriAllTest (Dec 10, 2020 4:06:08 AM)</div></body></html>
