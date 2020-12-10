@@ -449,11 +449,7 @@ public class SqliteDB {
   public LinkedList<Integer> openTrials() {
     ResultSet rs = null;
     LinkedList<Integer> trialSet = new LinkedList<>();
-<<<<<<< HEAD:triAll/src/main/java/units/SqliteDB.java
-    String command = "SELECT ID FROM trials WHERE participants_needed != participants_confirmed;";
-=======
     String command = "SELECT ID FROM trials WHERE participants_needed > participants_confirmed;";
->>>>>>> cc4ffdeb10ee062b73204da68616859b4aad6353:triAll/src/main/java/database/SqliteDB.java
     try (
         PreparedStatement st = conn.prepareStatement(command);
     ) {
