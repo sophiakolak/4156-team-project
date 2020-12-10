@@ -6,13 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import controllers.TriAll;
-<<<<<<< HEAD
-
 import java.io.File;
-=======
 import database.SqliteDB;
-
->>>>>>> cc4ffdeb10ee062b73204da68616859b4aad6353
 import java.util.HashMap;
 import java.util.LinkedList;
 import models.Criteria;
@@ -468,8 +463,7 @@ public class TriAllTest {
     assertEquals(true, db_update);
   }
   
-  @Test 
-<<<<<<< HEAD
+  @Test
   public void testRestartUser() {
     User goodPart1 = new User(1, 80.0, 80.0, "kansas", "Jane", "Doe", "JaneDoe@gmail.com", false);
     User goodPart2 = new User(2, 80.0, 80.0, "kansas", "John", "Doe", "JaneDoe@gmail.com", false);
@@ -485,10 +479,8 @@ public class TriAllTest {
     assertEquals("John", goodRes1.getFirst());
   }
   
-  @Test 
-=======
+  @Test
   @Order(41)
->>>>>>> cc4ffdeb10ee062b73204da68616859b4aad6353
   public void testTrialForm() {
     SqliteDB b = new SqliteDB("triall");
     b.drop("researchers");
@@ -902,7 +894,6 @@ public class TriAllTest {
      "kilograms,  \n"+
       "weightInLbs, ";
     String update = "name, value \n" +
-        "participant_or_researcher, Researcher \n"+
         "firstname, Yolo \n"+
         "lastname, Kolak \n"+
         "email, sophiakolak.sk@gmail.com \n"+

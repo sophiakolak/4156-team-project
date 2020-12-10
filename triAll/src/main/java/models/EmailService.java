@@ -7,23 +7,6 @@ import org.simplejavamail.email.EmailBuilder;
 import org.simplejavamail.mailer.MailerBuilder;
 
 public class EmailService {
-
-  private Mailer mailer;
-
-  public EmailService() {
-    mailer = MailerBuilder.withSMTPServer("smtp.gmail.com", 587, "triallclinical@gmail.com", 
-        "MontagueCapulet").withTransportStrategy(TransportStrategy.SMTP_TLS).buildMailer();
-  }
-
-  /**
-   * Sends a single generic email.
-   * @param to Recipient address of the email.
-   */
-  public void genericSend(String to) {
-    Email e = EmailBuilder.startingBlank().from("triallclinical@gmail.com").to(to)
-        .withSubject("Clinical TriAll").withPlainText("You have a match.").buildEmail();
-    mailer.sendMail(e);
-  }
   
   /**
    * Sends email denoting a new match.
