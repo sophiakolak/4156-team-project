@@ -1,0 +1,963 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>SqliteDB.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=2;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">TriAllTest (Dec 10, 2020 4:06:08 AM)</a> &gt; <a href="../../index.html" class="el_group">triAll</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">database</a> &gt; <span class="el_source">SqliteDB.java</span></div><h1>SqliteDB.java</h1><pre class="source lang-java linenums">package database;
+
+import java.sql.Connection;
+import java.io.File; 
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.LinkedList;
+import models.Criteria;
+import models.Match;
+import models.Notification;
+import models.Trial;
+import models.User;
+
+public class SqliteDB {
+  private Connection conn;
+  private Statement stmt;
+  public static final int researcher = 0;
+  public static final int participant = 1;
+  public static final int trial = 2;
+  public static final int trialCriteria = 3;
+  public static final int participantData = 4;
+  public static final int trialMatch = 5;
+  public static final int email = 6;
+
+  /**
+   * Initializes connection to database.
+   * 
+   * @param name The name of the database.
+   */
+<span class="fc" id="L33">  public SqliteDB(String name) {</span>
+<span class="fc" id="L34">    conn = null;</span>
+<span class="fc" id="L35">    stmt = null;</span>
+    try {
+<span class="fc" id="L37">      Class.forName(&quot;org.sqlite.JDBC&quot;);</span>
+<span class="fc" id="L38">      conn = DriverManager.getConnection(&quot;jdbc:sqlite:&quot; + name + &quot;.db&quot;);</span>
+<span class="fc" id="L39">      stmt = conn.createStatement();</span>
+<span class="fc" id="L40">      create(&quot;researchers&quot;, 0);</span>
+<span class="fc" id="L41">      create(&quot;participants&quot;, 1);</span>
+<span class="fc" id="L42">      create(&quot;trials&quot;, 2);</span>
+<span class="fc" id="L43">      create(&quot;trial_criteria&quot;, 3);</span>
+<span class="fc" id="L44">      create(&quot;participant_data&quot;, 4);</span>
+<span class="fc" id="L45">      create(&quot;trial_matches&quot;, 5);</span>
+<span class="fc" id="L46">      create(&quot;email&quot;, 6);</span>
+<span class="pc" id="L47">    } catch (Exception e) {</span>
+<span class="nc" id="L48">      System.err.println(e.getClass().getName() + &quot;: &quot; + e.getMessage());</span>
+    }
+<span class="fc" id="L50">  }</span>
+
+  /**
+   * Creates table in the database if it isn't already there.
+   * 
+   * @param table Name of the table.
+   * @param type  Which table schema is being used.
+   * @return Whether the operation was successful.
+   */
+  public boolean create(String table, int type) {
+<span class="fc" id="L60">    PreparedStatement st = null;</span>
+    try {
+      String create;
+<span class="pc bpc" id="L63" title="1 of 8 branches missed.">      switch (type) {</span>
+        case researcher:
+<span class="fc" id="L65">          create = &quot;CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY AUTOINCREMENT,&quot;</span>
+              + &quot; Lat REAL, Long REAL, Location TEXT, First TEXT, Last TEXT, Email TEXT);&quot;;
+<span class="fc" id="L67">          create = String.format(create, table);</span>
+<span class="fc" id="L68">          st = conn.prepareStatement(create);</span>
+<span class="fc" id="L69">          st.executeUpdate();</span>
+<span class="fc" id="L70">          st.close();</span>
+<span class="fc" id="L71">          break;</span>
+        case participant:
+<span class="fc" id="L73">          create = &quot;CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY AUTOINCREMENT,&quot;</span>
+              + &quot; Lat REAL, Long REAL, Location TEXT, First TEXT, Last TEXT, Email TEXT);&quot;;
+<span class="fc" id="L75">          create = String.format(create, table);</span>
+<span class="fc" id="L76">          st = conn.prepareStatement(create);</span>
+<span class="fc" id="L77">          st.executeUpdate();</span>
+<span class="fc" id="L78">          st.close();</span>
+<span class="fc" id="L79">          break;</span>
+        case trial:
+<span class="fc" id="L81">          create = &quot;CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY &quot;</span>
+              + &quot;AUTOINCREMENT, researcher_ID INT NOT NULL, name TEXT, description TEXT,&quot;
+              + &quot; lat REAL, long REAL, location TEXT, start_date TEXT, end_date TEXT, pay REAL,&quot;
+              + &quot; IRB INT, participants_needed INT, participants_confirmed INT);&quot;;
+<span class="fc" id="L85">          create = String.format(create, table);</span>
+<span class="fc" id="L86">          st = conn.prepareStatement(create);</span>
+<span class="fc" id="L87">          st.executeUpdate();</span>
+<span class="fc" id="L88">          st.close();</span>
+<span class="fc" id="L89">          break;</span>
+        case trialCriteria:
+<span class="fc" id="L91">          create = &quot;CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY AUTOINCREMENT,&quot;</span>
+              + &quot; trial_ID INT NOT NULL, Min_Age INT, Max_Age INT, Min_height REAL, Max_height REAL&quot;
+              + &quot;, Min_Weight REAL, Max_weight REAL, Gender TEXT, Race TEXT, Nationality TEXT);&quot;;
+<span class="fc" id="L94">          create = String.format(create, table);</span>
+<span class="fc" id="L95">          st = conn.prepareStatement(create);</span>
+<span class="fc" id="L96">          st.executeUpdate();</span>
+<span class="fc" id="L97">          st.close();</span>
+<span class="fc" id="L98">          break;</span>
+        case participantData:
+<span class="fc" id="L100">          create = &quot;CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY AUTOINCREMENT,&quot;</span>
+              + &quot; participant_ID INT NOT NULL, minAge INT, maxAge INT, minHeight REAL, MaxHeight&quot;
+              + &quot; REAL, MinWeight REAL, maxWeight REAL, Gender TEXT, Race TEXT, Nationality TEXT);&quot;;
+<span class="fc" id="L103">          create = String.format(create, table);</span>
+<span class="fc" id="L104">          st = conn.prepareStatement(create);</span>
+<span class="fc" id="L105">          st.executeUpdate();</span>
+<span class="fc" id="L106">          st.close();</span>
+<span class="fc" id="L107">          break;</span>
+        case trialMatch:
+<span class="fc" id="L109">          create = &quot;CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY AUTOINCREMENT,&quot;</span>
+              + &quot; trial_ID INT NOT NULL, researcher_ID INT NOT NULL, participant_ID INT NOT NULL, &quot; 
+              + &quot;status TEXT);&quot;;
+<span class="fc" id="L112">          create = String.format(create, table);</span>
+<span class="fc" id="L113">          st = conn.prepareStatement(create);</span>
+<span class="fc" id="L114">          st.executeUpdate();</span>
+<span class="fc" id="L115">          st.close();</span>
+<span class="fc" id="L116">          break;</span>
+        case email:
+<span class="fc" id="L118">          create = &quot;CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY AUTOINCREMENT,&quot;</span>
+              + &quot; trial_ID INT, researcher_ID INT, participant_ID INT, type TEXT, time_sent TEXT,&quot;
+              + &quot; message TEXT);&quot;;
+<span class="fc" id="L121">          create = String.format(create, table);</span>
+<span class="fc" id="L122">          st = conn.prepareStatement(create);</span>
+<span class="fc" id="L123">          st.executeUpdate();</span>
+<span class="fc" id="L124">          st.close();</span>
+<span class="fc" id="L125">          break;</span>
+        default:
+<span class="nc" id="L127">          return false;</span>
+      }
+<span class="nc" id="L129">    } catch (Exception e) {</span>
+<span class="nc" id="L130">      System.err.println(e.getClass().getName() + &quot;: &quot; + e.getMessage());</span>
+      try {
+<span class="nc bnc" id="L132" title="All 2 branches missed.">        if (st != null) {</span>
+<span class="nc" id="L133">          st.close();</span>
+        }
+<span class="nc" id="L135">      } catch (SQLException e1) {</span>
+<span class="nc" id="L136">        e1.printStackTrace();</span>
+      }
+<span class="nc" id="L138">      return false;</span>
+    }
+<span class="fc" id="L140">    return true;</span>
+  }
+  
+  /**
+   * Checks whether a table is already present in the database.
+   * 
+   * @param table Name of the table.
+   * @return Whether table is in the database.
+   */
+  public boolean isTable(String table) {
+    
+<span class="nc" id="L151">    try (</span>
+<span class="nc" id="L152">        PreparedStatement st = conn.prepareStatement(&quot;SELECT COUNT(name) AS total FROM &quot;</span>
+            + &quot;sqlite_master WHERE type='table' AND name=?;&quot;);
+    ) {
+<span class="nc" id="L155">      st.setString(1, table);</span>
+<span class="nc" id="L156">      try (</span>
+<span class="nc" id="L157">          ResultSet rs = st.executeQuery();</span>
+      ) {
+<span class="nc" id="L159">        rs.next();</span>
+<span class="nc bnc" id="L160" title="All 2 branches missed.">        if (rs.getInt(&quot;total&quot;) == 1) {</span>
+<span class="nc" id="L161">          return true;</span>
+        }
+<span class="nc" id="L163">      } catch (Exception e) {</span>
+<span class="nc" id="L164">        return false;</span>
+      }
+<span class="nc" id="L166">    } catch (Exception e) {</span>
+<span class="nc" id="L167">      e.printStackTrace();;</span>
+    }
+<span class="nc" id="L169">    return false;</span>
+  }
+  
+  /**
+   * Drops table from the database is it exists.
+   * 
+   * @param table Name of the table.
+   * @return Whether the operation was successful.
+   */
+  public boolean drop(String table) {
+<span class="fc" id="L179">    PreparedStatement st = null;</span>
+    try {
+<span class="fc" id="L181">      String command = &quot;DROP TABLE IF EXISTS %s;&quot;;</span>
+<span class="fc" id="L182">      command = String.format(command, table);</span>
+<span class="fc" id="L183">      st = conn.prepareStatement(command);</span>
+<span class="fc" id="L184">      st.close();</span>
+<span class="pc" id="L185">    } catch (Exception e) {</span>
+<span class="nc bnc" id="L186" title="All 2 branches missed.">      if (st != null) {</span>
+        try {
+<span class="nc" id="L188">          st.close();</span>
+<span class="nc" id="L189">        } catch (SQLException e1) {</span>
+<span class="nc" id="L190">          e1.printStackTrace();</span>
+        }
+      }
+<span class="nc" id="L193">      return false;</span>
+    }
+<span class="fc" id="L195">    return true;</span>
+  }
+  
+  /**
+   * Checks whether an record is in a certain table.
+   * @param table Table to search.
+   * @param field Where to look for matches.
+   * @param id Value to match against.
+   * @return Whether such a record is present.
+   */
+  public boolean inTable(String table, String field, String id) {
+<span class="fc" id="L206">    String command = &quot;SELECT COUNT(*) FROM %s WHERE %s = ?;&quot;;</span>
+<span class="fc" id="L207">    command = String.format(command, table, field);</span>
+<span class="fc" id="L208">    try (</span>
+<span class="fc" id="L209">        PreparedStatement st = conn.prepareStatement(command);</span>
+    ) {
+<span class="fc" id="L211">      st.setString(1, id);</span>
+<span class="fc" id="L212">      try (</span>
+<span class="fc" id="L213">          ResultSet rs = st.executeQuery();</span>
+      ) {
+<span class="fc" id="L215">        rs.next();</span>
+<span class="fc bfc" id="L216" title="All 2 branches covered.">        if (rs.getInt(1) == 1) {</span>
+<span class="fc" id="L217">          return true;</span>
+        }
+<span class="nc" id="L219">      } catch (Exception e) {</span>
+<span class="nc" id="L220">        e.printStackTrace();</span>
+      }
+<span class="nc" id="L222">    } catch (Exception e) {</span>
+<span class="nc" id="L223">      e.printStackTrace();</span>
+<span class="nc" id="L224">      return false;</span>
+    }
+<span class="fc" id="L226">    return false;</span>
+  }
+  
+  /**
+   * Load a particular researcher from the database.
+   * @param email Email address of the sought researcher.
+   * @return User object for the researcher; null if not found.
+   */
+  public User loadRes(String email) {
+<span class="fc" id="L235">    User u = null;</span>
+<span class="fc" id="L236">    String command = &quot;SELECT * FROM researchers WHERE email = ?;&quot;;</span>
+<span class="fc" id="L237">    try (</span>
+<span class="fc" id="L238">        PreparedStatement st = conn.prepareStatement(command);</span>
+    ) {
+<span class="fc" id="L240">      st.setString(1,  email);</span>
+<span class="fc" id="L241">      try (</span>
+<span class="fc" id="L242">          ResultSet rs = st.executeQuery();</span>
+      ) {
+<span class="fc" id="L244">        rs.next();</span>
+<span class="fc" id="L245">        u = new User(rs.getInt(1), rs.getDouble(2), rs.getDouble(3), rs.getString(4), </span>
+<span class="fc" id="L246">            rs.getString(5), rs.getString(6), rs.getString(7), true);</span>
+<span class="nc" id="L247">      } catch (Exception e) {</span>
+<span class="nc" id="L248">        e.printStackTrace();</span>
+<span class="nc" id="L249">        return u;</span>
+      }
+<span class="nc" id="L251">    } catch (Exception e) {</span>
+<span class="nc" id="L252">      e.printStackTrace();</span>
+<span class="nc" id="L253">      return u;</span>
+    } 
+<span class="fc" id="L255">    return u;</span>
+  }
+  
+  /**
+   * Load a particular researcher from the database.
+   * @param id Row number of the researcher sought.
+   * @return User object for the researcher; null if not found.
+   */
+  public User loadRes(int id) {
+<span class="fc" id="L264">    User u = null;</span>
+<span class="fc" id="L265">    String command = &quot;SELECT * FROM researchers WHERE ID = ?;&quot;;</span>
+<span class="fc" id="L266">    try (</span>
+<span class="fc" id="L267">        PreparedStatement st = conn.prepareStatement(command);</span>
+    ) {
+<span class="fc" id="L269">      st.setInt(1,  id);</span>
+<span class="fc" id="L270">      try (</span>
+<span class="fc" id="L271">          ResultSet rs = st.executeQuery();</span>
+      ) {
+<span class="fc" id="L273">        rs.next();</span>
+<span class="fc" id="L274">        u = new User(rs.getInt(1), rs.getDouble(2), rs.getDouble(3), rs.getString(4), </span>
+<span class="fc" id="L275">            rs.getString(5), rs.getString(6), rs.getString(7), true);</span>
+<span class="nc" id="L276">      } catch (Exception e) {</span>
+<span class="nc" id="L277">        e.printStackTrace();</span>
+<span class="nc" id="L278">        return u;</span>
+      }
+<span class="nc" id="L280">    } catch (Exception e) {</span>
+<span class="nc" id="L281">      e.printStackTrace();</span>
+<span class="nc" id="L282">      return u;</span>
+    } 
+<span class="fc" id="L284">    return u;</span>
+  }
+  
+  /**
+   * Load a particular participant from the database.
+   * @param email Email address of the sought participant.
+   * @return User object for the participant; null if not found.
+   */
+  public User loadPart(String email) {
+<span class="fc" id="L293">    User u = null;</span>
+<span class="fc" id="L294">    String command = &quot;SELECT * FROM participants WHERE email = ?;&quot;;</span>
+<span class="fc" id="L295">    try (</span>
+<span class="fc" id="L296">        PreparedStatement st = conn.prepareStatement(command);</span>
+    ) {
+<span class="fc" id="L298">      st.setString(1,  email);</span>
+<span class="fc" id="L299">      try (</span>
+<span class="fc" id="L300">          ResultSet rs = st.executeQuery();</span>
+      ) {
+<span class="fc" id="L302">        rs.next();</span>
+<span class="fc" id="L303">        u = new User(rs.getInt(1), rs.getDouble(2), rs.getDouble(3), rs.getString(4), rs</span>
+<span class="fc" id="L304">            .getString(5), rs.getString(6), rs.getString(7), false);</span>
+<span class="nc" id="L305">      } catch (Exception e) {</span>
+<span class="nc" id="L306">        return u;</span>
+      }
+<span class="nc" id="L308">    } catch (Exception e) {</span>
+<span class="nc" id="L309">      return u;</span>
+    } 
+<span class="fc" id="L311">    return u;</span>
+  }
+  
+  /**
+   * Load a particular set of trial criteria from the database.
+   * @param id Table row of the criteria record.
+   * @return Criteria object for this information; null if not found.
+   */
+  public Criteria loadCrit(int id) {
+<span class="fc" id="L320">    Criteria crit = null;</span>
+<span class="fc" id="L321">    String command = &quot;SELECT * FROM trial_criteria WHERE trial_ID = ?;&quot;;</span>
+<span class="fc" id="L322">    try (</span>
+<span class="fc" id="L323">        PreparedStatement st = conn.prepareStatement(command);</span>
+    ) {
+<span class="fc" id="L325">      st.setInt(1,  id);</span>
+<span class="fc" id="L326">      try (</span>
+<span class="fc" id="L327">          ResultSet rs = st.executeQuery();</span>
+      ) {
+<span class="fc" id="L329">        rs.next();</span>
+<span class="fc" id="L330">        crit = new Criteria(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs</span>
+<span class="fc" id="L331">                  .getInt(4), rs.getDouble(5), rs.getDouble(6), rs.getDouble(7), rs</span>
+<span class="fc" id="L332">                  .getDouble(8), rs.getString(9), rs.getString(10), rs.getString(11));</span>
+<span class="nc" id="L333">      } catch (Exception e) {</span>
+<span class="nc" id="L334">        e.printStackTrace();</span>
+<span class="nc" id="L335">        return crit;</span>
+      }
+<span class="nc" id="L337">    } catch (Exception e) {</span>
+<span class="nc" id="L338">      e.printStackTrace();</span>
+<span class="nc" id="L339">      return crit;</span>
+    }
+<span class="fc" id="L341">    return crit;</span>
+  }
+  
+  /**
+   * Load a particular set of user data from the database.
+   * @param id Table row of the data record.
+   * @return Criteria object for this data; null if not found.
+   */
+  public Criteria loadData(int id) {
+<span class="fc" id="L350">    Criteria data = null;</span>
+<span class="fc" id="L351">    String command = &quot;SELECT * FROM participant_data WHERE participant_ID = ?;&quot;;</span>
+<span class="fc" id="L352">    try (</span>
+<span class="fc" id="L353">        PreparedStatement st = conn.prepareStatement(command);</span>
+    ) {
+<span class="fc" id="L355">      st.setInt(1,  id);</span>
+<span class="fc" id="L356">      try (</span>
+<span class="fc" id="L357">          ResultSet rs = st.executeQuery();</span>
+      ) {
+<span class="fc" id="L359">        rs.next();</span>
+<span class="fc" id="L360">        data = new Criteria(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs</span>
+<span class="fc" id="L361">                  .getInt(4), rs.getDouble(5), rs.getDouble(6), rs.getDouble(7), rs</span>
+<span class="fc" id="L362">                  .getDouble(8), rs.getString(9), rs.getString(10), rs.getString(11));</span>
+<span class="fc" id="L363">      } catch (Exception e) {</span>
+<span class="fc" id="L364">        return data;</span>
+      }
+<span class="nc" id="L366">    } catch (Exception e) {</span>
+<span class="nc" id="L367">      return data;</span>
+    }
+<span class="fc" id="L369">    return data;</span>
+  }
+  
+  /**
+   * Collects the row numbers of matches for a particular participant.
+   * @param id Row ID of the participant.
+   * @return LinkedList of the match rows.
+   */
+  public LinkedList&lt;Integer&gt; matchSet(int id) {
+<span class="fc" id="L378">    ResultSet rs = null;</span>
+<span class="fc" id="L379">    LinkedList&lt;Integer&gt; matchSet = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L380">    String command = &quot;SELECT ID FROM trial_matches WHERE participant_ID = ?;&quot;;</span>
+<span class="fc" id="L381">    try (</span>
+<span class="fc" id="L382">        PreparedStatement st = conn.prepareStatement(command);</span>
+    ) {
+<span class="fc" id="L384">      st.setInt(1,  id);</span>
+<span class="fc" id="L385">      rs = st.executeQuery();</span>
+      
+<span class="pc bpc" id="L387" title="1 of 2 branches missed.">      while (rs.next()) {</span>
+<span class="nc" id="L388">        matchSet.add(rs.getInt(1));</span>
+      }
+<span class="fc" id="L390">      rs.close();</span>
+<span class="nc" id="L391">    } catch (Exception e) {</span>
+<span class="nc" id="L392">      return matchSet;</span>
+    }
+<span class="fc" id="L394">    return matchSet;</span>
+  }
+  
+  /**
+   * Collects the row numbers of trials for a particular researcher.
+   * @param id Row ID of the researcher.
+   * @return LinkedList of the trial rows.
+   */
+  public LinkedList&lt;Integer&gt; trialSet(int id) {
+<span class="fc" id="L403">    ResultSet rs = null;</span>
+<span class="fc" id="L404">    LinkedList&lt;Integer&gt; trialSet = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L405">    String command = &quot;SELECT ID FROM trials WHERE researcher_ID = ?;&quot;;</span>
+<span class="fc" id="L406">    try (</span>
+<span class="fc" id="L407">        PreparedStatement st = conn.prepareStatement(command);</span>
+    ) {
+<span class="fc" id="L409">      st.setInt(1,  id);</span>
+<span class="fc" id="L410">      rs = st.executeQuery();</span>
+      
+<span class="pc bpc" id="L412" title="1 of 2 branches missed.">      while (rs.next()) {</span>
+<span class="nc" id="L413">        trialSet.add(rs.getInt(1));</span>
+      }
+<span class="fc" id="L415">      rs.close();</span>
+<span class="nc" id="L416">    } catch (Exception e) {</span>
+<span class="nc" id="L417">      return trialSet;</span>
+    }
+<span class="fc" id="L419">    return trialSet;</span>
+  }
+  
+  /**
+   * Collects the row numbers of all participant accounts.
+   * @return LinkedList of the participant rows.
+   */
+  public LinkedList&lt;String&gt; partSet() {
+<span class="fc" id="L427">    ResultSet rs = null;</span>
+<span class="fc" id="L428">    LinkedList&lt;String&gt; trialSet = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L429">    String command = &quot;SELECT email FROM participants;&quot;;</span>
+<span class="fc" id="L430">    try (</span>
+<span class="fc" id="L431">        PreparedStatement st = conn.prepareStatement(command);</span>
+    ) {
+<span class="fc" id="L433">      rs = st.executeQuery();</span>
+      
+<span class="fc bfc" id="L435" title="All 2 branches covered.">      while (rs.next()) {</span>
+<span class="fc" id="L436">        trialSet.add(rs.getString(1));</span>
+      }
+<span class="fc" id="L438">      rs.close();</span>
+<span class="nc" id="L439">    } catch (Exception e) {</span>
+<span class="nc" id="L440">      return trialSet;</span>
+    }
+<span class="fc" id="L442">    return trialSet;</span>
+  }
+  
+  /**
+   * Collects the row numbers of all trials.
+   * @return LinkedList of the trial rows.
+   */
+  public LinkedList&lt;Integer&gt; openTrials() {
+<span class="fc" id="L450">    ResultSet rs = null;</span>
+<span class="fc" id="L451">    LinkedList&lt;Integer&gt; trialSet = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L452">    String command = &quot;SELECT ID FROM trials WHERE participants_needed &gt; participants_confirmed;&quot;;</span>
+<span class="fc" id="L453">    try (</span>
+<span class="fc" id="L454">        PreparedStatement st = conn.prepareStatement(command);</span>
+    ) {
+<span class="fc" id="L456">      rs = st.executeQuery();</span>
+<span class="fc bfc" id="L457" title="All 2 branches covered.">      while (rs.next()) {</span>
+<span class="fc" id="L458">        trialSet.add(rs.getInt(1));</span>
+      }
+<span class="fc" id="L460">      rs.close();</span>
+<span class="nc" id="L461">    } catch (Exception e) {</span>
+<span class="nc" id="L462">      return trialSet;</span>
+    }
+<span class="fc" id="L464">    return trialSet;</span>
+  }
+  
+  /**
+   * Load a particular trial from the database.
+   * @param id Table row of the trial.
+   * @return Trial object if found; null if not.
+   */
+  public Trial loadTrial(int id) {
+<span class="fc" id="L473">    Trial t = null;</span>
+<span class="fc" id="L474">    String command = &quot;SELECT * FROM trials WHERE ID = ?;&quot;;</span>
+<span class="fc" id="L475">    try (</span>
+<span class="fc" id="L476">        PreparedStatement st = conn.prepareStatement(command);</span>
+    ) {
+<span class="fc" id="L478">      st.setInt(1,  id);</span>
+<span class="fc" id="L479">      try (</span>
+<span class="fc" id="L480">          ResultSet rs = st.executeQuery();</span>
+      ) {
+<span class="fc" id="L482">        rs.next();</span>
+<span class="fc" id="L483">        Criteria c = loadCrit(id);</span>
+<span class="fc" id="L484">        t = new Trial(rs.getInt(1), rs.getString(3), rs</span>
+<span class="fc" id="L485">            .getString(4), rs.getDouble(5), rs.getDouble(6), rs</span>
+<span class="fc" id="L486">            .getString(7), rs.getString(8), rs.getString(9), rs</span>
+<span class="fc" id="L487">            .getDouble(10), rs.getInt(11), rs.getInt(12), rs.getInt(13), c);</span>
+<span class="fc" id="L488">        t.setRes(rs.getInt(2));</span>
+<span class="nc" id="L489">      } catch (Exception e) {</span>
+<span class="nc" id="L490">        e.printStackTrace();</span>
+<span class="nc" id="L491">        return t;</span>
+      }
+<span class="nc" id="L493">    } catch (Exception e) {</span>
+<span class="nc" id="L494">      e.printStackTrace();</span>
+<span class="nc" id="L495">      return t;</span>
+    }
+<span class="fc" id="L497">    return t;</span>
+  }
+  
+  /**
+   * Load a particular match from the database.
+   * @param id Table row of the match.
+   * @return Match object if found; null if not.
+   */
+  public Match loadMatch(int id) {
+<span class="nc" id="L506">    Match m = null;</span>
+<span class="nc" id="L507">    String command = &quot;SELECT * FROM trial_matches WHERE ID = ?;&quot;;</span>
+<span class="nc" id="L508">    try (</span>
+<span class="nc" id="L509">        PreparedStatement st = conn.prepareStatement(command);</span>
+    ) {
+<span class="nc" id="L511">      st.setInt(1,  id);</span>
+<span class="nc" id="L512">      try (</span>
+<span class="nc" id="L513">          ResultSet rs = st.executeQuery();</span>
+      ) {
+<span class="nc" id="L515">        rs.next();</span>
+<span class="nc" id="L516">        Trial t = loadTrial(rs.getInt(2));</span>
+<span class="nc" id="L517">        m = new Match(id, t, 0, rs.getString(5));</span>
+<span class="nc" id="L518">      } catch (Exception e) {</span>
+<span class="nc" id="L519">        return m;</span>
+      }
+<span class="nc" id="L521">    } catch (Exception e) {</span>
+<span class="nc" id="L522">      return m;</span>
+    }
+<span class="nc" id="L524">    return m;</span>
+  }
+  
+  /**
+   * Inserts an entry into an User-style table.
+   * 
+   * @param table Name of the table.
+   * @param u User to be inserted.
+   * @return The row into which the new user was inserted - 0 upon failure.
+   */
+  public int insertUser(String table, User u) {
+<span class="fc" id="L535">    int id = 0;</span>
+<span class="fc" id="L536">    String command = &quot;INSERT INTO %s (Lat, Long, Location, First, Last, Email) &quot;</span>
+        + &quot;VALUES (?, ?, ?, ?, ?, ?);&quot;;
+<span class="fc" id="L538">    command = String.format(command, table);</span>
+<span class="fc" id="L539">    try (</span>
+<span class="fc" id="L540">        PreparedStatement st = conn.prepareStatement(command);</span>
+    ) {
+<span class="fc" id="L542">      st.setDouble(1, u.getLat());</span>
+<span class="fc" id="L543">      st.setDouble(2, u.getLon());</span>
+<span class="fc" id="L544">      st.setString(3, u.getLocation());</span>
+<span class="fc" id="L545">      st.setString(4, u.getFirst());</span>
+<span class="fc" id="L546">      st.setString(5, u.getLast());</span>
+<span class="fc" id="L547">      st.setString(6, u.getEmail());</span>
+<span class="fc" id="L548">      st.executeUpdate();</span>
+<span class="fc" id="L549">      String check = &quot;SELECT last_insert_rowid() AS num;&quot;;</span>
+<span class="fc" id="L550">      ResultSet rs = stmt.executeQuery(check);</span>
+<span class="fc" id="L551">      rs.next();</span>
+<span class="fc" id="L552">      id = rs.getInt(&quot;num&quot;);</span>
+<span class="fc" id="L553">      rs.close();</span>
+<span class="nc" id="L554">    } catch (Exception e) {</span>
+<span class="nc" id="L555">      System.err.println(e.getClass().getName() + &quot;: &quot; + e.getMessage());</span>
+<span class="nc" id="L556">      return 0;</span>
+    }
+<span class="fc" id="L558">    return id;</span>
+
+  }
+
+  /**
+   * Updates entry in an User-style table.
+   * 
+   * @param table Name of the table.
+   * @param u User with updated information.
+   * @return The row which was updated - 0 upon failure.
+   */
+  public int updateUser(String table, User u) {
+<span class="fc" id="L570">    int row = 0;</span>
+<span class="fc" id="L571">    String command = &quot;REPLACE INTO %s VALUES (?, ?, ?, ?, ?, ?, ?);&quot;;</span>
+<span class="fc" id="L572">    command = String.format(command, table);</span>
+<span class="fc" id="L573">    try (</span>
+<span class="fc" id="L574">        PreparedStatement st = conn.prepareStatement(command);</span>
+    ) {
+<span class="fc" id="L576">      st.setInt(1, u.getID());</span>
+<span class="fc" id="L577">      st.setDouble(2, u.getLat());</span>
+<span class="fc" id="L578">      st.setDouble(3, u.getLon());</span>
+<span class="fc" id="L579">      st.setString(4, u.getLocation());</span>
+<span class="fc" id="L580">      st.setString(5, u.getFirst());</span>
+<span class="fc" id="L581">      st.setString(6, u.getLast());</span>
+<span class="fc" id="L582">      st.setString(7, u.getEmail());</span>
+<span class="fc" id="L583">      st.executeUpdate();</span>
+<span class="fc" id="L584">      String check = &quot;SELECT last_insert_rowid() AS num;&quot;;</span>
+<span class="fc" id="L585">      ResultSet rs = stmt.executeQuery(check);</span>
+<span class="fc" id="L586">      rs.next();</span>
+<span class="fc" id="L587">      row = rs.getInt(&quot;num&quot;);</span>
+<span class="fc" id="L588">      rs.close();</span>
+<span class="nc" id="L589">    } catch (Exception e) {</span>
+<span class="nc" id="L590">      e.printStackTrace();</span>
+<span class="nc" id="L591">      return 0;</span>
+    }
+<span class="fc" id="L593">    return row;</span>
+  }
+  
+  /**
+   * Inserts a new entry into a Criteria-style table.
+   * 
+   * @param table Name of the table.
+   * @param crit Criteria object to be inserted.
+   * @return The row into which the new criteria was inserted - 0 upon failure.
+   */
+  public int insertCriteria(String table, Criteria crit) {
+<span class="fc" id="L604">    int id = 0;</span>
+<span class="fc" id="L605">    String command = &quot;INSERT INTO %s VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);&quot;;</span>
+<span class="fc" id="L606">    command = String.format(command, table);</span>
+<span class="fc" id="L607">    try (</span>
+<span class="fc" id="L608">        PreparedStatement st = conn.prepareStatement(command);</span>
+    ) {
+<span class="fc" id="L610">      st.setInt(1, crit.getParent());</span>
+<span class="fc" id="L611">      st.setInt(2, crit.getMinAge());</span>
+<span class="fc" id="L612">      st.setInt(3, crit.getMaxAge());</span>
+<span class="fc" id="L613">      st.setDouble(4, crit.getMinHeight());</span>
+<span class="fc" id="L614">      st.setDouble(5, crit.getMaxHeight());</span>
+<span class="fc" id="L615">      st.setDouble(6, crit.getMinWeight());</span>
+<span class="fc" id="L616">      st.setDouble(7, crit.getMaxWeight());</span>
+<span class="fc" id="L617">      st.setString(8, crit.getGender());</span>
+<span class="fc" id="L618">      st.setString(9, crit.getRace());</span>
+<span class="fc" id="L619">      st.setString(10, crit.getNationality());</span>
+<span class="fc" id="L620">      st.executeUpdate();</span>
+<span class="fc" id="L621">      String check = &quot;SELECT last_insert_rowid() AS num;&quot;;</span>
+<span class="fc" id="L622">      ResultSet rs = stmt.executeQuery(check);</span>
+<span class="fc" id="L623">      rs.next();</span>
+<span class="fc" id="L624">      id = rs.getInt(&quot;num&quot;);</span>
+<span class="fc" id="L625">      rs.close();</span>
+<span class="nc" id="L626">    } catch (Exception e) {</span>
+<span class="nc" id="L627">      System.err.println(e.getClass().getName() + &quot;: &quot; + e.getMessage());</span>
+<span class="nc" id="L628">      return 0;</span>
+    }
+<span class="fc" id="L630">    return id;</span>
+  }
+
+  /**
+   * Updates an entry in a Criteria-style table.
+   * 
+   * @param table       Name of the table.
+   * @param crit Criteria object with updated information.
+   * @return The row which was updated - 0 upon failure.
+   */
+  public int updateCriteria(String table, Criteria crit) {
+<span class="fc" id="L641">    int id = 0;</span>
+<span class="fc" id="L642">    String command = &quot;REPLACE INTO %s VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);&quot;;</span>
+<span class="fc" id="L643">    command = String.format(command, table);</span>
+<span class="fc" id="L644">    try (</span>
+<span class="fc" id="L645">        PreparedStatement st = conn.prepareStatement(command);</span>
+    ) {
+<span class="fc" id="L647">      st.setInt(1, crit.getID());</span>
+<span class="fc" id="L648">      st.setInt(2, crit.getParent());</span>
+<span class="fc" id="L649">      st.setInt(3, crit.getMinAge());</span>
+<span class="fc" id="L650">      st.setInt(4, crit.getMaxAge());</span>
+<span class="fc" id="L651">      st.setDouble(5, crit.getMinHeight());</span>
+<span class="fc" id="L652">      st.setDouble(6, crit.getMaxHeight());</span>
+<span class="fc" id="L653">      st.setDouble(7, crit.getMinWeight());</span>
+<span class="fc" id="L654">      st.setDouble(8, crit.getMaxWeight());</span>
+<span class="fc" id="L655">      st.setString(9, crit.getGender());</span>
+<span class="fc" id="L656">      st.setString(10, crit.getRace());</span>
+<span class="fc" id="L657">      st.setString(11, crit.getNationality());</span>
+<span class="fc" id="L658">      st.executeUpdate();</span>
+<span class="fc" id="L659">      String check = &quot;SELECT last_insert_rowid() AS num;&quot;;</span>
+<span class="fc" id="L660">      ResultSet rs = stmt.executeQuery(check);</span>
+<span class="fc" id="L661">      rs.next();</span>
+<span class="fc" id="L662">      id = rs.getInt(&quot;num&quot;);</span>
+<span class="fc" id="L663">      rs.close();</span>
+<span class="nc" id="L664">    } catch (Exception e) {</span>
+<span class="nc" id="L665">      e.printStackTrace();</span>
+<span class="nc" id="L666">      return 0;</span>
+    }
+<span class="fc" id="L668">    return id;</span>
+  }
+  
+  /**
+   * Inserts a new trial into the database.
+   * @param t Trial to be inserted.
+   * @return The row into which the new trial was inserted - 0 upon failure.
+   */
+  public int insertTrial(Trial t) {
+<span class="fc" id="L677">    int id = 0;</span>
+<span class="fc" id="L678">    String command = &quot;INSERT INTO trials VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);&quot;;</span>
+<span class="fc" id="L679">    try (</span>
+<span class="fc" id="L680">        PreparedStatement st = conn.prepareStatement(command);</span>
+    ) {
+<span class="fc" id="L682">      st.setInt(1, t.getRes());</span>
+<span class="fc" id="L683">      st.setString(2, t.getName());</span>
+<span class="fc" id="L684">      st.setString(3, t.getDesc());</span>
+<span class="fc" id="L685">      st.setDouble(4, t.getLat());</span>
+<span class="fc" id="L686">      st.setDouble(5, t.getLong());</span>
+<span class="fc" id="L687">      st.setString(6, t.getLocation());</span>
+<span class="fc" id="L688">      st.setString(7, t.getStart());</span>
+<span class="fc" id="L689">      st.setString(8, t.getEnd());</span>
+<span class="fc" id="L690">      st.setDouble(9, t.getPay());</span>
+<span class="fc" id="L691">      st.setInt(10, t.getIrb());</span>
+<span class="fc" id="L692">      st.setInt(11, t.getPartNeeded());</span>
+<span class="fc" id="L693">      st.setInt(12, t.getPartConf());</span>
+<span class="fc" id="L694">      st.executeUpdate();</span>
+<span class="fc" id="L695">      String check = &quot;SELECT last_insert_rowid() AS num;&quot;;</span>
+<span class="fc" id="L696">      ResultSet rs = stmt.executeQuery(check);</span>
+<span class="fc" id="L697">      rs.next();</span>
+<span class="fc" id="L698">      id = rs.getInt(&quot;num&quot;);</span>
+<span class="fc" id="L699">      rs.close();</span>
+<span class="nc" id="L700">    } catch (Exception e) {</span>
+<span class="nc" id="L701">      System.err.println(e.getClass().getName() + &quot;: &quot; + e.getMessage());</span>
+<span class="nc" id="L702">      return 0;</span>
+    }
+<span class="fc" id="L704">    return id;</span>
+  }
+
+  /**
+   * Updates a trial in the database.
+   * 
+   * @param t Trial with updated information.
+   * @return The row which was updated - 0 upon failure.
+   */
+  public int updateTrial(Trial t) {
+<span class="fc" id="L714">    int id = 0;</span>
+<span class="fc" id="L715">    String command = &quot;REPLACE INTO trials VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);&quot;;</span>
+<span class="fc" id="L716">    try (</span>
+<span class="fc" id="L717">        PreparedStatement st = conn.prepareStatement(command);</span>
+    ) {
+<span class="fc" id="L719">      st.setInt(1, t.getID());</span>
+<span class="fc" id="L720">      st.setInt(2, t.getRes());</span>
+<span class="fc" id="L721">      st.setString(3, t.getName());</span>
+<span class="fc" id="L722">      st.setString(4, t.getDesc());</span>
+<span class="fc" id="L723">      st.setDouble(5, t.getLat());</span>
+<span class="fc" id="L724">      st.setDouble(6, t.getLong());</span>
+<span class="fc" id="L725">      st.setString(7, t.getLocation());</span>
+<span class="fc" id="L726">      st.setString(8, t.getStart());</span>
+<span class="fc" id="L727">      st.setString(9, t.getEnd());</span>
+<span class="fc" id="L728">      st.setDouble(10, t.getPay());</span>
+<span class="fc" id="L729">      st.setInt(11, t.getIrb());</span>
+<span class="fc" id="L730">      st.setInt(12, t.getPartNeeded());</span>
+<span class="fc" id="L731">      st.setInt(13, t.getPartConf());</span>
+<span class="fc" id="L732">      st.executeUpdate();</span>
+<span class="fc" id="L733">      String check = &quot;SELECT last_insert_rowid() AS num;&quot;;</span>
+<span class="fc" id="L734">      ResultSet rs = stmt.executeQuery(check);</span>
+<span class="fc" id="L735">      rs.next();</span>
+<span class="fc" id="L736">      id = rs.getInt(&quot;num&quot;);</span>
+<span class="fc" id="L737">      rs.close();</span>
+<span class="nc" id="L738">    } catch (Exception e) {</span>
+<span class="nc" id="L739">      e.printStackTrace();</span>
+<span class="nc" id="L740">      return 0;</span>
+    }
+<span class="fc" id="L742">    return id;</span>
+  }
+
+  /**
+   * Records a match as accepted.
+   * @param id Table row of the match.
+   */
+  public void acceptMatch(int id) {
+<span class="fc" id="L750">    String command = &quot;UPDATE trial_matches SET status = 'accepted' WHERE trial_ID = ?&quot;;</span>
+<span class="fc" id="L751">    try (</span>
+<span class="fc" id="L752">        PreparedStatement st = conn.prepareStatement(command);</span>
+    ) {
+<span class="fc" id="L754">      st.setInt(1, id);</span>
+<span class="fc" id="L755">      st.executeUpdate();</span>
+<span class="nc" id="L756">    } catch (Exception e) {</span>
+<span class="nc" id="L757">      e.printStackTrace();</span>
+    }
+<span class="fc" id="L759">  }</span>
+  
+  /**
+   * Records a match as rejected.
+   * @param id Table row of the match.
+   */
+  public void rejectMatch(int id) {
+<span class="fc" id="L766">    String command = &quot;UPDATE trial_matches SET status = 'rejected' WHERE trial_ID = ?&quot;;</span>
+<span class="fc" id="L767">    try (</span>
+<span class="fc" id="L768">        PreparedStatement st = conn.prepareStatement(command);</span>
+    ) {
+<span class="fc" id="L770">      st.setInt(1, id);</span>
+<span class="fc" id="L771">      st.executeUpdate();</span>
+<span class="nc" id="L772">    } catch (Exception e) {</span>
+<span class="nc" id="L773">      e.printStackTrace();</span>
+    }
+<span class="fc" id="L775">  }</span>
+
+  /**
+   * Checks whether a match exists.
+   * @param partID Table row of the participant.
+   * @param trialID Table row of the trial.
+   * @return Whether the match was present.
+   */
+  public boolean matchExists(int partID, int trialID) {
+<span class="fc" id="L784">    String command = &quot;SELECT COUNT(*) FROM trial_matches WHERE participant_ID = ? AND trial_ID = ?&quot;;</span>
+<span class="fc" id="L785">    boolean s = false;</span>
+<span class="fc" id="L786">    try (</span>
+<span class="fc" id="L787">        PreparedStatement st = conn.prepareStatement(command);</span>
+    ) {
+<span class="fc" id="L789">      st.setInt(1, partID);</span>
+<span class="fc" id="L790">      st.setInt(2,  partID);</span>
+<span class="fc" id="L791">      try (</span>
+<span class="fc" id="L792">          ResultSet rs = st.executeQuery();</span>
+      ) {
+<span class="pc bpc" id="L794" title="1 of 2 branches missed.">        s = rs.getInt(1) &gt; 0;</span>
+<span class="nc" id="L795">      } catch (Exception e) {</span>
+<span class="nc" id="L796">        return s;</span>
+      }
+<span class="nc" id="L798">    } catch (Exception e) {</span>
+<span class="nc" id="L799">      e.printStackTrace();</span>
+<span class="nc" id="L800">      return s;</span>
+    }
+<span class="fc" id="L802">    return s;</span>
+  }
+  
+  /**
+   * Inserts a new match entry.
+   * @param u Participant associated with the match.
+   * @param t Trial associated with the match.
+   * @return The row into which the new match was inserted - 0 upon failure.
+   */
+  public int insertMatch(User u, Trial t) {
+<span class="fc" id="L812">    int id = 0;</span>
+<span class="fc" id="L813">    String command = &quot;INSERT INTO trial_matches VALUES (null, ?, ?, ?, 'pending');&quot;;</span>
+<span class="fc" id="L814">    try (</span>
+<span class="fc" id="L815">        PreparedStatement st = conn.prepareStatement(command);</span>
+    ) {
+<span class="fc" id="L817">      st.setInt(1, t.getID());</span>
+<span class="fc" id="L818">      st.setInt(2, t.getRes());</span>
+<span class="fc" id="L819">      st.setInt(3, u.getID());</span>
+<span class="fc" id="L820">      st.executeUpdate();</span>
+<span class="fc" id="L821">      String check = &quot;SELECT last_insert_rowid() AS num;&quot;;</span>
+<span class="fc" id="L822">      ResultSet rs = stmt.executeQuery(check);</span>
+<span class="fc" id="L823">      rs.next();</span>
+<span class="fc" id="L824">      id = rs.getInt(&quot;num&quot;);</span>
+<span class="fc" id="L825">      rs.close();</span>
+<span class="nc" id="L826">    } catch (Exception e) {</span>
+<span class="nc" id="L827">      e.printStackTrace();</span>
+<span class="nc" id="L828">      return 0;</span>
+    }
+<span class="fc" id="L830">    return id;</span>
+  }
+  
+  /**
+   * Inserts an notification entry.
+   * 
+   * @param trial Row number of the associated trial.
+   * @param res Row number of the associated researcher, if applicable - otherwise 0.
+   * @param part Row number of the associated participant, if applicable - otherwise 0.
+   * @param time Time the notification was sent.
+   * @param message Message sent to the recipient.
+   * @return The row into which the new entry was inserted - 0 upon failure.
+   */
+  public int insertNotification(int trial, int res, int part, String time, String message) {
+<span class="fc" id="L844">    int id = 0;</span>
+<span class="fc" id="L845">    String command = &quot;INSERT INTO email VALUES (null, ?, ?, ?, 'email', ?, ?);&quot;;</span>
+<span class="fc" id="L846">    try (</span>
+<span class="fc" id="L847">        PreparedStatement st = conn.prepareStatement(command);</span>
+    ) {
+<span class="fc" id="L849">      st.setInt(1, trial);</span>
+<span class="fc" id="L850">      st.setInt(2, res);</span>
+<span class="fc" id="L851">      st.setInt(3, part);</span>
+<span class="fc" id="L852">      st.setString(4, time);</span>
+<span class="fc" id="L853">      st.setString(5, message);</span>
+<span class="fc" id="L854">      st.executeUpdate();</span>
+<span class="fc" id="L855">      String check = &quot;SELECT last_insert_rowid() AS num;&quot;;</span>
+<span class="fc" id="L856">      ResultSet rs = stmt.executeQuery(check);</span>
+<span class="fc" id="L857">      rs.next();</span>
+<span class="fc" id="L858">      id = rs.getInt(&quot;num&quot;);</span>
+<span class="fc" id="L859">      rs.close();</span>
+<span class="nc" id="L860">    } catch (Exception e) {</span>
+<span class="nc" id="L861">      e.printStackTrace();</span>
+<span class="nc" id="L862">      return 0;</span>
+    }
+<span class="fc" id="L864">    return id;</span>
+  }
+  
+  /**
+   * Load a particular notification from the database.
+   * @param id Table row of the notification.
+   * @return Notification object if found; null if not.
+   */
+  public Notification loadNotification(int id) {
+<span class="nc" id="L873">    Notification n = null;</span>
+<span class="nc" id="L874">    String command = &quot;SELECT * FROM email WHERE ID = ?;&quot;;</span>
+<span class="nc" id="L875">    try (</span>
+<span class="nc" id="L876">        PreparedStatement st = conn.prepareStatement(command);</span>
+    ) {
+<span class="nc" id="L878">      st.setInt(1,  id);</span>
+<span class="nc" id="L879">      try (</span>
+<span class="nc" id="L880">          ResultSet rs = st.executeQuery();</span>
+      ) {
+<span class="nc" id="L882">        rs.next();</span>
+<span class="nc" id="L883">        n = new Notification(this, rs.getInt(2), rs.getString(&quot;time_sent&quot;), rs.getString(&quot;message&quot;));</span>
+<span class="nc" id="L884">      } catch (Exception e) {</span>
+<span class="nc" id="L885">        e.printStackTrace();</span>
+<span class="nc" id="L886">        return n;</span>
+      }
+<span class="nc" id="L888">    } catch (Exception e) {</span>
+<span class="nc" id="L889">      e.printStackTrace();</span>
+<span class="nc" id="L890">      return n;</span>
+    }
+<span class="nc" id="L892">    return n;</span>
+  }
+  
+  /**
+   * Collects the row numbers of notifications sent to a particular user.
+   * @param id Row number of the user.
+   * @param isResearcher Whether the user is in the researcher or participant table.
+   * @return LinkedList of the notification rows.
+   */
+  public LinkedList&lt;Integer&gt; emailSet(int id, boolean isResearcher) {
+<span class="nc" id="L902">    ResultSet rs = null;</span>
+<span class="nc" id="L903">    LinkedList&lt;Integer&gt; emailSet = new LinkedList&lt;&gt;();</span>
+<span class="nc" id="L904">    String field = &quot;participant_ID&quot;;</span>
+<span class="nc bnc" id="L905" title="All 2 branches missed.">    if (isResearcher) {</span>
+<span class="nc" id="L906">      field = &quot;researcher_ID&quot;;</span>
+    }
+<span class="nc" id="L908">    String command = &quot;SELECT ID FROM email WHERE &quot; + field + &quot; = ?;&quot;;</span>
+<span class="nc" id="L909">    try (</span>
+<span class="nc" id="L910">        PreparedStatement st = conn.prepareStatement(command);</span>
+    ) {
+<span class="nc" id="L912">      st.setInt(1,  id);</span>
+<span class="nc" id="L913">      rs = st.executeQuery();</span>
+      
+<span class="nc bnc" id="L915" title="All 2 branches missed.">      while (rs.next()) {</span>
+<span class="nc" id="L916">        emailSet.add(rs.getInt(1));</span>
+      }
+<span class="nc" id="L918">      rs.close();</span>
+<span class="nc" id="L919">    } catch (Exception e) {</span>
+<span class="nc" id="L920">      e.printStackTrace();</span>
+<span class="nc" id="L921">      return emailSet;</span>
+    }
+<span class="nc" id="L923">    return emailSet;</span>
+  }
+  
+  /**
+   * Closes connection to the database.
+   */
+  public void stop() {
+    try {
+<span class="fc" id="L931">      stmt.close();</span>
+<span class="fc" id="L932">      conn.close();</span>
+<span class="pc" id="L933">    } catch (Exception e) {</span>
+<span class="nc" id="L934">      System.err.println(e.getClass().getName() + &quot;: &quot; + e.getMessage());</span>
+    }
+<span class="fc" id="L936">  }</span>
+
+  /**
+   * gets the Connection object.
+   * 
+   * @return Class Connection member.
+   */
+  public Connection getConn() {
+<span class="nc" id="L944">    return conn;</span>
+  }
+  
+  
+  /**
+   * deletes the DB file 
+   * 
+   * @param args
+   */
+  /**public void deleteDB() { 
+    File myObj = new File(&quot;../../../../triall.db&quot;); 
+    if (myObj.delete()) { 
+      System.out.println(&quot;Deleted the file: &quot; + myObj.getName());
+    } else {
+      System.out.println(&quot;Failed to delete the file.&quot;);
+    } 
+  } **/
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span>TriAllTest (Dec 10, 2020 4:06:08 AM)</div></body></html>

@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>Trial.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=2;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">TriAllTest (Dec 10, 2020 4:06:08 AM)</a> &gt; <a href="../../index.html" class="el_group">triAll</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">models</a> &gt; <span class="el_source">Trial.java</span></div><h1>Trial.java</h1><pre class="source lang-java linenums">package models;
+
+import com.google.gson.JsonArray;
+
+import database.SqliteDB;
+
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
+public class Trial {
+
+  private int id;
+  private int resID;
+  private String name;
+  private String desc;
+  private double lat;
+  private double lon;
+  private String location;
+  private String start;
+  private String end;
+  private double pay;
+  private int irb;
+  private int partNeeded;
+  private int partConfirmed;
+
+  private Criteria crit;
+
+  /**
+   * Creates trial object.
+   */
+<span class="fc" id="L31">  public Trial(int id, String n, String d, double lat, double lon, String location, String s, </span>
+      String e, double p, int irb, int pn, int pc, Criteria crit) {
+<span class="fc bfc" id="L33" title="All 2 branches covered.">    if (id &lt;= 0) {</span>
+<span class="fc" id="L34">      throw new IllegalArgumentException(&quot;id must be &gt; 0&quot;);</span>
+    }
+<span class="fc" id="L36">    this.id = id;</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">    if (n == &quot;&quot;) {</span>
+<span class="fc" id="L38">      throw new IllegalArgumentException(&quot;name cannot be empty&quot;);</span>
+    }
+<span class="fc" id="L40">    this.name = n;</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">    if (d == &quot;&quot;) {</span>
+<span class="fc" id="L42">      throw new IllegalArgumentException(&quot;description must not be empty&quot;);</span>
+    }
+<span class="fc" id="L44">    this.desc = d;</span>
+<span class="pc bpc" id="L45" title="1 of 4 branches missed.">    if (lat &lt; -90.0 || lat &gt; 90.0) {</span>
+<span class="fc" id="L46">      throw new IllegalArgumentException(&quot;latitude must be between -90.0 and 90.0&quot;);</span>
+    }
+<span class="fc" id="L48">    this.lat = lat;</span>
+<span class="pc bpc" id="L49" title="1 of 4 branches missed.">    if (lon &lt; -180.0 || lon &gt; 180.0) {</span>
+<span class="fc" id="L50">      throw new IllegalArgumentException(&quot;longitude must be between -180.0 and 180.0&quot;);</span>
+    }
+<span class="fc" id="L52">    this.lon = lon;</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">    if (location == &quot;&quot;) {</span>
+<span class="fc" id="L54">      throw new IllegalArgumentException(&quot;location must not be empty&quot;);</span>
+    }
+<span class="fc" id="L56">    this.location = location;</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">    if (!isValidDate(s)) {</span>
+<span class="fc" id="L58">      throw new IllegalArgumentException(&quot;start date is not valid&quot;);</span>
+    }
+<span class="fc" id="L60">    this.start = s;</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">    if (!isValidDate(e)) {</span>
+<span class="fc" id="L62">      throw new IllegalArgumentException(&quot;end date is not valid&quot;);</span>
+    }
+<span class="fc" id="L64">    this.end = e;</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">    if (p &lt; 0) {</span>
+<span class="fc" id="L66">      throw new IllegalArgumentException(&quot;pay must not be negative&quot;);</span>
+    }
+<span class="fc" id="L68">    this.pay = p;</span>
+<span class="pc bpc" id="L69" title="1 of 4 branches missed.">    if (Integer.toString(irb).length() &lt; 4 || Integer.toString(irb).length() &gt; 5) {</span>
+<span class="fc" id="L70">      throw new IllegalArgumentException(&quot;IRB number not valid&quot;);</span>
+    }
+<span class="fc" id="L72">    this.irb = irb;</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">    if (pn &lt; 0) {</span>
+<span class="fc" id="L74">      throw new IllegalArgumentException(&quot;participants needed must not be negative&quot;);</span>
+    }
+<span class="fc" id="L76">    this.partNeeded = pn;</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">    if (pc &lt; 0) {</span>
+<span class="fc" id="L78">      throw new IllegalArgumentException(&quot;participants confirmed must not be negative&quot;);</span>
+    }
+<span class="fc" id="L80">    this.partConfirmed = pc;</span>
+<span class="fc" id="L81">    this.crit = crit;</span>
+<span class="fc" id="L82">  }</span>
+
+  /**
+   * Creates trial object.
+   */
+<span class="fc" id="L87">  public Trial(SqliteDB db, JsonArray form, int parent) {</span>
+<span class="fc" id="L88">    name = form.get(0).getAsJsonObject().get(&quot;value&quot;).getAsString();</span>
+<span class="fc" id="L89">    desc = form.get(1).getAsJsonObject().get(&quot;value&quot;).getAsString();</span>
+<span class="fc" id="L90">    location = form.get(2).getAsJsonObject().get(&quot;value&quot;).getAsString();</span>
+<span class="fc" id="L91">    lat = form.get(3).getAsJsonObject().get(&quot;value&quot;).getAsDouble();</span>
+<span class="fc" id="L92">    lon = form.get(4).getAsJsonObject().get(&quot;value&quot;).getAsDouble();</span>
+<span class="fc" id="L93">    start = form.get(5).getAsJsonObject().get(&quot;value&quot;).getAsString();</span>
+<span class="fc" id="L94">    end = form.get(6).getAsJsonObject().get(&quot;value&quot;).getAsString();</span>
+<span class="fc" id="L95">    pay = form.get(7).getAsJsonObject().get(&quot;value&quot;).getAsDouble();</span>
+<span class="fc" id="L96">    irb = form.get(8).getAsJsonObject().get(&quot;value&quot;).getAsInt();</span>
+<span class="fc" id="L97">    partNeeded = form.get(9).getAsJsonObject().get(&quot;value&quot;).getAsInt();</span>
+<span class="fc" id="L98">    partConfirmed = 0;</span>
+<span class="fc" id="L99">    resID = parent;</span>
+<span class="fc" id="L100">    System.out.println(resID);</span>
+<span class="fc" id="L101">    id = db.insertTrial(this);</span>
+<span class="fc" id="L102">    crit = new Criteria(db, form, id, &quot;trial_criteria&quot;);</span>
+<span class="fc" id="L103">    System.out.println(crit);</span>
+<span class="fc" id="L104">    checkMatches(db);</span>
+<span class="fc" id="L105">  }</span>
+
+  /**
+   * Update trial after edits to information.
+   * 
+   * @param db   Database.
+   * @param form Form information to parse.
+   * @return Whether the operation succeeds.
+   */
+  public boolean update(SqliteDB db, JsonArray form) {
+<span class="fc" id="L115">    desc = form.get(1).getAsJsonObject().get(&quot;value&quot;).getAsString();</span>
+<span class="fc" id="L116">    location = form.get(2).getAsJsonObject().get(&quot;value&quot;).getAsString();</span>
+<span class="fc" id="L117">    lat = form.get(3).getAsJsonObject().get(&quot;value&quot;).getAsDouble();</span>
+<span class="fc" id="L118">    lon = form.get(4).getAsJsonObject().get(&quot;value&quot;).getAsDouble();</span>
+<span class="fc" id="L119">    start = form.get(5).getAsJsonObject().get(&quot;value&quot;).getAsString();</span>
+<span class="fc" id="L120">    end = form.get(6).getAsJsonObject().get(&quot;value&quot;).getAsString();</span>
+<span class="fc" id="L121">    pay = form.get(7).getAsJsonObject().get(&quot;value&quot;).getAsDouble();</span>
+<span class="fc" id="L122">    irb = form.get(8).getAsJsonObject().get(&quot;value&quot;).getAsInt();</span>
+<span class="fc" id="L123">    partNeeded = form.get(9).getAsJsonObject().get(&quot;value&quot;).getAsInt();</span>
+<span class="pc bpc" id="L124" title="1 of 2 branches missed.">    if (db.updateTrial(this) == 0) {</span>
+<span class="nc" id="L125">      return false;</span>
+    }
+<span class="fc" id="L127">    crit.updateCrit(db, form);</span>
+<span class="fc" id="L128">    checkMatches(db);</span>
+<span class="fc" id="L129">    return true;</span>
+  }
+
+  /**
+   * Checks for new matches.
+   * 
+   * @param db Database.
+   */
+  private void checkMatches(SqliteDB db) {
+<span class="pc bpc" id="L138" title="1 of 2 branches missed.">    if (partNeeded == partConfirmed) {</span>
+<span class="nc" id="L139">      return;</span>
+    }
+<span class="fc bfc" id="L141" title="All 2 branches covered.">    for (String email : db.partSet()) {</span>
+<span class="fc" id="L142">      User user = db.loadPart(email);</span>
+<span class="fc" id="L143">      user.setData(db.loadData(user.getID()));</span>
+<span class="pc bpc" id="L144" title="3 of 4 branches missed.">      if (crit.matches(user.getData()) &amp;&amp; !db.matchExists(user.getID(), id)) {</span>
+<span class="nc" id="L145">        Match m = new Match(user, this, db);</span>
+      }
+    }
+<span class="fc" id="L148">  }</span>
+
+  public int getID() {
+<span class="fc" id="L151">    return id;</span>
+  }
+
+  public int getRes() {
+<span class="fc" id="L155">    return resID;</span>
+  }
+  
+  public void setRes(int resID) {
+<span class="fc" id="L159">    this.resID = resID; </span>
+<span class="fc" id="L160">  }</span>
+
+  public String getName() {
+<span class="fc" id="L163">    return name;</span>
+  }
+
+  public Criteria getCriteria() {
+<span class="fc" id="L167">    return crit;</span>
+  }
+
+  public String getDesc() {
+<span class="fc" id="L171">    return desc;</span>
+  }
+
+  public double getLat() {
+<span class="fc" id="L175">    return this.lat;</span>
+  }
+
+  public double getLong() {
+<span class="fc" id="L179">    return this.lon;</span>
+  }
+
+  public String getLocation() {
+<span class="fc" id="L183">    return location;</span>
+  }
+
+  public String getStart() {
+<span class="fc" id="L187">    return start;</span>
+  }
+
+  public String getEnd() {
+<span class="fc" id="L191">    return end;</span>
+  }
+
+  public int getIrb() {
+<span class="fc" id="L195">    return irb;</span>
+  }
+
+  public double getPay() {
+<span class="fc" id="L199">    return pay;</span>
+  }
+
+  public int getPartNeeded() {
+<span class="fc" id="L203">    return partNeeded;</span>
+  }
+
+  public int getPartConf() {
+<span class="fc" id="L207">    return partConfirmed;</span>
+  }
+
+  /**
+   * Records a confirmed participant.
+   * 
+   * @param db Database.
+   * @return Whether the trial could confirm the participant.
+   */
+  public boolean confirmOne(SqliteDB db) {
+<span class="fc bfc" id="L217" title="All 2 branches covered.">    if (partConfirmed == partNeeded) {</span>
+<span class="fc" id="L218">      return false;</span>
+    }
+<span class="fc" id="L220">    partConfirmed++;</span>
+<span class="pc bpc" id="L221" title="1 of 2 branches missed.">    if (db.updateTrial(this) == 0) {</span>
+<span class="nc" id="L222">      return false;</span>
+    }
+<span class="fc" id="L224">    return true;</span>
+  }
+
+  /**
+   * Checks whether a date string is valid.
+   * @param date Date string.
+   * @return Whether it is valid.
+   */
+  private boolean isValidDate(String date) {
+    try {
+<span class="fc" id="L234">      DateTimeFormatter.ISO_DATE.parse(date);</span>
+<span class="fc" id="L235">      return true;</span>
+<span class="fc" id="L236">    } catch (DateTimeParseException e) {</span>
+<span class="fc" id="L237">      return false;</span>
+    }
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span>TriAllTest (Dec 10, 2020 4:06:08 AM)</div></body></html>

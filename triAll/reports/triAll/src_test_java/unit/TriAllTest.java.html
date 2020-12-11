@@ -1,0 +1,1251 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>TriAllTest.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=2;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">TriAllTest (Dec 10, 2020 4:06:08 AM)</a> &gt; <a href="../../index.html" class="el_group">triAll</a> &gt; <a href="../index.html" class="el_bundle">src/test/java</a> &gt; <a href="index.source.html" class="el_package">unit</a> &gt; <span class="el_source">TriAllTest.java</span></div><h1>TriAllTest.java</h1><pre class="source lang-java linenums">package unit;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import controllers.TriAll;
+import java.io.File;
+import database.SqliteDB;
+import java.util.HashMap;
+import java.util.LinkedList;
+import models.Criteria;
+import models.Match;
+import models.Notification;
+import models.Trial;
+import models.User;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+
+import org.json.CDL;
+import org.json.JSONObject;
+import org.json.CDL;
+import org.json.JSONArray;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
+@TestMethodOrder(OrderAnnotation.class)
+<span class="fc" id="L32">public class TriAllTest {</span>
+
+  // test Criteria.matches
+  // test Notification.getPartEmail
+  // test Notification.getResEmail
+  // test User.update
+
+  // test User.addTrial
+  // test User.containstrial
+
+  // test User.Sortedtrials /compare_date
+  // test User.Sortedmatches /compare_dist
+  // test User.distance
+
+<span class="fc" id="L46">  HashMap&lt;Integer, Trial&gt; trials = new HashMap&lt;Integer, Trial&gt;();</span>
+<span class="fc" id="L47">  LinkedList&lt;Match&gt; matches = new LinkedList&lt;Match&gt;();</span>
+<span class="fc" id="L48">  Criteria crit = new Criteria(1, 1, 22, 28, 60, 70, 110, 180, &quot;Male&quot;, &quot;cool&quot;, &quot;cool&quot;);</span>
+<span class="fc" id="L49">  User user1 = new User(1, 0, 0, &quot;Columbia&quot;, &quot;Shirish&quot;, &quot;Shirish&quot;, &quot;shirishIsCool@gmail.com&quot;, </span>
+<span class="fc" id="L50">      false);</span>
+<span class="fc" id="L51">  User user2 = new User(1, 0, 0, &quot;Columbia&quot;, &quot;Gail&quot;, &quot;Kaiser&quot;, &quot;gailIsCool@gmail.com&quot;, true);</span>
+<span class="fc" id="L52">  Trial tr = new Trial(1, &quot;Cool Trial&quot;, &quot;cool trial&quot;, 0, 0, &quot;Siberia&quot;, &quot;2020-12-01&quot;, &quot;2020-12-02&quot;, </span>
+<span class="fc" id="L53">      12, 1234, 100, 0, crit); </span>
+  
+  
+  //User equiv. class 1
+  @Test
+  @Order(1)
+  public void testGoodUser() {
+<span class="fc" id="L60">    User goodPart = new User(1, 80.0, 80.0, &quot;kansas&quot;, &quot;Jane&quot;, &quot;Doe&quot;, &quot;JaneDoe@gmail.com&quot;, false);</span>
+<span class="fc" id="L61">    double lat = goodPart.getLat();</span>
+<span class="fc" id="L62">    assertEquals(80.0, lat);</span>
+<span class="fc" id="L63">  }</span>
+  
+  //User equiv. class 2
+  @Test
+  @Order(2)
+  public void testJustBelowUser() {
+<span class="fc" id="L69">    Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L70">      User justBelow = new User(-1, -90.1, -180.1, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, false);</span>
+<span class="nc" id="L71">    });</span>
+<span class="fc" id="L72">  }</span>
+  
+  //User equiv. class 3
+  @Test
+  @Order(3)
+  public void testJustAboveUser() {
+<span class="fc" id="L78">    Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L79">      User justAbove = new User(1, 90.1, 180.1, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, false);</span>
+<span class="nc" id="L80">    });</span>
+<span class="fc" id="L81">  }</span>
+  
+  @Test 
+  public void testJustAboveUser1() {
+<span class="fc" id="L85">    Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L86">      User justAbove = new User(1, 90.0, 180.1, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, false);</span>
+<span class="nc" id="L87">    });</span>
+<span class="fc" id="L88">  }</span>
+  
+  //User equiv. class 4
+  @Test
+  @Order(4)
+  public void badStringsUser() {
+<span class="fc" id="L94">    Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L95">      User badStrings = new User(1, 80.0, 80.0, &quot;&quot;, &quot;432&quot;, &quot;123&quot;, &quot;JaneDoe.com&quot;, false);</span>
+<span class="nc" id="L96">    });</span>
+<span class="fc" id="L97">  }</span>
+  
+  @Test 
+  public void badStringUser1() {
+<span class="fc" id="L101">    Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L102">      User justAbove = new User(1, 90.0, 180.0, &quot;loc&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, false);</span>
+<span class="nc" id="L103">    });</span>
+<span class="fc" id="L104">  }</span>
+  
+  @Test
+  public void badStringUser2() {
+<span class="fc" id="L108">    Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L109">      User justAbove = new User(1, 90.0, 180.0, &quot;loc&quot;, &quot;first&quot;, &quot;&quot;, &quot;&quot;, false);</span>
+<span class="nc" id="L110">    });</span>
+<span class="fc" id="L111">  }</span>
+  
+  @Test
+  public void badStringUser3() {
+<span class="fc" id="L115">    Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L116">      User justAbove = new User(1, 90.0, 180.0, &quot;loc&quot;, &quot;first&quot;, &quot;last&quot;, &quot;&quot;, false);</span>
+<span class="nc" id="L117">    });</span>
+<span class="fc" id="L118">  }</span>
+  
+  //Notification equiv. class 1
+  @Test
+  @Order(5)
+  public void goodTimeNotification() {
+<span class="fc" id="L124">    SqliteDB db = new SqliteDB(&quot;triall&quot;);</span>
+<span class="fc" id="L125">    Notification goodTime = new Notification(db, 1, &quot;10:15:10&quot;, &quot;new trial&quot;);</span>
+<span class="fc" id="L126">    String message = goodTime.getMessage();</span>
+<span class="fc" id="L127">    String time = goodTime.getTime();</span>
+<span class="fc" id="L128">    String trial = goodTime.getTrial();</span>
+<span class="fc" id="L129">    assertEquals(&quot;new trial&quot;, message);</span>
+<span class="fc" id="L130">  }</span>
+  
+  //Notification equiv. class 2
+  @Test
+  @Order(6)
+  public void badIdMessageNotification() {
+<span class="fc" id="L136">    SqliteDB db = new SqliteDB(&quot;triall&quot;);</span>
+<span class="fc" id="L137">    Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L138">      Notification badIdMessage = new Notification(db, 0, &quot;10:15:30&quot;, &quot;&quot;);</span>
+<span class="nc" id="L139">    });</span>
+<span class="fc" id="L140">  }</span>
+  
+  //Notification equiv. class 3
+  @Test
+  @Order(7)
+  public void badTimeNotification() {
+<span class="fc" id="L146">    SqliteDB db = new SqliteDB(&quot;triall&quot;);</span>
+<span class="fc" id="L147">    Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L148">      Notification badTime = new Notification(db, 1, &quot;10:1h:30&quot;, &quot;new trial&quot;);</span>
+<span class="nc" id="L149">    });</span>
+<span class="fc" id="L150">  }</span>
+  
+  //Trial equiv class 0 (correct behavior)
+  @Test 
+  @Order(8)
+  public void goodTrial() {
+<span class="fc" id="L156">    String location = tr.getLocation();</span>
+<span class="fc" id="L157">    Criteria crit = tr.getCriteria();</span>
+<span class="fc" id="L158">    assertEquals(&quot;Siberia&quot;, location);</span>
+<span class="fc" id="L159">  }</span>
+  
+  //Trial equiv class 1 (wrong input, just below)
+  @Test
+  @Order(9)
+  public void testJustBelowTrial() {
+<span class="fc" id="L165">    Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L166">      Trial t = new Trial(-1, &quot;name&quot;, &quot;&quot;, -90.1, -180.1, &quot;&quot;, &quot;2020-12-01&quot;, &quot;2020-12-02&quot;, -1.0, 123, -1, -1, crit);</span>
+<span class="nc" id="L167">    });</span>
+<span class="fc" id="L168">  }</span>
+  
+  //Trial equiv class 2 (wrong input, just above)
+  @Test
+  @Order(10)
+  public void testAboveTrial() {
+<span class="fc" id="L174">    Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L175">      Trial t = new Trial(3, &quot;name&quot;, &quot;desc&quot;, 90.1, 180.1, &quot;loc&quot;, &quot;2020-12-40&quot;, &quot;2020-12-50&quot;, 10, 123456, 0, 0, crit);</span>
+<span class="nc" id="L176">    });</span>
+<span class="fc" id="L177">  }</span>
+  
+  //Trial equiv class 3 (wrong input dates, at boundary)
+  @Test
+  @Order(11)
+  public void wrongDateTrial() {
+<span class="fc" id="L183">    Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L184">      Trial t = new Trial(3, &quot;name&quot;, &quot;desc&quot;, 90, 180, &quot;loc&quot;, &quot;2020-14-12&quot;, &quot;2020-15-12&quot;, 10, 1234, 0, 0, crit);</span>
+<span class="nc" id="L185">    });</span>
+<span class="fc" id="L186">  }</span>
+  
+  @Test
+  @Order(12)
+  public void noNameTrial() {
+<span class="fc" id="L191">    Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L192">      Trial t = new Trial(3, &quot;&quot;, &quot;desc&quot;, 90, 180, &quot;loc&quot;, &quot;2020-14-12&quot;, &quot;2020-15-12&quot;, 10, 1234, 0, 0, crit);</span>
+<span class="nc" id="L193">    });</span>
+<span class="fc" id="L194">  }</span>
+  
+  @Test
+  @Order(13)
+  public void noDescTrial() {
+<span class="fc" id="L199">    Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L200">      Trial t = new Trial(3, &quot;name&quot;, &quot;&quot;, 90, 180, &quot;loc&quot;, &quot;2020-14-12&quot;, &quot;2020-15-12&quot;, 10, 1234, 0, 0, crit);</span>
+<span class="nc" id="L201">    });</span>
+<span class="fc" id="L202">  }</span>
+  
+  @Test
+  @Order(14)
+  public void lonAboveTrial() {
+<span class="fc" id="L207">    Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L208">      Trial t = new Trial(3, &quot;name&quot;, &quot;desc&quot;, 90, 180.1, &quot;loc&quot;, &quot;2020-14-12&quot;, &quot;2020-15-12&quot;, 10, 1234, 0, 0, crit);</span>
+<span class="nc" id="L209">    });</span>
+<span class="fc" id="L210">  }</span>
+  
+  @Test
+  @Order(15)
+  public void noLocTrial() {
+<span class="fc" id="L215">    Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L216">      Trial t = new Trial(3, &quot;name&quot;, &quot;desc&quot;, 90, 180, &quot;&quot;, &quot;2020-14-12&quot;, &quot;2020-15-12&quot;, 10, 1234, 0, 0, crit);</span>
+<span class="nc" id="L217">    });</span>
+<span class="fc" id="L218">  }</span>
+  
+  @Test
+  @Order(16)
+  public void endAboveTrial() {
+<span class="fc" id="L223">    Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L224">      Trial t = new Trial(3, &quot;name&quot;, &quot;desc&quot;, 70.0, 170.0, &quot;loc&quot;, &quot;2020-12-12&quot;, &quot;2020-15-12&quot;, 10, 1234, 0, 0, crit);</span>
+<span class="nc" id="L225">    });</span>
+<span class="fc" id="L226">  }</span>
+  
+  @Test
+  @Order(17)
+  public void payBelowTrial() {
+<span class="fc" id="L231">    Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L232">      Trial t = new Trial(3, &quot;name&quot;, &quot;desc&quot;, 90, 180, &quot;loc&quot;, &quot;2020-12-12&quot;, &quot;2020-12-14&quot;, -1, 1234, 0, 0, crit);</span>
+<span class="nc" id="L233">    });</span>
+<span class="fc" id="L234">  }</span>
+  
+  @Test
+  @Order(18)
+  public void irbAboveTrial() {
+<span class="fc" id="L239">    Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L240">      Trial t = new Trial(3, &quot;name&quot;, &quot;desc&quot;, 90, 180, &quot;loc&quot;, &quot;2020-12-12&quot;, &quot;2020-12-14&quot;, 10, 123456, 0, 0, crit);</span>
+<span class="nc" id="L241">    });</span>
+<span class="fc" id="L242">  }</span>
+  
+  @Test
+  @Order(19)
+  public void partNeededBelowTrial() {
+<span class="fc" id="L247">    Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L248">      Trial t = new Trial(3, &quot;name&quot;, &quot;desc&quot;, 90, 180, &quot;loc&quot;, &quot;2020-12-12&quot;, &quot;2020-12-14&quot;, 10, 1234, -1, 0, crit);</span>
+<span class="nc" id="L249">    });</span>
+<span class="fc" id="L250">  }</span>
+  
+  @Test
+  @Order(20)
+  public void partConfirmedBelowTrial() {
+<span class="fc" id="L255">    Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L256">      Trial t = new Trial(3, &quot;name&quot;, &quot;desc&quot;, 90, 180, &quot;loc&quot;, &quot;2020-12-12&quot;, &quot;2020-12-14&quot;, 10, 1234, 0, -1, crit);</span>
+<span class="nc" id="L257">    });</span>
+<span class="fc" id="L258">  }</span>
+  
+  //Criteria equiv class 0 (correct behavior)
+  @Test
+  @Order(21)
+  public void goodCriteria() {
+<span class="fc" id="L264">    String gender = crit.getGender();</span>
+<span class="fc" id="L265">    assertEquals(&quot;Male&quot;, gender);</span>
+<span class="fc" id="L266">  }</span>
+  
+  //Criteria equiv class 1 
+  @Test
+  @Order(22)
+  public void testJustBelowCriteria() {
+<span class="fc" id="L272">    Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L273">      Criteria c = new Criteria(-1, -1, 17, 110, -10.0, -12.0, -100.0, -120.0, &quot;Female&quot;, &quot;white&quot;, &quot;american&quot;);</span>
+<span class="nc" id="L274">    });</span>
+<span class="fc" id="L275">  }</span>
+  
+  ///Criteria equiv class 2 
+  @Test
+  @Order(23)
+  public void testJustAboveCriteria() {
+<span class="fc" id="L281">    Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L282">      Criteria c = new Criteria(1, 1, 18, 121, 10.0, 12.0, 100.0, 120.0, &quot;Female&quot;, &quot;white&quot;, &quot;american&quot;);</span>
+<span class="nc" id="L283">    });</span>
+<span class="fc" id="L284">  }</span>
+  
+  //Criteria equiv class 3
+  @Test
+  @Order(24)
+  public void badStringCriteria() {
+<span class="fc" id="L290">    Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L291">      Criteria c = new Criteria(1, 1, 18, 120, 10.0, 12.0, 100.0, 120.0, &quot;&quot;, &quot;&quot;, &quot;&quot;);</span>
+<span class="nc" id="L292">    });</span>
+<span class="fc" id="L293">  }</span>
+  
+  
+  //Match equiv. class 0 (correct behavior)
+  @Test 
+  @Order(25)
+  public void goodMatch() {
+<span class="fc" id="L300">    Match goodMatch = new Match(1, tr, 0.5, &quot;accepted&quot;);</span>
+<span class="fc" id="L301">    double dist = goodMatch.getDistance();</span>
+<span class="fc" id="L302">    String status = goodMatch.getStatus();</span>
+<span class="fc" id="L303">    assertEquals(0.5, dist);</span>
+<span class="fc" id="L304">  }</span>
+  
+  @Test 
+  @Order(26)
+  public void goodMatch1() {
+<span class="fc" id="L309">    SqliteDB db = new SqliteDB(&quot;triall&quot;);</span>
+<span class="fc" id="L310">    Match goodMatch = new Match(user1, tr, db);</span>
+<span class="fc" id="L311">    Trial trial = goodMatch.getTrial();</span>
+<span class="fc" id="L312">    goodMatch.setDistance(1.0);</span>
+<span class="fc" id="L313">    goodMatch.setStatus(&quot;accepted&quot;);</span>
+<span class="fc" id="L314">    assertEquals(1, trial.getID());</span>
+<span class="fc" id="L315">  }</span>
+  
+  //Match equiv. class 1 (wrong input, just below + empty string)
+  @Test
+  @Order(27)
+  public void badDistMatch() {
+<span class="fc" id="L321">    Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L322">      Match badDist = new Match(-1, tr, -1.1, &quot;&quot;);</span>
+<span class="nc" id="L323">    });</span>
+<span class="fc" id="L324">  }</span>
+  
+  //Match equiv. class 2 (wrong input, just below + correct string)
+  @Test
+  @Order(28)
+  public void badDistCorrectStatusMatch() {
+<span class="fc" id="L330">    Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L331">      Match badDist = new Match(1, tr, -1.1, &quot;accepted&quot;);</span>
+<span class="nc" id="L332">    });</span>
+<span class="fc" id="L333">  }</span>
+  
+  //Match equiv. class 3 (wrong input, at boundary + incorrect string)
+  @Test
+  @Order(29)
+  public void badStatusMatch() {
+<span class="fc" id="L339">    Exception exception = assertThrows(IllegalArgumentException.class, () -&gt; {</span>
+<span class="nc" id="L340">      Match badStatus = new Match(1, tr, 1.1, &quot;uhIdk&quot;);</span>
+<span class="nc" id="L341">    });</span>
+<span class="fc" id="L342">  }</span>
+ 
+  @Test
+  @Order(30)
+  public void testMatches() {
+<span class="fc" id="L347">    Criteria c = new Criteria(1, 1, 23, 23, 67, 67, 130, 130, &quot;Male&quot;, &quot;cool&quot;, &quot;cool&quot;);</span>
+<span class="fc" id="L348">    boolean isMatch = crit.matches(c);</span>
+<span class="fc" id="L349">    assertEquals(true, isMatch);</span>
+<span class="fc" id="L350">  }</span>
+
+  @Test
+  @Order(31)
+  public void testUpdate() {
+<span class="fc" id="L355">    user1.update(0, 0, &quot;Shirish&quot;, &quot;Shirish&quot;, &quot;shirishIsNotCool@gmail.com&quot;);</span>
+<span class="fc" id="L356">    assertEquals(&quot;shirishIsNotCool@gmail.com&quot;, user1.getEmail());</span>
+<span class="fc" id="L357">  }</span>
+
+  @Test
+  @Order(32)
+  public void addTrial() {
+<span class="fc" id="L362">    user2.addTrial(1, tr);</span>
+<span class="fc" id="L363">    assertEquals(user2.getTrial(1).getID(), 1);</span>
+<span class="fc" id="L364">  }</span>
+
+  @Test
+  @Order(33)
+  public void containsTrial() {
+<span class="fc" id="L369">    user2.addTrial(1, tr);</span>
+<span class="fc" id="L370">    assertEquals(user2.containsTrial(1), true);</span>
+<span class="fc" id="L371">  }</span>
+
+  @Test
+  @Order(34)
+  public void sortedMatches() {
+<span class="fc" id="L376">    Trial t2 = new Trial(2, &quot;name&quot;, &quot;cooler trial&quot;, 1, 1, &quot;Siberia&quot;, &quot;2020-12-01&quot;, &quot;2020-12-02&quot;, </span>
+<span class="fc" id="L377">        12, 1234, 100, 0, crit);</span>
+<span class="fc" id="L378">    user1.addMatch(1, tr);</span>
+<span class="fc" id="L379">    user1.addMatch(2, t2);</span>
+<span class="fc" id="L380">    assertEquals(user1.sortedMatches().get(0).getID(), 1);</span>
+<span class="fc" id="L381">  }</span>
+
+  @Test
+  @Order(35)
+  public void sortedTrials() {
+<span class="fc" id="L386">    Trial t1 = new Trial(2, &quot;name&quot;, &quot;even cooler trial&quot;, 1, 1, &quot;NYC&quot;, &quot;2020-12-01&quot;, &quot;2020-12-02&quot;, </span>
+<span class="fc" id="L387">        12, 1234, 100, 0, crit);</span>
+<span class="fc" id="L388">    Trial t2 = new Trial(3, &quot;name&quot;, &quot;cooler trial&quot;, 1, 1, &quot;Siberia&quot;, &quot;2020-11-20&quot;, &quot;2020-11-21&quot;, </span>
+<span class="fc" id="L389">        12, 1234, 100, 0, crit);</span>
+<span class="fc" id="L390">    user2.addTrial(2, t1);</span>
+<span class="fc" id="L391">    user2.addTrial(3, t2);</span>
+<span class="fc" id="L392">    assertEquals(user2.sortedTrials().get(0).getID(), 3);</span>
+<span class="fc" id="L393">  }</span>
+
+  @Test
+  @Order(36)
+  public void distance() {
+<span class="fc" id="L398">    double dist = user1.distance(0, 0, 0, 0, &quot;M&quot;);</span>
+<span class="fc" id="L399">    assertEquals(dist, 0);</span>
+<span class="fc" id="L400">  }</span>
+
+  @Test
+  @Order(37)
+  public void authenticate() {
+<span class="fc" id="L405">    boolean auth = TriAll.authenticate(&quot;,&quot;, &quot;notRealEmail@fake.com&quot;);</span>
+<span class="fc" id="L406">    assertEquals(auth, false);</span>
+<span class="fc" id="L407">  }</span>
+  
+  @Test 
+  @Order(38)
+  public void testAccept() {
+<span class="fc" id="L412">    SqliteDB db = new SqliteDB(&quot;triall&quot;);</span>
+<span class="fc" id="L413">    User res = new User(1, 80.0, 80.0, &quot;kansas&quot;, &quot;Jane&quot;, &quot;Doe&quot;, &quot;sophiakolak@gmail.com&quot;, true);</span>
+<span class="fc" id="L414">    User part = new User(2, 80.0, 80.0, &quot;kansas&quot;, &quot;Jane&quot;, &quot;Doe&quot;, &quot;sophiakolak@gmail.com&quot;, false );</span>
+<span class="fc" id="L415">    db.insertUser(&quot;researchers&quot;, res);</span>
+<span class="fc" id="L416">    db.insertUser(&quot;participants&quot;, part);</span>
+<span class="fc" id="L417">    Criteria c = new Criteria(1, 1, 22, 28, 60, 70, 110, 180, &quot;Male&quot;, &quot;cool&quot;, &quot;cool&quot;);</span>
+<span class="fc" id="L418">    db.insertCriteria(&quot;trial_criteria&quot;, c);</span>
+<span class="fc" id="L419">    Trial t = new Trial(1, &quot;Cool Trial&quot;, &quot;cool trial&quot;, 0, 0, &quot;Siberia&quot;, &quot;2020-12-01&quot;, &quot;2020-12-02&quot;, </span>
+<span class="fc" id="L420">        12, 1234, 100, 0, c);</span>
+<span class="fc" id="L421">    t.setRes(1);</span>
+<span class="fc" id="L422">    db.insertTrial(t);</span>
+<span class="fc" id="L423">    res.addTrial(1, t);</span>
+<span class="fc" id="L424">    db.updateUser(&quot;researchers&quot;, res);</span>
+<span class="fc" id="L425">    Match m = new Match(part, t, db);</span>
+<span class="fc" id="L426">    db.insertMatch(part, t);</span>
+<span class="fc" id="L427">    part.addMatch(m);</span>
+<span class="fc" id="L428">    db.updateUser(&quot;participants&quot;, part);</span>
+<span class="fc" id="L429">    boolean didAccept = m.accept(db);</span>
+<span class="fc" id="L430">    assertEquals(true, didAccept);</span>
+<span class="fc" id="L431">  }</span>
+  
+  @Test 
+  @Order(39)
+  public void testBadAccept() {
+<span class="fc" id="L436">    SqliteDB db = new SqliteDB(&quot;triall&quot;);</span>
+<span class="fc" id="L437">    User res = new User(1, 80.0, 80.0, &quot;kansas&quot;, &quot;Jane&quot;, &quot;Doe&quot;, &quot;sophiakolak@gmail.com&quot;, true);</span>
+<span class="fc" id="L438">    User part = new User(2, 80.0, 80.0, &quot;kansas&quot;, &quot;Jane&quot;, &quot;Doe&quot;, &quot;sophiakolak@gmail.com&quot;, false );</span>
+<span class="fc" id="L439">    db.insertUser(&quot;researchers&quot;, res);</span>
+<span class="fc" id="L440">    db.insertUser(&quot;participants&quot;, part);</span>
+<span class="fc" id="L441">    Criteria c = new Criteria(1, 1, 22, 28, 60, 70, 110, 180, &quot;Male&quot;, &quot;cool&quot;, &quot;cool&quot;);</span>
+<span class="fc" id="L442">    db.insertCriteria(&quot;trial_criteria&quot;, c);</span>
+<span class="fc" id="L443">    Trial t = new Trial(1, &quot;Cool Trial&quot;, &quot;cool trial&quot;, 0, 0, &quot;Siberia&quot;, &quot;2020-12-01&quot;, &quot;2020-12-02&quot;, </span>
+<span class="fc" id="L444">        12, 1234, 1, 1, c);</span>
+<span class="fc" id="L445">    t.setRes(1);</span>
+<span class="fc" id="L446">    db.insertTrial(t);</span>
+<span class="fc" id="L447">    res.addTrial(1, t);</span>
+<span class="fc" id="L448">    db.updateUser(&quot;researchers&quot;, res);</span>
+<span class="fc" id="L449">    Match m = new Match(part, t, db);</span>
+<span class="fc" id="L450">    db.insertMatch(part, t);</span>
+<span class="fc" id="L451">    part.addMatch(m);</span>
+<span class="fc" id="L452">    db.updateUser(&quot;participants&quot;, part);</span>
+<span class="fc" id="L453">    boolean didAccept = m.accept(db);</span>
+<span class="fc" id="L454">    assertEquals(false, didAccept);</span>
+<span class="fc" id="L455">  }</span>
+  
+  @Test 
+  @Order(40)
+  public void testReject() {
+<span class="fc" id="L460">    SqliteDB db = new SqliteDB(&quot;triall&quot;);</span>
+<span class="fc" id="L461">    Match goodMatch = new Match(1, tr, 0.5, &quot;pending&quot;);</span>
+<span class="fc" id="L462">    boolean db_update = goodMatch.reject(db);</span>
+<span class="fc" id="L463">    assertEquals(true, db_update);</span>
+<span class="fc" id="L464">  }</span>
+  
+  @Test
+  public void testRestartUser() {
+<span class="fc" id="L468">    User goodPart1 = new User(1, 80.0, 80.0, &quot;kansas&quot;, &quot;Jane&quot;, &quot;Doe&quot;, &quot;JaneDoe@gmail.com&quot;, false);</span>
+<span class="fc" id="L469">    User goodPart2 = new User(2, 80.0, 80.0, &quot;kansas&quot;, &quot;John&quot;, &quot;Doe&quot;, &quot;JaneDoe@gmail.com&quot;, false);</span>
+<span class="fc" id="L470">    goodPart1.restart(goodPart2);</span>
+<span class="fc" id="L471">    assertEquals(&quot;John&quot;, goodPart1.getFirst());</span>
+<span class="fc" id="L472">  }</span>
+  
+  @Test 
+  public void testRestartUser1() {
+<span class="fc" id="L476">    User goodRes1 = new User(1, 80.0, 80.0, &quot;kansas&quot;, &quot;Jane&quot;, &quot;Doe&quot;, &quot;JaneDoe@gmail.com&quot;, true);</span>
+<span class="fc" id="L477">    User goodRes2 = new User(2, 80.0, 80.0, &quot;kansas&quot;, &quot;John&quot;, &quot;Doe&quot;, &quot;JaneDoe@gmail.com&quot;, true);</span>
+<span class="fc" id="L478">    goodRes1.restart(goodRes2);</span>
+<span class="fc" id="L479">    assertEquals(&quot;John&quot;, goodRes1.getFirst());</span>
+<span class="fc" id="L480">  }</span>
+  
+  @Test
+  @Order(41)
+  public void testTrialForm() {
+<span class="fc" id="L485">    SqliteDB b = new SqliteDB(&quot;triall&quot;);</span>
+<span class="fc" id="L486">    b.drop(&quot;researchers&quot;);</span>
+<span class="fc" id="L487">    b.drop(&quot;participants&quot;);</span>
+<span class="fc" id="L488">    b.drop(&quot;trials&quot;);</span>
+<span class="fc" id="L489">    b.drop(&quot;participant_data&quot;);</span>
+<span class="fc" id="L490">    b.drop(&quot;trial_criteria&quot;);</span>
+<span class="fc" id="L491">    b.drop(&quot;trial_matches&quot;);</span>
+<span class="fc" id="L492">    b.drop(&quot;emails&quot;);</span>
+<span class="fc" id="L493">    b.stop();</span>
+<span class="fc" id="L494">    File myObj = new File(&quot;triall.db&quot;); </span>
+<span class="pc bpc" id="L495" title="1 of 2 branches missed.">    if (myObj.delete()) { </span>
+<span class="fc" id="L496">      System.out.println(&quot;Deleted the file: &quot; + myObj.getName());</span>
+<span class="fc" id="L497">    } else {</span>
+<span class="nc" id="L498">      System.out.println(&quot;Failed to delete the file.&quot;);</span>
+    }
+<span class="fc" id="L500">    SqliteDB db = new SqliteDB(&quot;triall&quot;);</span>
+<span class="fc" id="L501">    Gson gson = new Gson();</span>
+<span class="fc" id="L502">    Gson gson1 = new Gson();</span>
+<span class="fc" id="L503">    String string = &quot;name, value \n&quot; +</span>
+         &quot;name, new trial \n&quot; + 
+          &quot;description, desc \n&quot; +
+          &quot;location, New York \n&quot; +
+          &quot;lat,40.7127753 \n&quot; +
+          &quot;lon,-74.0059728 \n&quot;+
+          &quot;startdate, 2021-01-01 \n&quot;+
+          &quot;enddate, 2021-01-10 \n&quot;+
+          &quot;pay, 15 \n&quot;+
+          &quot;irb, 1234 \n&quot;+
+          &quot;numberofparticipants, 10 \n&quot;+
+          &quot;gender, Female \n&quot;+
+          &quot;min_age, 20 \n&quot;+
+          &quot;max_age, 90 \n&quot;+
+          &quot;metric_or_imperial, Feet \n&quot;+
+          &quot;feet, 5 \n&quot;+
+          &quot;inches, 0 \n&quot;+
+          &quot;centimeters, \n&quot;+
+          &quot;heightInInchesMin, 60 \n&quot;+
+          &quot;feet, 6 \n&quot;+
+          &quot;inches, 0 \n&quot;+
+          &quot;centimeters \n&quot;+
+          &quot;heightInInchesMax, 72 \n&quot;+
+          &quot;pounds, 90 \n&quot;+
+          &quot;kilograms, \n&quot;+
+          &quot;weightInLbs, 90 \n&quot;+
+          &quot;pounds, 120 \n&quot;+
+          &quot;kilograms, \n&quot;+
+          &quot;weightInLbs, 120 \n&quot;+
+          &quot;ethnicity, White Other \n&quot;+
+          &quot;nationality, american&quot;;
+    
+<span class="fc" id="L535">     String partString = &quot;name, value \n&quot;+</span>
+         &quot;participant_or_researcher, Participant \n&quot;+
+         &quot;firstname, Sophia \n&quot;+
+         &quot;lastname, Kolak \n&quot;+
+         &quot;email, sophiakolak.sk@gmail.com \n&quot;+
+         &quot;location, New York \n&quot;+
+         &quot;lat, 40.7127753 \n&quot;+
+         &quot;lon, -74.0059728 \n&quot;+
+          &quot;gender, Female \n&quot;+
+         &quot;age, 21 \n&quot;+ 
+          &quot;metric_or_imperial, Feet \n&quot;+
+         &quot;feet, 5 \n&quot;+
+          &quot;inches, 4 \n&quot;+
+         &quot;centimeters, \n&quot;+
+          &quot;heightInInches, 64 \n&quot;+
+         &quot;pounds, 120 \n&quot;+
+          &quot;kilograms, \n&quot;+
+         &quot;weightInLbs, 120 \n&quot;+
+          &quot;ethnicity, White Other \n&quot;+
+         &quot;nationality, american&quot;;
+     
+     try {
+       //JSONArray partJson = CDL.toJSONArray(partString);
+       //JsonArray partForm = gson.fromJson(partJson.toString(), JsonArray.class);
+       //String is_res = partForm.get(0).getAsJsonObject().get(&quot;value&quot;).getAsString();
+<span class="fc" id="L560">       User res = new User(1, 80.0, 80.0, &quot;kansas&quot;, &quot;Jane&quot;, &quot;Doe&quot;, &quot;sophiakolak.sk@gmail.com&quot;, true);</span>
+<span class="fc" id="L561">       User part = new User(1, 80.0, 80.0, &quot;kansas&quot;, &quot;Jane&quot;, &quot;Doe&quot;, &quot;sophiakolak.sk@gmail.com&quot;, false);</span>
+<span class="fc" id="L562">       db.insertUser(&quot;participants&quot;, part);</span>
+<span class="fc" id="L563">       db.insertUser(&quot;researchers&quot;, res);</span>
+<span class="fc" id="L564">       Criteria c = new Criteria(1, 1, 22, 28, 60, 70, 110, 180, &quot;Male&quot;, &quot;cool&quot;, &quot;cool&quot;);</span>
+<span class="fc" id="L565">       db.insertCriteria(&quot;participant_data&quot;, c);</span>
+       //System.out.println(&quot;4&quot;);
+<span class="fc" id="L567">       JSONArray result = CDL.toJSONArray(string);</span>
+<span class="fc" id="L568">       JsonArray form = gson1.fromJson(result.toString(), JsonArray.class);</span>
+<span class="fc" id="L569">       Trial t = new Trial(db, form, 1);</span>
+<span class="fc" id="L570">       String desc = t.getDesc();</span>
+<span class="fc" id="L571">       assertEquals(&quot;desc&quot;, desc);</span>
+<span class="fc" id="L572">     }</span>
+<span class="nc" id="L573">     catch (Exception e) {</span>
+<span class="nc" id="L574">       e.printStackTrace();</span>
+     }
+<span class="fc" id="L576">  }</span>
+  
+  @Test 
+  @Order(42)
+  public void testUpdateTrial() {
+<span class="fc" id="L581">    SqliteDB b = new SqliteDB(&quot;triall&quot;);</span>
+<span class="fc" id="L582">    b.drop(&quot;researchers&quot;);</span>
+<span class="fc" id="L583">    b.drop(&quot;participants&quot;);</span>
+<span class="fc" id="L584">    b.drop(&quot;trials&quot;);</span>
+<span class="fc" id="L585">    b.drop(&quot;participant_data&quot;);</span>
+<span class="fc" id="L586">    b.drop(&quot;trial_criteria&quot;);</span>
+<span class="fc" id="L587">    b.drop(&quot;trial_matches&quot;);</span>
+<span class="fc" id="L588">    b.drop(&quot;emails&quot;);</span>
+<span class="fc" id="L589">    b.stop();</span>
+<span class="fc" id="L590">    File myObj = new File(&quot;triall.db&quot;); </span>
+<span class="pc bpc" id="L591" title="1 of 2 branches missed.">    if (myObj.delete()) { </span>
+<span class="fc" id="L592">      System.out.println(&quot;Deleted the file: &quot; + myObj.getName());</span>
+<span class="fc" id="L593">    } else {</span>
+<span class="nc" id="L594">      System.out.println(&quot;Failed to delete the file.&quot;);</span>
+    }
+<span class="fc" id="L596">    SqliteDB db = new SqliteDB(&quot;triall&quot;);</span>
+<span class="fc" id="L597">    Gson gson = new Gson();</span>
+<span class="fc" id="L598">    Gson gson1 = new Gson();</span>
+<span class="fc" id="L599">    String string = &quot;name, value \n&quot; +</span>
+         &quot;name, new trial \n&quot; + 
+          &quot;description, desc \n&quot; +
+          &quot;location, New York \n&quot; +
+          &quot;lat,40.7127753 \n&quot; +
+          &quot;lon,-74.0059728 \n&quot;+
+          &quot;startdate, 2021-01-01 \n&quot;+
+          &quot;enddate, 2021-01-10 \n&quot;+
+          &quot;pay, 15 \n&quot;+
+          &quot;irb, 1234 \n&quot;+
+          &quot;numberofparticipants, 10 \n&quot;+
+          &quot;gender, Female \n&quot;+
+          &quot;min_age, 20 \n&quot;+
+          &quot;max_age, 90 \n&quot;+
+          &quot;metric_or_imperial, Feet \n&quot;+
+          &quot;feet, 5 \n&quot;+
+          &quot;inches, 0 \n&quot;+
+          &quot;centimeters, \n&quot;+
+          &quot;heightInInchesMin, 60 \n&quot;+
+          &quot;feet, 6 \n&quot;+
+          &quot;inches, 0 \n&quot;+
+          &quot;centimeters \n&quot;+
+          &quot;heightInInchesMax, 72 \n&quot;+
+          &quot;pounds, 90 \n&quot;+
+          &quot;kilograms, \n&quot;+
+          &quot;weightInLbs, 90 \n&quot;+
+          &quot;pounds, 120 \n&quot;+
+          &quot;kilograms, \n&quot;+
+          &quot;weightInLbs, 120 \n&quot;+
+          &quot;ethnicity, White Other \n&quot;+
+          &quot;nationality, american&quot;;
+     try {
+<span class="fc" id="L631">       User res = new User(1, 80.0, 80.0, &quot;kansas&quot;, &quot;Jane&quot;, &quot;Doe&quot;, &quot;sophiakolak.sk@gmail.com&quot;, true);</span>
+<span class="fc" id="L632">       User part = new User(1, 80.0, 80.0, &quot;kansas&quot;, &quot;Jane&quot;, &quot;Doe&quot;, &quot;sophiakolak.sk@gmail.com&quot;, false);</span>
+<span class="fc" id="L633">       db.insertUser(&quot;participants&quot;, part);</span>
+<span class="fc" id="L634">       db.insertUser(&quot;researchers&quot;, res);</span>
+<span class="fc" id="L635">       Criteria c = new Criteria(1, 1, 22, 28, 60, 70, 110, 180, &quot;Male&quot;, &quot;cool&quot;, &quot;cool&quot;);</span>
+<span class="fc" id="L636">       db.insertCriteria(&quot;participant_data&quot;, c);</span>
+<span class="fc" id="L637">       JSONArray result = CDL.toJSONArray(string);</span>
+<span class="fc" id="L638">       JsonArray form = gson1.fromJson(result.toString(), JsonArray.class);</span>
+<span class="fc" id="L639">       Trial t = new Trial(db, form, 1);</span>
+<span class="fc" id="L640">       String update = &quot;name, value \n&quot; +</span>
+           &quot;name, new trial \n&quot; + 
+           &quot;description, desc \n&quot; +
+           &quot;location, New York \n&quot; +
+           &quot;lat,40.7127753 \n&quot; +
+           &quot;lon,-74.0059728 \n&quot;+
+           &quot;startdate, 2021-01-01 \n&quot;+
+           &quot;enddate, 2021-01-10 \n&quot;+
+           &quot;pay, 20 \n&quot;+
+           &quot;irb, 1234 \n&quot;+
+           &quot;numberofparticipants, 10 \n&quot;+
+           &quot;gender, Female \n&quot;+
+           &quot;min_age, 20 \n&quot;+
+           &quot;max_age, 90 \n&quot;+
+           &quot;metric_or_imperial, Feet \n&quot;+
+           &quot;feet, 5 \n&quot;+
+           &quot;inches, 0 \n&quot;+
+           &quot;centimeters, \n&quot;+
+           &quot;heightInInchesMin, 60 \n&quot;+
+           &quot;feet, 6 \n&quot;+
+           &quot;inches, 0 \n&quot;+
+           &quot;centimeters \n&quot;+
+           &quot;heightInInchesMax, 72 \n&quot;+
+           &quot;pounds, 90 \n&quot;+
+           &quot;kilograms, \n&quot;+
+           &quot;weightInLbs, 90 \n&quot;+
+           &quot;pounds, 120 \n&quot;+
+           &quot;kilograms, \n&quot;+
+           &quot;weightInLbs, 120 \n&quot;+
+           &quot;ethnicity, White Other \n&quot;+
+           &quot;nationality, american&quot;;
+<span class="fc" id="L671">       JSONArray updateString = CDL.toJSONArray(update);</span>
+<span class="fc" id="L672">       JsonArray updateForm = gson.fromJson(updateString.toString(), JsonArray.class);</span>
+<span class="fc" id="L673">       t.update(db, updateForm);</span>
+<span class="fc" id="L674">       double pay = t.getPay();</span>
+<span class="fc" id="L675">       assertEquals(20, pay);</span>
+<span class="fc" id="L676">     }</span>
+<span class="nc" id="L677">     catch (Exception e) {</span>
+<span class="nc" id="L678">       e.printStackTrace();</span>
+     }
+<span class="fc" id="L680">  }</span>
+  
+  @Test
+  public void TestSignUpPartUser() {
+<span class="fc" id="L684">    SqliteDB b = new SqliteDB(&quot;triall&quot;);</span>
+<span class="fc" id="L685">    b.drop(&quot;researchers&quot;);</span>
+<span class="fc" id="L686">    b.drop(&quot;participants&quot;);</span>
+<span class="fc" id="L687">    b.drop(&quot;trials&quot;);</span>
+<span class="fc" id="L688">    b.drop(&quot;participant_data&quot;);</span>
+<span class="fc" id="L689">    b.drop(&quot;trial_criteria&quot;);</span>
+<span class="fc" id="L690">    b.drop(&quot;trial_matches&quot;);</span>
+<span class="fc" id="L691">    b.drop(&quot;emails&quot;);</span>
+<span class="fc" id="L692">    b.stop();</span>
+<span class="fc" id="L693">    File myObj = new File(&quot;triall.db&quot;); </span>
+<span class="pc bpc" id="L694" title="1 of 2 branches missed.">    if (myObj.delete()) { </span>
+<span class="fc" id="L695">      System.out.println(&quot;Deleted the file: &quot; + myObj.getName());</span>
+<span class="fc" id="L696">    } else {</span>
+<span class="nc" id="L697">      System.out.println(&quot;Failed to delete the file.&quot;);</span>
+    } 
+<span class="fc" id="L699">    SqliteDB db = new SqliteDB(&quot;triall&quot;);</span>
+<span class="fc" id="L700">    Gson gson = new Gson();</span>
+<span class="fc" id="L701">    String user = &quot;name, value \n&quot; +</span>
+     &quot;participant_or_researcher, Participant\n&quot;+
+     &quot;firstname, Sophia \n&quot;+
+     &quot;lastname, Kolak \n&quot;+
+     &quot;email, sophiakolak.sk@gmail.com \n&quot;+
+      &quot;location, New York \n&quot;+
+      &quot;lat, 40.7127753 \n&quot;+
+      &quot;lon, -74.0059728 \n&quot;+
+      &quot;age, 21 \n&quot;+
+     &quot;gender, Female \n&quot;+
+      &quot;metric_or_imperial, Feet \n&quot;+
+      &quot;feet, 5 \n&quot;+
+      &quot;inches, 4 \n&quot;+
+      &quot;centimetersm, \n&quot;+
+      &quot;heightInInches, 64 \n&quot;+
+      &quot;pounds, 120 \n&quot;+
+     &quot;kilograms,  \n&quot;+
+      &quot;weightInLbs, 120 \n&quot;+
+     &quot;ethnicity, White Other \n&quot;+
+     &quot;nationality, american&quot;;
+    try {
+<span class="fc" id="L722">      JSONArray userJson = CDL.toJSONArray(user);</span>
+<span class="fc" id="L723">      JsonArray userForm = gson.fromJson(userJson.toString(), JsonArray.class);</span>
+<span class="fc" id="L724">      User u = new User();</span>
+<span class="fc" id="L725">      u.signUpPart(db, userForm);</span>
+<span class="fc" id="L726">      assertEquals(&quot;Sophia&quot;, u.getFirst());</span>
+<span class="fc" id="L727">    }</span>
+<span class="nc" id="L728">    catch (Exception e) {</span>
+<span class="nc" id="L729">      e.printStackTrace();</span>
+    }
+<span class="fc" id="L731">  }</span>
+  
+  @Test
+  public void TestSignUpResUser() {
+<span class="fc" id="L735">    SqliteDB b = new SqliteDB(&quot;triall&quot;);</span>
+<span class="fc" id="L736">    b.drop(&quot;researchers&quot;);</span>
+<span class="fc" id="L737">    b.drop(&quot;participants&quot;);</span>
+<span class="fc" id="L738">    b.drop(&quot;trials&quot;);</span>
+<span class="fc" id="L739">    b.drop(&quot;participant_data&quot;);</span>
+<span class="fc" id="L740">    b.drop(&quot;trial_criteria&quot;);</span>
+<span class="fc" id="L741">    b.drop(&quot;trial_matches&quot;);</span>
+<span class="fc" id="L742">    b.drop(&quot;emails&quot;);</span>
+<span class="fc" id="L743">    b.stop();</span>
+<span class="fc" id="L744">    File myObj = new File(&quot;triall.db&quot;); </span>
+<span class="pc bpc" id="L745" title="1 of 2 branches missed.">    if (myObj.delete()) { </span>
+<span class="fc" id="L746">      System.out.println(&quot;Deleted the file: &quot; + myObj.getName());</span>
+<span class="fc" id="L747">    } else {</span>
+<span class="nc" id="L748">      System.out.println(&quot;Failed to delete the file.&quot;);</span>
+    } 
+<span class="fc" id="L750">    SqliteDB db = new SqliteDB(&quot;triall&quot;);</span>
+<span class="fc" id="L751">    Gson gson = new Gson();</span>
+<span class="fc" id="L752">    String res = &quot;name, value \n&quot; +</span>
+     &quot;participant_or_researcher, Researcher \n&quot;+
+     &quot;firstname, Sophia \n&quot;+
+     &quot;lastname, Kolak \n&quot;+
+     &quot;email, sdk2147@columbia.edu \n&quot;+
+      &quot;location, New York \n&quot;+
+      &quot;lat, 40.7127753 \n&quot;+
+      &quot;lon, -74.0059728 \n&quot;+
+      &quot;age, \n&quot;+
+     &quot;gender, \n&quot;+
+      &quot;metric_or_imperial, \n&quot;+
+      &quot;feet, \n&quot;+
+      &quot;inches, \n&quot;+
+      &quot;centimetersm, \n&quot;+
+      &quot;heightInInches, \n&quot;+
+      &quot;pounds, \n&quot;+
+     &quot;kilograms,  \n&quot;+
+      &quot;weightInLbs, &quot;;
+    try {
+<span class="fc" id="L771">      JSONArray resJson = CDL.toJSONArray(res);</span>
+<span class="fc" id="L772">      JsonArray resForm = gson.fromJson(resJson.toString(), JsonArray.class);</span>
+<span class="fc" id="L773">      User u = new User();</span>
+<span class="fc" id="L774">      u.signUpRes(db, resForm);</span>
+<span class="fc" id="L775">      assertEquals(&quot;Sophia&quot;, u.getFirst());</span>
+<span class="fc" id="L776">    }</span>
+<span class="nc" id="L777">    catch (Exception e) {</span>
+<span class="nc" id="L778">      e.printStackTrace();</span>
+    }
+<span class="fc" id="L780">  }</span>
+
+  @Test
+  public void TestUpdatePartUser() {
+<span class="fc" id="L784">    SqliteDB b = new SqliteDB(&quot;triall&quot;);</span>
+<span class="fc" id="L785">    b.drop(&quot;researchers&quot;);</span>
+<span class="fc" id="L786">    b.drop(&quot;participants&quot;);</span>
+<span class="fc" id="L787">    b.drop(&quot;trials&quot;);</span>
+<span class="fc" id="L788">    b.drop(&quot;participant_data&quot;);</span>
+<span class="fc" id="L789">    b.drop(&quot;trial_criteria&quot;);</span>
+<span class="fc" id="L790">    b.drop(&quot;trial_matches&quot;);</span>
+<span class="fc" id="L791">    b.drop(&quot;emails&quot;);</span>
+<span class="fc" id="L792">    b.stop();</span>
+<span class="fc" id="L793">    File myObj = new File(&quot;triall.db&quot;); </span>
+<span class="pc bpc" id="L794" title="1 of 2 branches missed.">    if (myObj.delete()) { </span>
+<span class="fc" id="L795">      System.out.println(&quot;Deleted the file: &quot; + myObj.getName());</span>
+<span class="fc" id="L796">    } else {</span>
+<span class="nc" id="L797">      System.out.println(&quot;Failed to delete the file.&quot;);</span>
+    } 
+<span class="fc" id="L799">    SqliteDB db = new SqliteDB(&quot;triall&quot;);</span>
+<span class="fc" id="L800">    Gson gson = new Gson();</span>
+<span class="fc" id="L801">    Gson gson1 = new Gson();</span>
+<span class="fc" id="L802">    String user = &quot;name, value \n&quot; +</span>
+     &quot;participant_or_researcher, Participant\n&quot;+
+     &quot;firstname, Sophia \n&quot;+
+     &quot;lastname, Kolak \n&quot;+
+     &quot;email, sophiakolak.sk@gmail.com \n&quot;+
+      &quot;location, New York \n&quot;+
+      &quot;lat, 40.7127753 \n&quot;+
+      &quot;lon, -74.0059728 \n&quot;+
+      &quot;age, 21 \n&quot;+
+     &quot;gender, Female \n&quot;+
+      &quot;metric_or_imperial, Feet \n&quot;+
+      &quot;feet, 5 \n&quot;+
+      &quot;inches, 4 \n&quot;+
+      &quot;centimetersm, \n&quot;+
+      &quot;heightInInches, 64 \n&quot;+
+      &quot;pounds, 120 \n&quot;+
+     &quot;kilograms,  \n&quot;+
+      &quot;weightInLbs, 120 \n&quot;+
+     &quot;ethnicity, White Other \n&quot;+
+     &quot;nationality, american&quot;;
+    
+<span class="fc" id="L823">    String update =  &quot;name, value \n&quot; +</span>
+        &quot;firstname, Julia \n&quot;+
+        &quot;lastname, Kolak \n&quot;+
+        &quot;email, sophiakolak.sk@gmail.com \n&quot;+
+         &quot;location, New York \n&quot;+
+         &quot;lat, 40.7127753 \n&quot;+
+         &quot;lon, -74.0059728 \n&quot;+
+         &quot;gender, Female \n&quot;+
+         &quot;age, 21 \n&quot;+
+         &quot;metric_or_imperial, Feet \n&quot;+
+         &quot;feet, 5 \n&quot;+
+         &quot;inches, 4 \n&quot;+
+         &quot;centimetersm, \n&quot;+
+         &quot;heightInInches, 64 \n&quot;+
+         &quot;pounds, 120 \n&quot;+
+         &quot;kilograms,  \n&quot;+
+         &quot;weightInLbs, 120 \n&quot;+
+         &quot;ethnicity, White Other \n&quot;+
+         &quot;nationality, american&quot;;
+     
+    try {
+<span class="fc" id="L844">      JSONArray userJson = CDL.toJSONArray(user);</span>
+<span class="fc" id="L845">      JsonArray userForm = gson.fromJson(userJson.toString(), JsonArray.class);</span>
+<span class="fc" id="L846">      User u = new User();</span>
+<span class="fc" id="L847">      u.signUpPart(db, userForm);</span>
+<span class="fc" id="L848">      JSONArray updateJson = CDL.toJSONArray(update);</span>
+<span class="fc" id="L849">      JsonArray updateForm = gson.fromJson(updateJson.toString(), JsonArray.class);</span>
+<span class="fc" id="L850">      u.updatePart(db, updateForm);</span>
+<span class="fc" id="L851">      assertEquals(&quot;Julia&quot;, u.getFirst());</span>
+<span class="fc" id="L852">    }</span>
+<span class="nc" id="L853">    catch (Exception e) {</span>
+<span class="nc" id="L854">      e.printStackTrace();</span>
+    }
+<span class="fc" id="L856">  }</span>
+
+  @Test
+  public void TestUpdateResUser() {
+<span class="fc" id="L860">    SqliteDB b = new SqliteDB(&quot;triall&quot;);</span>
+<span class="fc" id="L861">    b.drop(&quot;researchers&quot;);</span>
+<span class="fc" id="L862">    b.drop(&quot;participants&quot;);</span>
+<span class="fc" id="L863">    b.drop(&quot;trials&quot;);</span>
+<span class="fc" id="L864">    b.drop(&quot;participant_data&quot;);</span>
+<span class="fc" id="L865">    b.drop(&quot;trial_criteria&quot;);</span>
+<span class="fc" id="L866">    b.drop(&quot;trial_matches&quot;);</span>
+<span class="fc" id="L867">    b.drop(&quot;emails&quot;);</span>
+<span class="fc" id="L868">    b.stop();</span>
+<span class="fc" id="L869">    File myObj = new File(&quot;triall.db&quot;); </span>
+<span class="pc bpc" id="L870" title="1 of 2 branches missed.">    if (myObj.delete()) { </span>
+<span class="fc" id="L871">      System.out.println(&quot;Deleted the file: &quot; + myObj.getName());</span>
+<span class="fc" id="L872">    } else {</span>
+<span class="nc" id="L873">      System.out.println(&quot;Failed to delete the file.&quot;);</span>
+    } 
+<span class="fc" id="L875">    SqliteDB db = new SqliteDB(&quot;triall&quot;);</span>
+<span class="fc" id="L876">    Gson gson = new Gson();</span>
+<span class="fc" id="L877">    Gson gson1 = new Gson();</span>
+<span class="fc" id="L878">    String res = &quot;name, value \n&quot; +</span>
+     &quot;participant_or_researcher, Researcher \n&quot;+
+     &quot;firstname, Sophia \n&quot;+
+     &quot;lastname, Kolak \n&quot;+
+     &quot;email, sdk2147@columbia.edu \n&quot;+
+      &quot;location, New York \n&quot;+
+      &quot;lat, 40.7127753 \n&quot;+
+      &quot;lon, -74.0059728 \n&quot;+
+      &quot;age, \n&quot;+
+     &quot;gender, \n&quot;+
+      &quot;metric_or_imperial, \n&quot;+
+      &quot;feet, \n&quot;+
+      &quot;inches, \n&quot;+
+      &quot;centimetersm, \n&quot;+
+      &quot;heightInInches, \n&quot;+
+      &quot;pounds, \n&quot;+
+     &quot;kilograms,  \n&quot;+
+      &quot;weightInLbs, &quot;;
+<span class="fc" id="L896">    String update = &quot;name, value \n&quot; +</span>
+        &quot;firstname, Yolo \n&quot;+
+        &quot;lastname, Kolak \n&quot;+
+        &quot;email, sophiakolak.sk@gmail.com \n&quot;+
+         &quot;location, New York \n&quot;+
+         &quot;lat, 40.7127753 \n&quot;+
+         &quot;lon, -74.0059728 \n&quot;+
+         &quot;gender, Female \n&quot;+
+         &quot;age, 21 \n&quot;+
+         &quot;metric_or_imperial, Feet \n&quot;+
+         &quot;feet, 5 \n&quot;+
+         &quot;inches, 4 \n&quot;+
+         &quot;centimetersm, \n&quot;+
+         &quot;heightInInches, 64 \n&quot;+
+         &quot;pounds, 120 \n&quot;+
+         &quot;kilograms,  \n&quot;+
+         &quot;weightInLbs, 120 \n&quot;+
+         &quot;ethnicity, White Other \n&quot;+
+         &quot;nationality, american&quot;;
+    try {
+<span class="fc" id="L916">      JSONArray resJson = CDL.toJSONArray(res);</span>
+<span class="fc" id="L917">      JsonArray resForm = gson.fromJson(resJson.toString(), JsonArray.class);</span>
+<span class="fc" id="L918">      User u = new User();</span>
+<span class="fc" id="L919">      u.signUpRes(db, resForm);</span>
+<span class="fc" id="L920">      JSONArray updateJson = CDL.toJSONArray(update);</span>
+<span class="fc" id="L921">      JsonArray updateForm = gson.fromJson(updateJson.toString(), JsonArray.class);</span>
+<span class="fc" id="L922">      u.updateRes(db, updateForm);</span>
+<span class="fc" id="L923">      assertEquals(&quot;Yolo&quot;, u.getFirst());</span>
+<span class="fc" id="L924">    }</span>
+<span class="nc" id="L925">    catch (Exception e) {</span>
+<span class="nc" id="L926">      e.printStackTrace();</span>
+    }
+<span class="fc" id="L928">  }</span>
+  
+  @Test 
+  public void testLoginUser() {
+<span class="fc" id="L932">    File myObj = new File(&quot;triall.db&quot;); </span>
+<span class="pc bpc" id="L933" title="1 of 2 branches missed.">    if (myObj.delete()) { </span>
+<span class="fc" id="L934">      System.out.println(&quot;Deleted the file: &quot; + myObj.getName());</span>
+<span class="fc" id="L935">    } else {</span>
+<span class="nc" id="L936">      System.out.println(&quot;Failed to delete the file.&quot;);</span>
+    } 
+<span class="fc" id="L938">    SqliteDB db = new SqliteDB(&quot;triall&quot;);</span>
+<span class="fc" id="L939">    User part = new User(1, 80.0, 80.0, &quot;kansas&quot;, &quot;Jane&quot;, &quot;Doe&quot;, &quot;sophiakolak.sk@gmail.com&quot;, false);</span>
+<span class="fc" id="L940">    db.insertUser(&quot;participants&quot;, part);</span>
+<span class="fc" id="L941">    int isPart = part.logIn(db, &quot;sophiakolak.sk@gmail.com&quot;);</span>
+<span class="fc" id="L942">    assertEquals(1, isPart);</span>
+<span class="fc" id="L943">  }</span>
+  
+  @Test 
+  public void testLoginRes() {
+<span class="fc" id="L947">    File myObj = new File(&quot;triall.db&quot;); </span>
+<span class="pc bpc" id="L948" title="1 of 2 branches missed.">    if (myObj.delete()) { </span>
+<span class="fc" id="L949">      System.out.println(&quot;Deleted the file: &quot; + myObj.getName());</span>
+<span class="fc" id="L950">    } else {</span>
+<span class="nc" id="L951">      System.out.println(&quot;Failed to delete the file.&quot;);</span>
+    } 
+<span class="fc" id="L953">    SqliteDB db = new SqliteDB(&quot;triall&quot;);</span>
+<span class="fc" id="L954">    User res = new User(1, 80.0, 80.0, &quot;kansas&quot;, &quot;Jane&quot;, &quot;Doe&quot;, &quot;sophiakolak.sk@gmail.com&quot;, true);</span>
+<span class="fc" id="L955">    db.insertUser(&quot;researchers&quot;, res);</span>
+<span class="fc" id="L956">    int isPart = res.logIn(db, &quot;sophiakolak.sk@gmail.com&quot;);</span>
+<span class="fc" id="L957">    assertEquals(0, isPart); </span>
+<span class="fc" id="L958">  }</span>
+  
+  @Test 
+  public void testLoginBad() {
+<span class="fc" id="L962">    File myObj = new File(&quot;triall.db&quot;); </span>
+<span class="pc bpc" id="L963" title="1 of 2 branches missed.">    if (myObj.delete()) { </span>
+<span class="fc" id="L964">      System.out.println(&quot;Deleted the file: &quot; + myObj.getName());</span>
+<span class="fc" id="L965">    } else {</span>
+<span class="nc" id="L966">      System.out.println(&quot;Failed to delete the file.&quot;);</span>
+    } 
+<span class="fc" id="L968">    SqliteDB db = new SqliteDB(&quot;triall&quot;);</span>
+<span class="fc" id="L969">    User res = new User();</span>
+<span class="fc" id="L970">    int isPart = res.logIn(db, &quot;sophiakolak.sk@gmail.com&quot;);</span>
+<span class="fc" id="L971">    assertEquals(-1, isPart); </span>
+<span class="fc" id="L972">  }</span>
+  
+  @Test 
+  public void testAcceptMatch() {
+<span class="fc" id="L976">    File myObj = new File(&quot;triall.db&quot;); </span>
+<span class="pc bpc" id="L977" title="1 of 2 branches missed.">    if (myObj.delete()) { </span>
+<span class="fc" id="L978">      System.out.println(&quot;Deleted the file: &quot; + myObj.getName());</span>
+<span class="fc" id="L979">    } else {</span>
+<span class="nc" id="L980">      System.out.println(&quot;Failed to delete the file.&quot;);</span>
+    } 
+<span class="fc" id="L982">    SqliteDB db = new SqliteDB(&quot;triall&quot;);</span>
+<span class="fc" id="L983">    Criteria crit = new Criteria(1, 1, 22, 28, 60, 70, 110, 180, &quot;Male&quot;, &quot;cool&quot;, &quot;cool&quot;);</span>
+<span class="fc" id="L984">    Trial tr = new Trial(1, &quot;Cool Trial&quot;, &quot;cool trial&quot;, 0, 0, &quot;Siberia&quot;, &quot;2020-12-01&quot;, &quot;2020-12-02&quot;, </span>
+<span class="fc" id="L985">        12, 1234, 100, 1, crit); </span>
+<span class="fc" id="L986">    tr.setRes(1);</span>
+<span class="fc" id="L987">    User part = new User(1, 80.0, 80.0, &quot;kansas&quot;, &quot;Jane&quot;, &quot;Doe&quot;, &quot;sophiakolak.sk@gmail.com&quot;, false);   </span>
+<span class="fc" id="L988">    User res = new User(1, 80.0, 80.0, &quot;kansas&quot;, &quot;Jane&quot;, &quot;Doe&quot;, &quot;sophiakolak.sk@gmail.com&quot;, true);</span>
+<span class="fc" id="L989">    db.insertUser(&quot;researchers&quot;, res);</span>
+<span class="fc" id="L990">    db.insertCriteria(&quot;trial_criteria&quot;, crit); </span>
+<span class="fc" id="L991">    db.insertTrial(tr); </span>
+<span class="fc" id="L992">    db.insertUser(&quot;participants&quot;, part);</span>
+<span class="fc" id="L993">    Match goodMatch = new Match(1, tr, 0.5, &quot;pending&quot;);</span>
+<span class="fc" id="L994">    part.addMatch(goodMatch);</span>
+<span class="fc" id="L995">    db.insertMatch(part, tr);</span>
+<span class="fc" id="L996">    boolean isAccepted = part.acceptMatch(1, db);</span>
+<span class="fc" id="L997">    assertEquals(true, isAccepted);</span>
+<span class="fc" id="L998">  }</span>
+  
+  @Test 
+  public void testAcceptMatch1() {
+<span class="fc" id="L1002">    File myObj = new File(&quot;triall.db&quot;); </span>
+<span class="pc bpc" id="L1003" title="1 of 2 branches missed.">    if (myObj.delete()) { </span>
+<span class="fc" id="L1004">      System.out.println(&quot;Deleted the file: &quot; + myObj.getName());</span>
+<span class="fc" id="L1005">    } else {</span>
+<span class="nc" id="L1006">      System.out.println(&quot;Failed to delete the file.&quot;);</span>
+    } 
+<span class="fc" id="L1008">    SqliteDB db = new SqliteDB(&quot;triall&quot;);</span>
+<span class="fc" id="L1009">    Criteria crit = new Criteria(1, 1, 22, 28, 60, 70, 110, 180, &quot;Male&quot;, &quot;cool&quot;, &quot;cool&quot;);</span>
+<span class="fc" id="L1010">    Trial tr = new Trial(1, &quot;Cool Trial&quot;, &quot;cool trial&quot;, 0, 0, &quot;Siberia&quot;, &quot;2020-12-01&quot;, &quot;2020-12-02&quot;, </span>
+<span class="fc" id="L1011">        12, 1234, 100, 1, crit); </span>
+<span class="fc" id="L1012">    tr.setRes(1);</span>
+<span class="fc" id="L1013">    User part = new User(1, 80.0, 80.0, &quot;kansas&quot;, &quot;Jane&quot;, &quot;Doe&quot;, &quot;sophiakolak.sk@gmail.com&quot;, false);   </span>
+<span class="fc" id="L1014">    User res = new User(1, 80.0, 80.0, &quot;kansas&quot;, &quot;Jane&quot;, &quot;Doe&quot;, &quot;sophiakolak.sk@gmail.com&quot;, true);</span>
+<span class="fc" id="L1015">    db.insertUser(&quot;researchers&quot;, res);</span>
+<span class="fc" id="L1016">    db.insertCriteria(&quot;trial_criteria&quot;, crit); </span>
+<span class="fc" id="L1017">    db.insertTrial(tr); </span>
+<span class="fc" id="L1018">    db.insertUser(&quot;participants&quot;, part);</span>
+<span class="fc" id="L1019">    boolean isAccepted = part.acceptMatch(1, db);</span>
+<span class="fc" id="L1020">    assertEquals(false, isAccepted);</span>
+<span class="fc" id="L1021">  }</span>
+  
+  @Test
+  public void testRejectMatch() {
+<span class="fc" id="L1025">    File myObj = new File(&quot;triall.db&quot;); </span>
+<span class="pc bpc" id="L1026" title="1 of 2 branches missed.">    if (myObj.delete()) { </span>
+<span class="fc" id="L1027">      System.out.println(&quot;Deleted the file: &quot; + myObj.getName());</span>
+<span class="fc" id="L1028">    } else {</span>
+<span class="nc" id="L1029">      System.out.println(&quot;Failed to delete the file.&quot;);</span>
+    } 
+<span class="fc" id="L1031">    SqliteDB db = new SqliteDB(&quot;triall&quot;);</span>
+<span class="fc" id="L1032">    Criteria crit = new Criteria(1, 1, 22, 28, 60, 70, 110, 180, &quot;Male&quot;, &quot;cool&quot;, &quot;cool&quot;);</span>
+<span class="fc" id="L1033">    Trial tr = new Trial(1, &quot;Cool Trial&quot;, &quot;cool trial&quot;, 0, 0, &quot;Siberia&quot;, &quot;2020-12-01&quot;, &quot;2020-12-02&quot;, </span>
+<span class="fc" id="L1034">        12, 1234, 100, 1, crit); </span>
+<span class="fc" id="L1035">    tr.setRes(1);</span>
+<span class="fc" id="L1036">    User part = new User(1, 80.0, 80.0, &quot;kansas&quot;, &quot;Jane&quot;, &quot;Doe&quot;, &quot;sophiakolak.sk@gmail.com&quot;, false);   </span>
+<span class="fc" id="L1037">    User res = new User(1, 80.0, 80.0, &quot;kansas&quot;, &quot;Jane&quot;, &quot;Doe&quot;, &quot;sophiakolak.sk@gmail.com&quot;, true);</span>
+<span class="fc" id="L1038">    db.insertUser(&quot;researchers&quot;, res);</span>
+<span class="fc" id="L1039">    db.insertCriteria(&quot;trial_criteria&quot;, crit); </span>
+<span class="fc" id="L1040">    db.insertTrial(tr); </span>
+<span class="fc" id="L1041">    db.insertUser(&quot;participants&quot;, part);</span>
+<span class="fc" id="L1042">    Match goodMatch = new Match(1, tr, 0.5, &quot;pending&quot;);</span>
+<span class="fc" id="L1043">    part.addMatch(goodMatch);</span>
+<span class="fc" id="L1044">    db.insertMatch(part, tr);</span>
+<span class="fc" id="L1045">    boolean isRejected = part.rejectMatch(1, db);</span>
+<span class="fc" id="L1046">    assertEquals(true, isRejected);</span>
+<span class="fc" id="L1047">  }</span>
+  
+  @Test
+  public void testRejectMatch1() {
+<span class="fc" id="L1051">    File myObj = new File(&quot;triall.db&quot;); </span>
+<span class="pc bpc" id="L1052" title="1 of 2 branches missed.">    if (myObj.delete()) { </span>
+<span class="fc" id="L1053">      System.out.println(&quot;Deleted the file: &quot; + myObj.getName());</span>
+<span class="fc" id="L1054">    } else {</span>
+<span class="nc" id="L1055">      System.out.println(&quot;Failed to delete the file.&quot;);</span>
+    } 
+<span class="fc" id="L1057">    SqliteDB db = new SqliteDB(&quot;triall&quot;);</span>
+<span class="fc" id="L1058">    Criteria crit = new Criteria(1, 1, 22, 28, 60, 70, 110, 180, &quot;Male&quot;, &quot;cool&quot;, &quot;cool&quot;);</span>
+<span class="fc" id="L1059">    Trial tr = new Trial(1, &quot;Cool Trial&quot;, &quot;cool trial&quot;, 0, 0, &quot;Siberia&quot;, &quot;2020-12-01&quot;, &quot;2020-12-02&quot;, </span>
+<span class="fc" id="L1060">        12, 1234, 100, 1, crit); </span>
+<span class="fc" id="L1061">    tr.setRes(1);</span>
+<span class="fc" id="L1062">    User part = new User(1, 80.0, 80.0, &quot;kansas&quot;, &quot;Jane&quot;, &quot;Doe&quot;, &quot;sophiakolak.sk@gmail.com&quot;, false);   </span>
+<span class="fc" id="L1063">    User res = new User(1, 80.0, 80.0, &quot;kansas&quot;, &quot;Jane&quot;, &quot;Doe&quot;, &quot;sophiakolak.sk@gmail.com&quot;, true);</span>
+<span class="fc" id="L1064">    db.insertUser(&quot;researchers&quot;, res);</span>
+<span class="fc" id="L1065">    db.insertCriteria(&quot;trial_criteria&quot;, crit); </span>
+<span class="fc" id="L1066">    db.insertTrial(tr); </span>
+<span class="fc" id="L1067">    db.insertUser(&quot;participants&quot;, part);</span>
+<span class="fc" id="L1068">    boolean isRejected = part.rejectMatch(1, db);</span>
+<span class="fc" id="L1069">    assertEquals(false, isRejected);</span>
+<span class="fc" id="L1070">  }</span>
+  
+  @Test 
+  public void testUserFuncs() {
+<span class="fc" id="L1074">    User goodPart = new User(1, 80.0, 80.0, &quot;kansas&quot;, &quot;Jane&quot;, &quot;Doe&quot;, &quot;JaneDoe@gmail.com&quot;, false);</span>
+<span class="fc" id="L1075">    goodPart.isResearcher();</span>
+<span class="fc" id="L1076">    goodPart.logOut();</span>
+<span class="fc" id="L1077">    boolean isLoggedIn = goodPart.isLoggedIn();</span>
+<span class="fc" id="L1078">    assertEquals(false, isLoggedIn);</span>
+<span class="fc" id="L1079">  }</span>
+  
+  @Test 
+  public void testCheckMatches() {
+<span class="fc" id="L1083">    File myObj = new File(&quot;triall.db&quot;); </span>
+<span class="pc bpc" id="L1084" title="1 of 2 branches missed.">    if (myObj.delete()) { </span>
+<span class="fc" id="L1085">      System.out.println(&quot;Deleted the file: &quot; + myObj.getName());</span>
+<span class="fc" id="L1086">    } else {</span>
+<span class="nc" id="L1087">      System.out.println(&quot;Failed to delete the file.&quot;);</span>
+    } 
+<span class="fc" id="L1089">    SqliteDB db = new SqliteDB(&quot;triall&quot;);</span>
+<span class="fc" id="L1090">    Criteria crit = new Criteria(1, 1, 22, 28, 60, 70, 110, 180, &quot;Male&quot;, &quot;cool&quot;, &quot;cool&quot;);</span>
+<span class="fc" id="L1091">    Trial tr = new Trial(1, &quot;Cool Trial&quot;, &quot;cool trial&quot;, 0, 0, &quot;Siberia&quot;, &quot;2020-12-01&quot;, &quot;2020-12-02&quot;, </span>
+<span class="fc" id="L1092">        12, 1234, 100, 1, crit); </span>
+<span class="fc" id="L1093">    tr.setRes(1);</span>
+<span class="fc" id="L1094">    User part = new User(1, 80.0, 80.0, &quot;kansas&quot;, &quot;Jane&quot;, &quot;Doe&quot;, &quot;sophiakolak.sk@gmail.com&quot;, false);   </span>
+<span class="fc" id="L1095">    User res = new User(1, 80.0, 80.0, &quot;kansas&quot;, &quot;Jane&quot;, &quot;Doe&quot;, &quot;sophiakolak.sk@gmail.com&quot;, true);</span>
+<span class="fc" id="L1096">    Match goodMatch = new Match(1, tr, 0.5, &quot;pending&quot;);</span>
+<span class="fc" id="L1097">    part.setData(crit);</span>
+<span class="fc" id="L1098">    part.addMatch(goodMatch);</span>
+<span class="fc" id="L1099">    db.insertMatch(part, tr);</span>
+<span class="fc" id="L1100">    db.insertCriteria(&quot;trial_criteria&quot;, crit); </span>
+<span class="fc" id="L1101">    db.insertCriteria(&quot;participant_data&quot;, crit);</span>
+<span class="fc" id="L1102">    db.insertTrial(tr); </span>
+<span class="fc" id="L1103">    db.insertUser(&quot;participants&quot;, part);</span>
+<span class="fc" id="L1104">    db.insertUser(&quot;researchers&quot;, res);</span>
+<span class="fc" id="L1105">    part.checkMatches(db);</span>
+<span class="fc" id="L1106">    assertEquals(1,part.getMatches().get(0).getID());</span>
+<span class="fc" id="L1107">  }</span>
+  
+  @Test 
+  public void testUpdateTrialUser() {
+<span class="fc" id="L1111">    File myObj = new File(&quot;triall.db&quot;); </span>
+<span class="pc bpc" id="L1112" title="1 of 2 branches missed.">    if (myObj.delete()) { </span>
+<span class="fc" id="L1113">      System.out.println(&quot;Deleted the file: &quot; + myObj.getName());</span>
+<span class="fc" id="L1114">    } else {</span>
+<span class="nc" id="L1115">      System.out.println(&quot;Failed to delete the file.&quot;);</span>
+    } 
+<span class="fc" id="L1117">    SqliteDB db = new SqliteDB(&quot;triall&quot;);</span>
+<span class="fc" id="L1118">    Criteria crit = new Criteria(1, 1, 22, 28, 60, 70, 110, 180, &quot;Male&quot;, &quot;cool&quot;, &quot;cool&quot;);</span>
+<span class="fc" id="L1119">    Trial tr = new Trial(1, &quot;Cool Trial&quot;, &quot;cool trial&quot;, 0, 0, &quot;Siberia&quot;, &quot;2020-12-01&quot;, &quot;2020-12-02&quot;, </span>
+<span class="fc" id="L1120">        12, 1234, 100, 1, crit); </span>
+<span class="fc" id="L1121">    tr.setRes(1); </span>
+<span class="fc" id="L1122">    User res = new User(1, 80.0, 80.0, &quot;kansas&quot;, &quot;Jane&quot;, &quot;Doe&quot;, &quot;sophiakolak.sk@gmail.com&quot;, true);</span>
+<span class="fc" id="L1123">    res.addTrial(1, tr);</span>
+<span class="fc" id="L1124">    db.insertTrial(tr); </span>
+<span class="fc" id="L1125">    db.insertUser(&quot;researchers&quot;, res);</span>
+<span class="fc" id="L1126">    db.insertCriteria(&quot;trial_criteria&quot;, crit); </span>
+<span class="fc" id="L1127">    Gson gson = new Gson();</span>
+<span class="fc" id="L1128">    String update = &quot;name, value \n&quot; +</span>
+        &quot;name, new trial \n&quot; + 
+        &quot;description, desc \n&quot; +
+        &quot;location, New York \n&quot; +
+        &quot;lat,40.7127753 \n&quot; +
+        &quot;lon,-74.0059728 \n&quot;+
+        &quot;startdate, 2021-01-01 \n&quot;+
+        &quot;enddate, 2021-01-10 \n&quot;+
+        &quot;pay, 20 \n&quot;+
+        &quot;irb, 1234 \n&quot;+
+        &quot;numberofparticipants, 10 \n&quot;+
+        &quot;gender, Female \n&quot;+
+        &quot;min_age, 20 \n&quot;+
+        &quot;max_age, 90 \n&quot;+
+        &quot;metric_or_imperial, Feet \n&quot;+
+        &quot;feet, 5 \n&quot;+
+        &quot;inches, 0 \n&quot;+
+        &quot;centimeters, \n&quot;+
+        &quot;heightInInchesMin, 60 \n&quot;+
+        &quot;feet, 6 \n&quot;+
+        &quot;inches, 0 \n&quot;+
+        &quot;centimeters \n&quot;+
+        &quot;heightInInchesMax, 72 \n&quot;+
+        &quot;pounds, 90 \n&quot;+
+        &quot;kilograms, \n&quot;+
+        &quot;weightInLbs, 90 \n&quot;+
+        &quot;pounds, 120 \n&quot;+
+        &quot;kilograms, \n&quot;+
+        &quot;weightInLbs, 120 \n&quot;+
+        &quot;ethnicity, White Other \n&quot;+
+        &quot;nationality, american&quot;;
+    try {
+<span class="fc" id="L1160">      JSONArray updateString = CDL.toJSONArray(update);</span>
+<span class="fc" id="L1161">      JsonArray updateForm = gson.fromJson(updateString.toString(), JsonArray.class);</span>
+<span class="fc" id="L1162">      res.updateTrial(1, db, updateForm);</span>
+<span class="pc" id="L1163">    } catch (Exception e) {</span>
+<span class="nc" id="L1164">      e.printStackTrace();</span>
+    }
+<span class="fc" id="L1166">  }</span>
+  
+  @Test 
+  public void testUpdateTrialUser1() {
+<span class="fc" id="L1170">    File myObj = new File(&quot;triall.db&quot;); </span>
+<span class="pc bpc" id="L1171" title="1 of 2 branches missed.">    if (myObj.delete()) { </span>
+<span class="fc" id="L1172">      System.out.println(&quot;Deleted the file: &quot; + myObj.getName());</span>
+<span class="fc" id="L1173">    } else {</span>
+<span class="nc" id="L1174">      System.out.println(&quot;Failed to delete the file.&quot;);</span>
+    } 
+<span class="fc" id="L1176">    SqliteDB db = new SqliteDB(&quot;triall&quot;);</span>
+<span class="fc" id="L1177">    Criteria crit = new Criteria(1, 1, 22, 28, 60, 70, 110, 180, &quot;Male&quot;, &quot;cool&quot;, &quot;cool&quot;);</span>
+<span class="fc" id="L1178">    Trial tr = new Trial(1, &quot;Cool Trial&quot;, &quot;cool trial&quot;, 0, 0, &quot;Siberia&quot;, &quot;2020-12-01&quot;, &quot;2020-12-02&quot;, </span>
+<span class="fc" id="L1179">        12, 1234, 100, 1, crit); </span>
+<span class="fc" id="L1180">    tr.setRes(1); </span>
+<span class="fc" id="L1181">    User res = new User(1, 80.0, 80.0, &quot;kansas&quot;, &quot;Jane&quot;, &quot;Doe&quot;, &quot;sophiakolak.sk@gmail.com&quot;, true);</span>
+<span class="fc" id="L1182">    res.addTrial(1, tr);</span>
+<span class="fc" id="L1183">    res.logOut();</span>
+<span class="fc" id="L1184">    db.insertTrial(tr); </span>
+<span class="fc" id="L1185">    db.insertUser(&quot;researchers&quot;, res);</span>
+<span class="fc" id="L1186">    db.insertCriteria(&quot;trial_criteria&quot;, crit); </span>
+<span class="fc" id="L1187">    Gson gson = new Gson();</span>
+<span class="fc" id="L1188">    String update = &quot;name, value \n&quot; +</span>
+        &quot;name, new trial \n&quot; + 
+        &quot;description, desc \n&quot; +
+        &quot;location, New York \n&quot; +
+        &quot;lat,40.7127753 \n&quot; +
+        &quot;lon,-74.0059728 \n&quot;+
+        &quot;startdate, 2021-01-01 \n&quot;+
+        &quot;enddate, 2021-01-10 \n&quot;+
+        &quot;pay, 20 \n&quot;+
+        &quot;irb, 1234 \n&quot;+
+        &quot;numberofparticipants, 10 \n&quot;+
+        &quot;gender, Female \n&quot;+
+        &quot;min_age, 20 \n&quot;+
+        &quot;max_age, 90 \n&quot;+
+        &quot;metric_or_imperial, Feet \n&quot;+
+        &quot;feet, 5 \n&quot;+
+        &quot;inches, 0 \n&quot;+
+        &quot;centimeters, \n&quot;+
+        &quot;heightInInchesMin, 60 \n&quot;+
+        &quot;feet, 6 \n&quot;+
+        &quot;inches, 0 \n&quot;+
+        &quot;centimeters \n&quot;+
+        &quot;heightInInchesMax, 72 \n&quot;+
+        &quot;pounds, 90 \n&quot;+
+        &quot;kilograms, \n&quot;+
+        &quot;weightInLbs, 90 \n&quot;+
+        &quot;pounds, 120 \n&quot;+
+        &quot;kilograms, \n&quot;+
+        &quot;weightInLbs, 120 \n&quot;+
+        &quot;ethnicity, White Other \n&quot;+
+        &quot;nationality, american&quot;;
+    try {
+<span class="fc" id="L1220">      JSONArray updateString = CDL.toJSONArray(update);</span>
+<span class="fc" id="L1221">      JsonArray updateForm = gson.fromJson(updateString.toString(), JsonArray.class);</span>
+<span class="fc" id="L1222">      res.updateTrial(1, db, updateForm);</span>
+<span class="pc" id="L1223">    } catch (Exception e) {</span>
+<span class="nc" id="L1224">      e.printStackTrace();</span>
+    }
+<span class="fc" id="L1226">  }</span>
+  
+  @Test 
+  public void testRetrieveRes() {
+<span class="fc" id="L1230">    File myObj = new File(&quot;triall.db&quot;); </span>
+<span class="pc bpc" id="L1231" title="1 of 2 branches missed.">    if (myObj.delete()) { </span>
+<span class="fc" id="L1232">      System.out.println(&quot;Deleted the file: &quot; + myObj.getName());</span>
+<span class="fc" id="L1233">    } else {</span>
+<span class="nc" id="L1234">      System.out.println(&quot;Failed to delete the file.&quot;);</span>
+    } 
+<span class="fc" id="L1236">    SqliteDB db = new SqliteDB(&quot;triall&quot;);</span>
+<span class="fc" id="L1237">    User res1 = new User(1, 80.0, 80.0, &quot;kansas&quot;, &quot;Jane&quot;, &quot;Doe&quot;, &quot;sophiakolak.sk@gmail.com&quot;, true);</span>
+<span class="fc" id="L1238">    User res2 = new User(2, 80.0, 80.0, &quot;kansas&quot;, &quot;Jane&quot;, &quot;Doe&quot;, &quot;ohyeah.sk@gmail.com&quot;, true);</span>
+<span class="fc" id="L1239">    Trial tr = new Trial(1, &quot;Cool Trial&quot;, &quot;cool trial&quot;, 0, 0, &quot;Siberia&quot;, &quot;2020-12-01&quot;, &quot;2020-12-02&quot;, </span>
+<span class="fc" id="L1240">        12, 1234, 100, 1, crit); </span>
+<span class="fc" id="L1241">    res1.addTrial(1, tr);</span>
+<span class="fc" id="L1242">    res2.addTrial(1, tr);</span>
+<span class="fc" id="L1243">    db.insertTrial(tr); </span>
+<span class="fc" id="L1244">    db.insertUser(&quot;researchers&quot;, res1);</span>
+<span class="fc" id="L1245">    db.insertUser(&quot;researchers&quot;, res2);</span>
+<span class="fc" id="L1246">    res2.retrieveRes(db, &quot;sophiakolak.sk@gmail.com&quot;);</span>
+<span class="fc" id="L1247">    assertEquals(1, res1.getTrial(1).getID());</span>
+<span class="fc" id="L1248">  }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span>TriAllTest (Dec 10, 2020 4:06:08 AM)</div></body></html>
