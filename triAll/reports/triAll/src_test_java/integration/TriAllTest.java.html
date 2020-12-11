@@ -1,13 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>TriAllTest.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=2;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">TriAllTest (Dec 10, 2020 4:06:08 AM)</a> &gt; <a href="../../index.html" class="el_group">triAll</a> &gt; <a href="../index.html" class="el_bundle">src/test/java</a> &gt; <a href="index.source.html" class="el_package">integration</a> &gt; <span class="el_source">TriAllTest.java</span></div><h1>TriAllTest.java</h1><pre class="source lang-java linenums">package integration;
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>TriAllTest.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=2;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">TriAllTest (Dec 11, 2020 3:35:18 PM)</a> &gt; <a href="../../index.html" class="el_group">triAll</a> &gt; <a href="../index.html" class="el_bundle">src/test/java</a> &gt; <a href="index.source.html" class="el_package">integration</a> &gt; <span class="el_source">TriAllTest.java</span></div><h1>TriAllTest.java</h1><pre class="source lang-java linenums">package integration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
 import controllers.TriAll;
 import database.SqliteDB;
+import kong.unirest.Unirest;
+import kong.unirest.json.JSONArray;
+import kong.unirest.json.JSONObject;
 
+import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.LinkedList;
 import models.Criteria;
@@ -17,6 +23,7 @@ import models.Trial;
 import models.User;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.json.CDL;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -27,27 +34,199 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 
-<span class="nc" id="L30">public class TriAllTest {</span>
+<span class="fc" id="L37">public class TriAllTest {</span>
 
   @BeforeAll
   public static void init() {
     // Start Server
-<span class="nc" id="L35">    TriAll.main(null);</span>
-<span class="nc" id="L36">  }</span>
+<span class="fc" id="L42">    TriAll.main(null);</span>
+<span class="fc" id="L43">    System.out.println(&quot;Start server&quot;);</span>
+<span class="fc" id="L44">  }</span>
   
   @Test
   @Order(1)
-  public void MatchTest() {
-    
-<span class="nc" id="L42">  }</span>
+  public void landingPage() {
+<span class="fc" id="L49">    kong.unirest.HttpResponse&lt;String&gt; response = </span>
+<span class="fc" id="L50">        Unirest.get(&quot;http://localhost:8000/&quot;).asString();</span>
+<span class="fc" id="L51">         int restStatus = response.getStatus();</span>
+<span class="fc" id="L52">    assertEquals(restStatus, 200);</span>
+<span class="fc" id="L53">     System.out.println(&quot;Testing get login page endpoint&quot;);</span>
+<span class="fc" id="L54">   }</span>
   
+  @Test
+  @Order(2)
+  public void loginSubmit() {
+<span class="fc" id="L59">      kong.unirest.HttpResponse&lt;String&gt; response = </span>
+<span class="fc" id="L60">        Unirest.post(&quot;http://localhost:8000/login-submit&quot;).body(&quot;hello@user.com&quot;).asString();</span>
+<span class="fc" id="L61">      String responseBody = (response).getBody();</span>
+            
+//      System.out.println(&quot;Login-submit response: &quot; + responseBody);
+<span class="fc" id="L64">  }</span>
+  
+  @Test
+  @Order(3)
+  public void signup() {
+<span class="fc" id="L69">    kong.unirest.HttpResponse&lt;String&gt; response = </span>
+<span class="fc" id="L70">        Unirest.get(&quot;http://localhost:8000/signup&quot;).asString();</span>
+<span class="fc" id="L71">         int restStatus = response.getStatus();</span>
+<span class="fc" id="L72">    assertEquals(restStatus, 200);</span>
+<span class="fc" id="L73">     System.out.println(&quot;Testing signup endpoint&quot;);</span>
+<span class="fc" id="L74">   }</span>
+  
+  @Test
+  @Order(4)
+  public void participantSubmit() {
+<span class="fc" id="L79">    String partString = &quot;name, value \n&quot; +</span>
+        &quot;participant_or_researcher, Participant\n&quot;+
+        &quot;firstname, Sophia \n&quot;+
+        &quot;lastname, Kolak \n&quot;+
+        &quot;email, sophiakolak.sk@gmail.com \n&quot;+
+         &quot;location, New York \n&quot;+
+         &quot;lat, 40.7127753 \n&quot;+
+         &quot;lon, -74.0059728 \n&quot;+
+         &quot;age, 21 \n&quot;+
+        &quot;gender, Female \n&quot;+
+         &quot;metric_or_imperial, Feet \n&quot;+
+         &quot;feet, 5 \n&quot;+
+         &quot;inches, 4 \n&quot;+
+         &quot;centimetersm, \n&quot;+
+         &quot;heightInInches, 64 \n&quot;+
+         &quot;pounds, 120 \n&quot;+
+        &quot;kilograms,  \n&quot;+
+         &quot;weightInLbs, 120 \n&quot;+
+        &quot;ethnicity, White Other \n&quot;+
+        &quot;nationality, american&quot;;
+    
+<span class="fc" id="L100">      Gson gson = new Gson();</span>
+<span class="fc" id="L101">      org.json.JSONArray partJson = CDL.toJSONArray(partString);</span>
+<span class="fc" id="L102">      JsonArray partForm = gson.fromJson(partJson.toString(), JsonArray.class);</span>
+      
+<span class="fc" id="L104">      kong.unirest.HttpResponse&lt;String&gt; response = </span>
+<span class="fc" id="L105">        Unirest.post(&quot;http://localhost:8000/new-res-submit&quot;).body(partForm).asString();</span>
+<span class="fc" id="L106">      int restStatus = response.getStatus();</span>
+<span class="fc" id="L107">      assertEquals(restStatus, 200);</span>
+<span class="fc" id="L108">  }</span>
+  
+  @Test
+  @Order(5)
+  public void newTrial() {
+<span class="fc" id="L113">    kong.unirest.HttpResponse&lt;String&gt; response = </span>
+<span class="fc" id="L114">        Unirest.get(&quot;http://localhost:8000/new-trial-form&quot;).asString();</span>
+<span class="fc" id="L115">         int restStatus = response.getStatus();</span>
+<span class="fc" id="L116">    assertEquals(restStatus, 200);</span>
+<span class="fc" id="L117">     System.out.println(&quot;Testing new trial form&quot;);</span>
+<span class="fc" id="L118">   }</span>
+  
+  @Test
+  @Order(6)
+  public void editPartForm() {
+<span class="fc" id="L123">    kong.unirest.HttpResponse&lt;String&gt; response = </span>
+<span class="fc" id="L124">        Unirest.get(&quot;http://localhost:8000/edit-part-form&quot;).asString();</span>
+<span class="fc" id="L125">         int restStatus = response.getStatus();</span>
+<span class="fc" id="L126">    assertEquals(restStatus, 200);</span>
+<span class="fc" id="L127">     System.out.println(&quot;Testing edit part form&quot;);</span>
+<span class="fc" id="L128">   }</span>
+  
+  @Test
+  @Order(7)
+  public void editResForm() {
+<span class="fc" id="L133">    kong.unirest.HttpResponse&lt;String&gt; response = </span>
+<span class="fc" id="L134">        Unirest.get(&quot;http://localhost:8000/edit-res-form&quot;).asString();</span>
+<span class="fc" id="L135">         int restStatus = response.getStatus();</span>
+<span class="fc" id="L136">    assertEquals(restStatus, 200);</span>
+<span class="fc" id="L137">     System.out.println(&quot;Testing edit res form&quot;);</span>
+<span class="fc" id="L138">   }</span>
+  
+  @Test
+  @Order(8)
+  public void partDashboard() {
+<span class="fc" id="L143">    kong.unirest.HttpResponse&lt;String&gt; response = </span>
+<span class="fc" id="L144">        Unirest.get(&quot;http://localhost:8000/participant-dashboard&quot;).asString();</span>
+<span class="fc" id="L145">         int restStatus = response.getStatus();</span>
+<span class="fc" id="L146">    assertEquals(restStatus, 200);</span>
+<span class="fc" id="L147">     System.out.println(&quot;Testing getting part dashboard&quot;);</span>
+<span class="fc" id="L148">   }</span>
+  
+  @Test
+  @Order(9)
+  public void resDashboard() {
+<span class="fc" id="L153">    kong.unirest.HttpResponse&lt;String&gt; response = </span>
+<span class="fc" id="L154">        Unirest.get(&quot;http://localhost:8000/researcher-dashboard&quot;).asString();</span>
+<span class="fc" id="L155">         int restStatus = response.getStatus();</span>
+<span class="fc" id="L156">    assertEquals(restStatus, 200);</span>
+<span class="fc" id="L157">     System.out.println(&quot;Testing getting res dashboard&quot;);</span>
+<span class="fc" id="L158">   }</span>
+  
+  @Test
+  @Order(10)
+  public void notifications() {
+<span class="fc" id="L163">    kong.unirest.HttpResponse&lt;String&gt; response = </span>
+<span class="fc" id="L164">        Unirest.get(&quot;http://localhost:8000/notifications&quot;).asString();</span>
+<span class="fc" id="L165">         int restStatus = response.getStatus();</span>
+<span class="fc" id="L166">    assertEquals(restStatus, 200);</span>
+<span class="fc" id="L167">     System.out.println(&quot;Testing getting notifications&quot;);</span>
+<span class="fc" id="L168">   }</span>
+  
+  @Test
+  @Order(11)
+  public void trialSubmit() {
+<span class="fc" id="L173">    String partString = &quot;name, value \n&quot; +</span>
+        &quot;name, new trial \n&quot; + 
+        &quot;description, desc \n&quot; +
+        &quot;location, New York \n&quot; +
+        &quot;lat,40.7127753 \n&quot; +
+        &quot;lon,-74.0059728 \n&quot;+
+        &quot;startdate, 2021-01-01 \n&quot;+
+        &quot;enddate, 2021-01-10 \n&quot;+
+        &quot;pay, 15 \n&quot;+
+        &quot;irb, 1234 \n&quot;+
+        &quot;numberofparticipants, 10 \n&quot;+
+        &quot;gender, Female \n&quot;+
+        &quot;min_age, 20 \n&quot;+
+        &quot;max_age, 90 \n&quot;+
+        &quot;metric_or_imperial, Feet \n&quot;+
+        &quot;feet, 5 \n&quot;+
+        &quot;inches, 0 \n&quot;+
+        &quot;centimeters, \n&quot;+
+        &quot;heightInInchesMin, 60 \n&quot;+
+        &quot;feet, 6 \n&quot;+
+        &quot;inches, 0 \n&quot;+
+        &quot;centimeters \n&quot;+
+        &quot;heightInInchesMax, 72 \n&quot;+
+        &quot;pounds, 90 \n&quot;+
+        &quot;kilograms, \n&quot;+
+        &quot;weightInLbs, 90 \n&quot;+
+        &quot;pounds, 120 \n&quot;+
+        &quot;kilograms, \n&quot;+
+        &quot;weightInLbs, 120 \n&quot;+
+        &quot;ethnicity, White Other \n&quot;+
+        &quot;nationality, american&quot;;
+    
+<span class="fc" id="L205">      Gson gson = new Gson();</span>
+<span class="fc" id="L206">      org.json.JSONArray partJson = CDL.toJSONArray(partString);</span>
+<span class="fc" id="L207">      JsonArray partForm = gson.fromJson(partJson.toString(), JsonArray.class);</span>
+      
+//      kong.unirest.HttpResponse&lt;String&gt; response = 
+//        Unirest.post(&quot;http://localhost:8000/new-trial-submit&quot;).body(partForm).asString();
+//      int restStatus = response.getStatus();
+//      assertEquals(restStatus, 200);
+<span class="fc" id="L213">  }</span>
+  
+  @Test
+  @Order(12)
+  public void logout() {
+<span class="fc" id="L218">    kong.unirest.HttpResponse&lt;String&gt; response = </span>
+<span class="fc" id="L219">        Unirest.post(&quot;http://localhost:8000/logout&quot;).asString();</span>
+<span class="fc" id="L220">         int restStatus = response.getStatus();</span>
+<span class="fc" id="L221">         assertEquals(restStatus, 200);</span>
+<span class="fc" id="L222">   }</span>
   
   @AfterAll
-  public static void stop() {
-<span class="nc" id="L47">    TriAll.stop();</span>
-<span class="nc" id="L48">  }</span>
-  
-  
-  
-}
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span>TriAllTest (Dec 10, 2020 4:06:08 AM)</div></body></html>
+  public static void close() {
+// Stop Server
+<span class="fc" id="L227">   TriAll.stop();</span>
+<span class="fc" id="L228">   System.out.println(&quot;\nStop server&quot;);</span>
+<span class="fc" id="L229">  }</span>
+   
+} //end class
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span>TriAllTest (Dec 11, 2020 3:35:18 PM)</div></body></html>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>SqliteDB.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=2;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">TriAllTest (Dec 10, 2020 4:06:08 AM)</a> &gt; <a href="../../index.html" class="el_group">triAll</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">database</a> &gt; <span class="el_source">SqliteDB.java</span></div><h1>SqliteDB.java</h1><pre class="source lang-java linenums">package database;
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>SqliteDB.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=2;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">TriAllTest (Dec 11, 2020 3:35:18 PM)</a> &gt; <a href="../../index.html" class="el_group">triAll</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">database</a> &gt; <span class="el_source">SqliteDB.java</span></div><h1>SqliteDB.java</h1><pre class="source lang-java linenums">package database;
 
 import java.sql.Connection;
 import java.io.File; 
@@ -899,28 +899,28 @@ public class SqliteDB {
    * @return LinkedList of the notification rows.
    */
   public LinkedList&lt;Integer&gt; emailSet(int id, boolean isResearcher) {
-<span class="nc" id="L902">    ResultSet rs = null;</span>
-<span class="nc" id="L903">    LinkedList&lt;Integer&gt; emailSet = new LinkedList&lt;&gt;();</span>
-<span class="nc" id="L904">    String field = &quot;participant_ID&quot;;</span>
-<span class="nc bnc" id="L905" title="All 2 branches missed.">    if (isResearcher) {</span>
-<span class="nc" id="L906">      field = &quot;researcher_ID&quot;;</span>
+<span class="fc" id="L902">    ResultSet rs = null;</span>
+<span class="fc" id="L903">    LinkedList&lt;Integer&gt; emailSet = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L904">    String field = &quot;participant_ID&quot;;</span>
+<span class="pc bpc" id="L905" title="1 of 2 branches missed.">    if (isResearcher) {</span>
+<span class="fc" id="L906">      field = &quot;researcher_ID&quot;;</span>
     }
-<span class="nc" id="L908">    String command = &quot;SELECT ID FROM email WHERE &quot; + field + &quot; = ?;&quot;;</span>
-<span class="nc" id="L909">    try (</span>
-<span class="nc" id="L910">        PreparedStatement st = conn.prepareStatement(command);</span>
+<span class="fc" id="L908">    String command = &quot;SELECT ID FROM email WHERE &quot; + field + &quot; = ?;&quot;;</span>
+<span class="fc" id="L909">    try (</span>
+<span class="fc" id="L910">        PreparedStatement st = conn.prepareStatement(command);</span>
     ) {
-<span class="nc" id="L912">      st.setInt(1,  id);</span>
-<span class="nc" id="L913">      rs = st.executeQuery();</span>
+<span class="fc" id="L912">      st.setInt(1,  id);</span>
+<span class="fc" id="L913">      rs = st.executeQuery();</span>
       
-<span class="nc bnc" id="L915" title="All 2 branches missed.">      while (rs.next()) {</span>
+<span class="pc bpc" id="L915" title="1 of 2 branches missed.">      while (rs.next()) {</span>
 <span class="nc" id="L916">        emailSet.add(rs.getInt(1));</span>
       }
-<span class="nc" id="L918">      rs.close();</span>
+<span class="fc" id="L918">      rs.close();</span>
 <span class="nc" id="L919">    } catch (Exception e) {</span>
 <span class="nc" id="L920">      e.printStackTrace();</span>
 <span class="nc" id="L921">      return emailSet;</span>
     }
-<span class="nc" id="L923">    return emailSet;</span>
+<span class="fc" id="L923">    return emailSet;</span>
   }
   
   /**
@@ -960,4 +960,4 @@ public class SqliteDB {
   } **/
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span>TriAllTest (Dec 10, 2020 4:06:08 AM)</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span>TriAllTest (Dec 11, 2020 3:35:18 PM)</div></body></html>

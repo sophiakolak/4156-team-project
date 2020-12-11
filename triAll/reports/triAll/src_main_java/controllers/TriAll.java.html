@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>TriAll.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=2;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">TriAllTest (Dec 10, 2020 4:06:08 AM)</a> &gt; <a href="../../index.html" class="el_group">triAll</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">controllers</a> &gt; <span class="el_source">TriAll.java</span></div><h1>TriAll.java</h1><pre class="source lang-java linenums">package controllers;
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>TriAll.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=2;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">TriAllTest (Dec 11, 2020 3:35:18 PM)</a> &gt; <a href="../../index.html" class="el_group">triAll</a> &gt; <a href="../index.html" class="el_bundle">src/main/java</a> &gt; <a href="index.source.html" class="el_package">controllers</a> &gt; <span class="el_source">TriAll.java</span></div><h1>TriAll.java</h1><pre class="source lang-java linenums">package controllers;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
@@ -33,36 +33,36 @@ import models.User;
    */
   public static void main(String[] args) {
 
-<span class="nc" id="L36">    db = new SqliteDB(&quot;triall&quot;);</span>
-<span class="nc" id="L37">    gson = new Gson();</span>
-<span class="nc" id="L38">    user = new User();</span>
+<span class="fc" id="L36">    db = new SqliteDB(&quot;triall&quot;);</span>
+<span class="fc" id="L37">    gson = new Gson();</span>
+<span class="fc" id="L38">    user = new User();</span>
     
-<span class="nc" id="L40">    app = Javalin.create(config -&gt; {</span>
-<span class="nc" id="L41">      config.addStaticFiles(&quot;/public&quot;);</span>
-<span class="nc" id="L42">    }).start(PORT_NUMBER);</span>
+<span class="fc" id="L40">    app = Javalin.create(config -&gt; {</span>
+<span class="fc" id="L41">      config.addStaticFiles(&quot;/public&quot;);</span>
+<span class="fc" id="L42">    }).start(PORT_NUMBER);</span>
 
-<span class="nc" id="L44">    app.get(&quot;/&quot;, ctx -&gt; {</span>
-<span class="nc bnc" id="L45" title="All 2 branches missed.">      if (user.isLoggedIn()) {</span>
-<span class="nc bnc" id="L46" title="All 2 branches missed.">        if (user.isResearcher()) {</span>
-<span class="nc" id="L47">          ctx.redirect(&quot;/researcherdashboard.html&quot;);</span>
-<span class="nc" id="L48">        } else {</span>
+<span class="fc" id="L44">    app.get(&quot;/&quot;, ctx -&gt; {</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">      if (user.isLoggedIn()) {</span>
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">        if (user.isResearcher()) {</span>
+<span class="fc" id="L47">          ctx.redirect(&quot;/researcherdashboard.html&quot;);</span>
+<span class="fc" id="L48">        } else {</span>
 <span class="nc" id="L49">          ctx.redirect(&quot;/participantdashboard.html&quot;);</span>
         }
 <span class="nc" id="L51">      } else {</span>
-<span class="nc" id="L52">        ctx.redirect(&quot;/login.html&quot;);</span>
+<span class="fc" id="L52">        ctx.redirect(&quot;/login.html&quot;);</span>
       }
-<span class="nc" id="L54">    });</span>
+<span class="fc" id="L54">    });</span>
 
-<span class="nc" id="L56">    app.post(&quot;/login-submit&quot;, ctx -&gt; {</span>
-<span class="nc" id="L57">      System.out.println(&quot;Signing in User&quot;);</span>
-<span class="nc" id="L58">      String body = ctx.body();</span>
-<span class="nc" id="L59">      System.out.println(body);</span>
+<span class="fc" id="L56">    app.post(&quot;/login-submit&quot;, ctx -&gt; {</span>
+<span class="fc" id="L57">      System.out.println(&quot;Signing in User&quot;);</span>
+<span class="fc" id="L58">      String body = ctx.body();</span>
+<span class="fc" id="L59">      System.out.println(body);</span>
       // ctx.body() is json dictionary with email and key
       // authenticate
-<span class="nc" id="L62">      String email = getEmail(body);</span>
-<span class="nc bnc" id="L63" title="All 2 branches missed.">      if (!authenticate(body, email)) {</span>
-<span class="nc" id="L64">        ctx.redirect(&quot;not_found.html&quot;);</span>
-<span class="nc" id="L65">      } else {</span>
+<span class="fc" id="L62">      String email = getEmail(body);</span>
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">      if (!authenticate(body, email)) {</span>
+<span class="fc" id="L64">        ctx.redirect(&quot;not_found.html&quot;);</span>
+<span class="fc" id="L65">      } else {</span>
 <span class="nc" id="L66">        int result = user.logIn(db, email);</span>
 <span class="nc bnc" id="L67" title="All 2 branches missed.">        if (result == 0) {</span>
 <span class="nc" id="L68">          ctx.result(gson.toJson(&quot;/researcherdashboard.html&quot;)); </span>
@@ -72,14 +72,14 @@ import models.User;
 <span class="nc" id="L72">          ctx.result(gson.toJson(&quot;/signup&quot;));</span>
         }
       }
-<span class="nc" id="L75">    });</span>
+<span class="fc" id="L75">    });</span>
 
-<span class="nc" id="L77">    app.get(&quot;/signup&quot;, ctx -&gt; {</span>
-<span class="nc" id="L78">      System.out.println(&quot;Redirecting&quot;);</span>
-<span class="nc" id="L79">      ctx.redirect(&quot;/signup.html&quot;);</span>
-<span class="nc" id="L80">    });</span>
+<span class="fc" id="L77">    app.get(&quot;/signup&quot;, ctx -&gt; {</span>
+<span class="fc" id="L78">      System.out.println(&quot;Redirecting&quot;);</span>
+<span class="fc" id="L79">      ctx.redirect(&quot;/signup.html&quot;);</span>
+<span class="fc" id="L80">    });</span>
 
-<span class="nc" id="L82">    app.post(&quot;/new-part-submit&quot;, ctx -&gt; {</span>
+<span class="fc" id="L82">    app.post(&quot;/new-part-submit&quot;, ctx -&gt; {</span>
 <span class="nc" id="L83">      String body = ctx.body();</span>
 <span class="nc" id="L84">      System.out.println(&quot;NEW PART&quot;);</span>
 <span class="nc" id="L85">      System.out.println(body);</span>
@@ -92,22 +92,22 @@ import models.User;
             
 <span class="nc" id="L93">    });</span>
 
-<span class="nc" id="L95">    app.post(&quot;/new-res-submit&quot;, ctx -&gt; {</span>
-<span class="nc" id="L96">      System.out.println(&quot;NEW RESEARCHER&quot;);</span>
-<span class="nc" id="L97">      System.out.println(ctx.body());</span>
-<span class="nc" id="L98">      JsonArray form = gson.fromJson(ctx.body(), JsonArray.class);</span>
-<span class="nc bnc" id="L99" title="All 2 branches missed.">      if (!user.signUpRes(db, form)) {</span>
+<span class="fc" id="L95">    app.post(&quot;/new-res-submit&quot;, ctx -&gt; {</span>
+<span class="fc" id="L96">      System.out.println(&quot;NEW RESEARCHER&quot;);</span>
+<span class="fc" id="L97">      System.out.println(ctx.body());</span>
+<span class="fc" id="L98">      JsonArray form = gson.fromJson(ctx.body(), JsonArray.class);</span>
+<span class="pc bpc" id="L99" title="1 of 2 branches missed.">      if (!user.signUpRes(db, form)) {</span>
 <span class="nc" id="L100">        ctx.redirect(&quot;not_found.html&quot;);</span>
 <span class="nc" id="L101">      } else {</span>
-<span class="nc" id="L102">        ctx.result(gson.toJson(&quot;/researcherdashboard.html&quot;));</span>
+<span class="fc" id="L102">        ctx.result(gson.toJson(&quot;/researcherdashboard.html&quot;));</span>
       }
-<span class="nc" id="L104">    });</span>
+<span class="fc" id="L104">    });</span>
 
-<span class="nc" id="L106">    app.get(&quot;/new-trial-form&quot;, ctx -&gt; {</span>
-<span class="nc" id="L107">      ctx.redirect(&quot;newtrial.html&quot;);</span>
-<span class="nc" id="L108">    });</span>
+<span class="fc" id="L106">    app.get(&quot;/new-trial-form&quot;, ctx -&gt; {</span>
+<span class="fc" id="L107">      ctx.redirect(&quot;newtrial.html&quot;);</span>
+<span class="fc" id="L108">    });</span>
 
-<span class="nc" id="L110">    app.post(&quot;/new-trial-submit&quot;, ctx -&gt; {</span>
+<span class="fc" id="L110">    app.post(&quot;/new-trial-submit&quot;, ctx -&gt; {</span>
 <span class="nc bnc" id="L111" title="All 4 branches missed.">      if (user.isLoggedIn() &amp;&amp; user.isResearcher()) {</span>
 <span class="nc" id="L112">        JsonArray form = gson.fromJson(ctx.body(), JsonArray.class);</span>
 <span class="nc" id="L113">        Trial t = new Trial(db, form, user.getID());</span>
@@ -118,29 +118,29 @@ import models.User;
       }
 <span class="nc" id="L119">    });</span>
 
-<span class="nc" id="L121">    app.get(&quot;/edit-part-form&quot;, ctx -&gt; {</span>
-<span class="nc bnc" id="L122" title="All 2 branches missed.">      if (!user.isLoggedIn()) {</span>
-<span class="nc" id="L123">        ctx.result(gson.toJson(&quot;/&quot;));</span>
-<span class="nc bnc" id="L124" title="All 2 branches missed.">      } else if (user.isResearcher()) {</span>
+<span class="fc" id="L121">    app.get(&quot;/edit-part-form&quot;, ctx -&gt; {</span>
+<span class="pc bpc" id="L122" title="1 of 2 branches missed.">      if (!user.isLoggedIn()) {</span>
+<span class="fc" id="L123">        ctx.result(gson.toJson(&quot;/&quot;));</span>
+<span class="pc bnc" id="L124" title="All 2 branches missed.">      } else if (user.isResearcher()) {</span>
 <span class="nc" id="L125">        ctx.result(gson.toJson(&quot;/&quot;));</span>
 <span class="nc" id="L126">      } else {</span>
 <span class="nc" id="L127">        String partJson = gson.toJson(user);</span>
 <span class="nc" id="L128">        ctx.result(partJson);</span>
       } 
-<span class="nc" id="L130">    });</span>
+<span class="fc" id="L130">    });</span>
 
-<span class="nc" id="L132">    app.get(&quot;/edit-res-form&quot;, ctx -&gt; {</span>
-<span class="nc bnc" id="L133" title="All 2 branches missed.">      if (!user.isLoggedIn()) {</span>
-<span class="nc" id="L134">        ctx.result(gson.toJson(&quot;/&quot;));</span>
-<span class="nc bnc" id="L135" title="All 2 branches missed.">      } else if (!user.isResearcher()) {</span>
+<span class="fc" id="L132">    app.get(&quot;/edit-res-form&quot;, ctx -&gt; {</span>
+<span class="pc bpc" id="L133" title="1 of 2 branches missed.">      if (!user.isLoggedIn()) {</span>
+<span class="fc" id="L134">        ctx.result(gson.toJson(&quot;/&quot;));</span>
+<span class="pc bnc" id="L135" title="All 2 branches missed.">      } else if (!user.isResearcher()) {</span>
 <span class="nc" id="L136">        ctx.result(gson.toJson(&quot;/&quot;));</span>
 <span class="nc" id="L137">      } else {</span>
 <span class="nc" id="L138">        String resJson = gson.toJson(user);</span>
 <span class="nc" id="L139">        ctx.result(resJson);</span>
       }
-<span class="nc" id="L141">    });</span>
+<span class="fc" id="L141">    });</span>
 
-<span class="nc" id="L143">    app.post(&quot;/edit-part-submit&quot;, ctx -&gt; {</span>
+<span class="fc" id="L143">    app.post(&quot;/edit-part-submit&quot;, ctx -&gt; {</span>
 <span class="nc" id="L144">      System.out.println(ctx.body());</span>
 <span class="nc" id="L145">      JsonArray form = gson.fromJson(ctx.body(), JsonArray.class);</span>
 <span class="nc bnc" id="L146" title="All 2 branches missed.">      if (user.updatePart(db, form)) {</span>
@@ -151,7 +151,7 @@ import models.User;
       }
 <span class="nc" id="L152">    });</span>
 
-<span class="nc" id="L154">    app.post(&quot;/edit-res-submit&quot;, ctx -&gt; {</span>
+<span class="fc" id="L154">    app.post(&quot;/edit-res-submit&quot;, ctx -&gt; {</span>
 <span class="nc" id="L155">      JsonArray form = gson.fromJson(ctx.body(), JsonArray.class);</span>
 <span class="nc bnc" id="L156" title="All 2 branches missed.">      if (user.updateRes(db, form)) {</span>
 <span class="nc" id="L157">        ctx.result(gson.toJson(&quot;/researcherdashboard.html&quot;));</span>
@@ -160,7 +160,7 @@ import models.User;
       }
 <span class="nc" id="L161">    });</span>
 
-<span class="nc" id="L163">    app.get(&quot;/edit-trial-form/:trialId/&quot;, ctx -&gt; {</span>
+<span class="fc" id="L163">    app.get(&quot;/edit-trial-form/:trialId/&quot;, ctx -&gt; {</span>
 <span class="nc" id="L164">      int trialID = ctx.pathParam(&quot;trialId&quot;, Integer.class).get();</span>
 <span class="nc" id="L165">      Trial t = user.getTrial(trialID);</span>
 <span class="nc bnc" id="L166" title="All 2 branches missed.">      if (t != null) {</span>
@@ -173,7 +173,7 @@ import models.User;
       }
 <span class="nc" id="L174">    });</span>
 
-<span class="nc" id="L176">    app.post(&quot;/edit-trial-submit/:trialId/&quot;, ctx -&gt; {</span>
+<span class="fc" id="L176">    app.post(&quot;/edit-trial-submit/:trialId/&quot;, ctx -&gt; {</span>
 <span class="nc" id="L177">      int trialID = ctx.pathParam(&quot;trialId&quot;, Integer.class).get();</span>
 <span class="nc" id="L178">      JsonArray form = gson.fromJson(ctx.body(), JsonArray.class);</span>
 <span class="nc bnc" id="L179" title="All 2 branches missed.">      if (user.updateTrial(trialID, db, form)) {</span>
@@ -184,21 +184,21 @@ import models.User;
 
 <span class="nc" id="L185">    });</span>
     
-<span class="nc" id="L187">    app.get(&quot;/notifications&quot;, ctx -&gt; {</span>
-<span class="nc" id="L188">      LinkedList&lt;Notification&gt; emails = user.sortedEmails(db);</span>
-<span class="nc" id="L189">      String emailJson = gson.toJson(emails);</span>
-<span class="nc" id="L190">      System.out.println(emailJson);</span>
-<span class="nc" id="L191">      ctx.result(emailJson);</span>
-<span class="nc" id="L192">    });</span>
+<span class="fc" id="L187">    app.get(&quot;/notifications&quot;, ctx -&gt; {</span>
+<span class="fc" id="L188">      LinkedList&lt;Notification&gt; emails = user.sortedEmails(db);</span>
+<span class="fc" id="L189">      String emailJson = gson.toJson(emails);</span>
+<span class="fc" id="L190">      System.out.println(emailJson);</span>
+<span class="fc" id="L191">      ctx.result(emailJson);</span>
+<span class="fc" id="L192">    });</span>
 
 
-<span class="nc" id="L195">    app.post(&quot;/logout&quot;, ctx -&gt; {</span>
-<span class="nc" id="L196">      user.logOut();</span>
-<span class="nc" id="L197">      System.out.println(&quot;Logging out user&quot;);</span>
-<span class="nc" id="L198">      ctx.result(gson.toJson(&quot;/&quot;));</span>
-<span class="nc" id="L199">    });</span>
+<span class="fc" id="L195">    app.post(&quot;/logout&quot;, ctx -&gt; {</span>
+<span class="fc" id="L196">      user.logOut();</span>
+<span class="fc" id="L197">      System.out.println(&quot;Logging out user&quot;);</span>
+<span class="fc" id="L198">      ctx.result(gson.toJson(&quot;/&quot;));</span>
+<span class="fc" id="L199">    });</span>
 
-<span class="nc" id="L201">    app.post(&quot;/accept-match/&quot;, ctx -&gt; {</span>
+<span class="fc" id="L201">    app.post(&quot;/accept-match/&quot;, ctx -&gt; {</span>
 <span class="nc" id="L202">      int trialID = Integer.parseInt(ctx.body());</span>
 <span class="nc bnc" id="L203" title="All 2 branches missed.">      if (user.acceptMatch(trialID, db)) {</span>
 <span class="nc" id="L204">        ctx.result(gson.toJson(&quot;/participantdashboard.html&quot;));</span>
@@ -207,7 +207,7 @@ import models.User;
       }
 <span class="nc" id="L208">    });</span>
 
-<span class="nc" id="L210">    app.post(&quot;/reject-match/&quot;, ctx -&gt; {</span>
+<span class="fc" id="L210">    app.post(&quot;/reject-match/&quot;, ctx -&gt; {</span>
 <span class="nc" id="L211">      int trialID = Integer.parseInt(ctx.body());</span>
 <span class="nc bnc" id="L212" title="All 2 branches missed.">      if (user.rejectMatch(trialID, db)) {</span>
 <span class="nc" id="L213">        ctx.result(gson.toJson(&quot;/participantdashboard.html&quot;));</span>
@@ -216,29 +216,29 @@ import models.User;
       }
 <span class="nc" id="L217">    });</span>
 
-<span class="nc" id="L219">    app.get(&quot;/researcher-dashboard&quot;, ctx -&gt; {</span>
-<span class="nc bnc" id="L220" title="All 4 branches missed.">      if (user.isLoggedIn() &amp;&amp; user.isResearcher()) {</span>
+<span class="fc" id="L219">    app.get(&quot;/researcher-dashboard&quot;, ctx -&gt; {</span>
+<span class="pc bpc" id="L220" title="3 of 4 branches missed.">      if (user.isLoggedIn() &amp;&amp; user.isResearcher()) {</span>
 <span class="nc" id="L221">        LinkedList&lt;Trial&gt; trials = user.sortedTrials();</span>
         //Trial[] array = trials.toArray(new Trial[trials.size()]);
 <span class="nc" id="L223">        String trialsJson = gson.toJson(trials);</span>
 <span class="nc" id="L224">        System.out.println(trialsJson);</span>
 <span class="nc" id="L225">        ctx.result(trialsJson);</span>
 <span class="nc" id="L226">      } else {</span>
-<span class="nc" id="L227">        ctx.redirect(&quot;/&quot;);</span>
+<span class="fc" id="L227">        ctx.redirect(&quot;/&quot;);</span>
       }
-<span class="nc" id="L229">    });</span>
+<span class="fc" id="L229">    });</span>
 
-<span class="nc" id="L231">    app.get(&quot;/participant-dashboard&quot;, ctx -&gt; {</span>
-<span class="nc bnc" id="L232" title="All 4 branches missed.">      if (user.isLoggedIn() &amp;&amp; !user.isResearcher()) {</span>
+<span class="fc" id="L231">    app.get(&quot;/participant-dashboard&quot;, ctx -&gt; {</span>
+<span class="pc bpc" id="L232" title="2 of 4 branches missed.">      if (user.isLoggedIn() &amp;&amp; !user.isResearcher()) {</span>
 <span class="nc" id="L233">        String matchesJson = gson.toJson(user.sortedMatches());</span>
 <span class="nc" id="L234">        System.out.println(matchesJson);</span>
 <span class="nc" id="L235">        ctx.result(matchesJson);</span>
 <span class="nc" id="L236">      } else {</span>
-<span class="nc" id="L237">        ctx.redirect(&quot;/&quot;);</span>
+<span class="fc" id="L237">        ctx.redirect(&quot;/&quot;);</span>
       }
-<span class="nc" id="L239">    });</span>
+<span class="fc" id="L239">    });</span>
 
-<span class="nc" id="L241">  }</span>
+<span class="fc" id="L241">  }</span>
 
   /**
    * Parses email address from request body.
@@ -246,12 +246,12 @@ import models.User;
    * @return Email address.
    */
   public static String getEmail(String body) {
-<span class="nc" id="L249">    String[] parts = body.split(&quot;:&quot;);</span>
-<span class="nc bnc" id="L250" title="All 2 branches missed.">    if (parts.length &gt; 1) {</span>
+<span class="fc" id="L249">    String[] parts = body.split(&quot;:&quot;);</span>
+<span class="pc bpc" id="L250" title="1 of 2 branches missed.">    if (parts.length &gt; 1) {</span>
 <span class="nc" id="L251">      String[] email = parts[1].split(&quot;\&quot;&quot;);</span>
 <span class="nc" id="L252">      return email[1];</span>
     } else {
-<span class="nc" id="L254">      return parts[0];</span>
+<span class="fc" id="L254">      return parts[0];</span>
     }
   }
 
@@ -300,9 +300,9 @@ import models.User;
   }
 
   public static void stop() {
-<span class="nc" id="L303">    app.stop();</span>
-<span class="nc" id="L304">    db.stop();</span>
-<span class="nc" id="L305">  }</span>
+<span class="fc" id="L303">    app.stop();</span>
+<span class="fc" id="L304">    db.stop();</span>
+<span class="fc" id="L305">  }</span>
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span>TriAllTest (Dec 10, 2020 4:06:08 AM)</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span>TriAllTest (Dec 11, 2020 3:35:18 PM)</div></body></html>
